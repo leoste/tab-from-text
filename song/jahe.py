@@ -16,10 +16,8 @@ CHORD_2_F_SHARP = Chord.get_power_chord(GuitarString.E6, 2)
 CHORD_1_F = Chord.get_power_chord(GuitarString.E6, 1)
 
 DURATIONS_232 = [1,1,1,2,1,1,1]
-
-intro_rhythm_durations = [2,1,1,2,1,1] + DURATIONS_232
 INTRO_RHYTHM = Rhythm(
-    intro_rhythm_durations,
+    [2,1,1,2,1,1] + DURATIONS_232,
     [StrumStyle.NORMAL] * 16
 )
 
@@ -47,15 +45,13 @@ SALM_RHYTHM = Rhythm(
     [StrumStyle.PALM_MUTED] * 16
 )
 
-salm_half_end_durations = DURATIONS_232 + [1] * 8
 SALM_HALF_END_RHYTHM = Rhythm(
-    salm_half_end_durations,
+    DURATIONS_232 + [1] * 8,
     [StrumStyle.NORMAL] * 16
 )
 
-salm_end_durations =  DURATIONS_232 * 2
 SALM_END_RHYTHM = Rhythm(
-    salm_end_durations,
+    DURATIONS_232 * 2,
     [StrumStyle.NORMAL] * 16
 )
 
@@ -89,10 +85,9 @@ SALM = Segment(
     ]
 )
 
-chorus_first_measure_durations = [2] + [1] * 14
 CHORUS_FIRST_MEASURE_RHYTHM = Rhythm(
-        chorus_first_measure_durations,
-        [StrumStyle.NORMAL] * 16
+    [2] + [1] * 14,
+    [StrumStyle.NORMAL] * 16
 )
 
 CHORUS_THIRD_MEASURE_RHYTHM = Rhythm(
@@ -100,9 +95,8 @@ CHORUS_THIRD_MEASURE_RHYTHM = Rhythm(
         [StrumStyle.NORMAL] * 16
 )
 
-chorus_seventh_measure_durations = [3,3,2,1,1,1,1,1,1,1,1]
 CHORUS_SEVENTH_MEASURE_RHYTHM = Rhythm(
-    chorus_seventh_measure_durations,
+    [3,3,2,1,1,1,1,1,1,1,1],
     [StrumStyle.NORMAL] * 16
 )
 
@@ -131,9 +125,8 @@ CHORUS = Segment(
     ] * 2
 )
 
-break_last_measure_durations = [1] * 8 + DURATIONS_232
 BREAK_LAST_MEASURE_RHYTHM = Rhythm(
-    break_last_measure_durations,
+    [1] * 8 + DURATIONS_232,
     [StrumStyle.NORMAL] * 16
 )
 

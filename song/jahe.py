@@ -131,11 +131,6 @@ CHORUS = Segment(
     ] * 2
 )
 
-# TODO: make same style duration calculation for rhythm strumstyle and chord span.
-# right now chord span is counting halfbeats, but strumstyle actual array members.
-# make both halfbeats. also make it universally understood everywhere that its halfbeats.
-# this gets rid of all the *len() or most of them
-
 break_last_measure_durations = [1] * 8 + DURATIONS_232
 BREAK_LAST_MEASURE_RHYTHM = Rhythm(
     break_last_measure_durations,

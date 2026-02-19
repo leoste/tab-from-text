@@ -4,9 +4,11 @@ from object.Chord import Chord
 from object.Rhythm import Rhythm
 from object.Segment import Segment
 from object.GuitarString import GuitarString
+from object.Chord import FRET_NOT_PLAYED
 from object.StrumStyle import StrumStyle
 
 CHORD_13_F = Chord.get_power_chord(GuitarString.E6, 13)
+CHORD_13_C = Chord(FRET_NOT_PLAYED, FRET_NOT_PLAYED, FRET_NOT_PLAYED, 15, 13, 13)
 CHORD_11_D_SHARP = Chord.get_power_chord(GuitarString.E6, 11)
 CHORD_9_C_SHARP = Chord.get_power_chord(GuitarString.E6, 9)
 CHORD_8_C = Chord.get_power_chord(GuitarString.E6, 8)
@@ -161,9 +163,29 @@ BREAK = Segment(
     ]
 )
 
-END = [
-    # TODO: add end tabs
-]
+END = Segment(
+    "LÕPP",
+    [
+        RhythmicChordSpan(
+            Rhythm(
+                [1] * 8 + DURATIONS_232,
+                [StrumStyle.NORMAL] * 16
+            ),
+            [
+                ChordSpan(2, CHORD_13_F),
+                ChordSpan(2, CHORD_13_C),
+                ChordSpan(2, CHORD_13_F),
+                ChordSpan(2, CHORD_13_C),
+                ChordSpan(2, CHORD_13_F),
+                ChordSpan(1, CHORD_13_C),
+                ChordSpan(2, CHORD_13_F),
+                ChordSpan(1, CHORD_13_C),
+                ChordSpan(1, CHORD_13_F),
+                ChordSpan(1, CHORD_13_C)
+            ]
+        )
+    ]
+)
 
 SONG = [
     INTRO,

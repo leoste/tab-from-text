@@ -1,5 +1,5 @@
 from typing import List
-from .chord import Chord
+from object.Chord import Chord
 
 class ChordSpan:
     def __init__(self, duration: List[int], chord: Chord) -> None:

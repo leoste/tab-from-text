@@ -1,4 +1,4 @@
-from .guitar_string import GuitarString
+from object.GuitarString import GuitarString
 
 # Yes I know it's not the best to store this constant here, yes I did it anyways
 FRET_NOT_PLAYED = -1

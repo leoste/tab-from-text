@@ -19,3 +19,7 @@ class Chord:
             return Chord(FRET_NOT_PLAYED, FRET_NOT_PLAYED, FRET_NOT_PLAYED, base_fret + 2, base_fret + 2, base_fret)
         elif base_string == GuitarString.A5:
             return Chord(FRET_NOT_PLAYED, FRET_NOT_PLAYED, base_fret + 2, base_fret + 2, base_fret, FRET_NOT_PLAYED)
+
+    @staticmethod
+    def get_no_strings_hit_chord():
+        return Chord(-1,-1,-1,-1,-1,-1)

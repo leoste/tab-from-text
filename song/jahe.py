@@ -156,10 +156,27 @@ BREAK = Segment(
         ),
         RhythmicChordSpan(
             BREAK_LAST_MEASURE_RHYTHM,
-            ChordSpan(16, CHORD_8_C)
+            [ ChordSpan(16, CHORD_8_C) ]
+        ),
+        RhythmicChordSpan(
+            Rhythm(
+                [
+                    4,
+                    4,
+                    8
+                ],
+                [
+                    StrumStyle.BEND,
+                    StrumStyle.MUTED,
+                    StrumStyle.NO_HIT
+                ]
+            ),
+            [
+                ChordSpan(4, CHORD_8_C),
+                ChordSpan(4, CHORD_13_F),
+                ChordSpan(8, Chord.get_no_strings_hit_chord())
+            ]
         )
-        # TODO: add 2 measures of silence that has 4 halfbeats long upwards bend
-        # TODO: add support for bends
     ]
 )
 

@@ -2,6 +2,7 @@ from object.RhythmicChordSpan import RhythmicChordSpan
 from object.ChordSpan import ChordSpan
 from object.Chord import Chord
 from object.Rhythm import Rhythm
+from object.Segment import Segment
 from object.GuitarString import GuitarString
 from object.StrumStyle import StrumStyle
 
@@ -34,45 +35,51 @@ CHORD_4_G_SHARP = Chord.get_power_chord(GuitarString.E6, 4)
 CHORD_2_F_SHARP = Chord.get_power_chord(GuitarString.E6, 2)
 CHORD_1_F = Chord.get_power_chord(GuitarString.E6, 1)
 
-INTRO = [
-    RhythmicChordSpan(
-        INTRO_RHYTHM,
-        [
-            ChordSpan(16, CHORD_6_A_SHARP),
-            ChordSpan(16, CHORD_2_F_SHARP),
-            ChordSpan(16, CHORD_4_G_SHARP),
-            ChordSpan(16, CHORD_1_F),
-            ChordSpan(16, CHORD_6_A_SHARP),
-            ChordSpan(16, CHORD_2_F_SHARP),
-            ChordSpan(16, CHORD_11_D_SHARP),
-            ChordSpan(32, CHORD_1_F)
-        ]
-    )
-]
+INTRO = Segment(
+    "INTRO",
+    [
+        RhythmicChordSpan(
+            INTRO_RHYTHM,
+            [
+                ChordSpan(16, CHORD_6_A_SHARP),
+                ChordSpan(16, CHORD_2_F_SHARP),
+                ChordSpan(16, CHORD_4_G_SHARP),
+                ChordSpan(16, CHORD_1_F),
+                ChordSpan(16, CHORD_6_A_SHARP),
+                ChordSpan(16, CHORD_2_F_SHARP),
+                ChordSpan(16, CHORD_11_D_SHARP),
+                ChordSpan(32, CHORD_1_F)
+            ]
+        )
+    ]
+)
 
-SALM = [
-    RhythmicChordSpan(
-        SALM_RHYTHM,
-        [
-            ChordSpan(16, CHORD_6_A_SHARP),
-            ChordSpan(16, CHORD_4_G_SHARP),
-            ChordSpan(16, CHORD_2_F_SHARP),
-        ]
-    ),
-    RhythmicChordSpan(
-        SALM_HALF_END_RHYTHM,
-        [ ChordSpan(16, CHORD_1_F) ]
-    ),
-    RhythmicChordSpan(
-        SALM_RHYTHM,
-        [
-            ChordSpan(16, CHORD_6_A_SHARP),
-            ChordSpan(16, CHORD_4_G_SHARP),
-            ChordSpan(16, CHORD_2_F_SHARP),
-        ]
-    ),
-    RhythmicChordSpan(
-        SALM_END_RHYTHM,
-        [ ChordSpan(16, CHORD_1_F) ]
-    )
-]
+SALM = Segment(
+    "SALM",
+    [
+        RhythmicChordSpan(
+            SALM_RHYTHM,
+            [
+                ChordSpan(16, CHORD_6_A_SHARP),
+                ChordSpan(16, CHORD_4_G_SHARP),
+                ChordSpan(16, CHORD_2_F_SHARP),
+            ]
+        ),
+        RhythmicChordSpan(
+            SALM_HALF_END_RHYTHM,
+            [ ChordSpan(16, CHORD_1_F) ]
+        ),
+        RhythmicChordSpan(
+            SALM_RHYTHM,
+            [
+                ChordSpan(16, CHORD_6_A_SHARP),
+                ChordSpan(16, CHORD_4_G_SHARP),
+                ChordSpan(16, CHORD_2_F_SHARP),
+            ]
+        ),
+        RhythmicChordSpan(
+            SALM_END_RHYTHM,
+            [ ChordSpan(16, CHORD_1_F) ]
+        )
+    ]
+)

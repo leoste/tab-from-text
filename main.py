@@ -1,5 +1,4 @@
 from song.jahe import INTRO
-from object.Note import Note
+from TabRenderer import render_tab
 
-notes = Note.GetNotesFromSegment(INTRO)
-print(notes)
+render_tab(INTRO)

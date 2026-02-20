@@ -33,13 +33,15 @@ class Note:
         chords = Note.flattenChordSpans(part)
         durations = Note.flattenRhythmDurations(part)
         
+        rhythm_note_count = len(part.rhythm.durations) 
         note_counter = 0
 
         for index, chord in enumerate(chords):
             duration = durations[index % len(durations)]
 
             if duration is not None:
-                style = part.rhythm.styles[note_counter % len(part.rhythm.styles)]
+                style_idx = note_counter % rhythm_note_count
+                style = part.rhythm.styles[style_idx % len(part.rhythm.styles)]
                 
                 if style == StrumStyle.NO_HIT:
                     notes += [Note(None, duration, style)]

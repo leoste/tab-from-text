@@ -101,10 +101,7 @@ CHORUS_SEVENTH_MEASURE_RHYTHM = Rhythm(
     [StrumStyle.NORMAL] * 16
 )
 
-
-CHORUS = Segment(
-    "REFRÄÄN",
-    [
+chorus_parts = [
         RhythmicChordSpan(
             CHORUS_FIRST_MEASURE_RHYTHM,
             [ ChordSpan(16, CHORD_9_C_SHARP) ]
@@ -124,6 +121,15 @@ CHORUS = Segment(
             ]
         )
     ] * 2
+
+CHORUS = Segment(
+    "REFRÄÄN",
+    chorus_parts
+)
+
+INSTRUMENTAL_CHORUS = Segment(
+    "INSTRUMENTAALNE REFRÄÄN",
+    chorus_parts
 )
 
 BREAK_LAST_MEASURE_RHYTHM = Rhythm(
@@ -216,11 +222,11 @@ SONG = [
     INTRO,
     SALM,
     CHORUS,
-    #INTRO,
-    #SALM,
-    #CHORUS,
+    INTRO,
+    SALM,
+    CHORUS,
     BREAK,
-    #CHORUS,
-    #CHORUS,
+    CHORUS,
+    INSTRUMENTAL_CHORUS,
     END
 ]

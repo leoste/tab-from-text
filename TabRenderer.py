@@ -25,10 +25,10 @@ def render_tab(segments: list[Segment], output_path="guitar_tab.png"):
     MEASURE_WIDTH = (UNITS_PER_MEASURE * BEAT_WIDTH) + BAR_PADDING
     LINE_CONTENT_WIDTH = MEASURES_PER_LINE * MEASURE_WIDTH
 
+    # 1. Calculate Total Systems for Image Height
     total_systems = 0
     for segment in segments:
         notes = Note.GetNotesFromSegment(segment)
-        print(notes)
         total_units = sum((n.duration if n.duration else 0.5) for n in notes)
         num_measures = math.ceil(total_units / UNITS_PER_MEASURE)
         num_systems = math.ceil(num_measures / MEASURES_PER_LINE)
@@ -94,56 +94,57 @@ def render_tab(segments: list[Segment], output_path="guitar_tab.png"):
             next_x = current_x + (note_dur * BEAT_WIDTH)
             final_x = next_x
 
+            # Draw Measure Bars
             if unit_in_measure == 0 and measure_in_system > 0:
                 bar_x = MARGIN_LEFT + (measure_in_system * MEASURE_WIDTH)
                 draw.line([(bar_x, row_y_top), (bar_x, row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
                 draw.text((bar_x, row_y_top + MEASURE_NUM_Y_OFFSET), str(global_measure_counter), fill="gray", font=small_font)
 
-            if note.duration is not None and note.chord and note.style != StrumStyle.NO_HIT:
-                # 1. Chord numbers
-                strings = [note.chord.string1, note.chord.string2, note.chord.string3,
-                           note.chord.string4, note.chord.string5, note.chord.string6]
-                for i, fret in enumerate(strings):
-                    if fret is not None and fret != -1:
-                        y = row_y_top + (i * LINE_SPACING)
-                        label = "X" if note.style == StrumStyle.MUTED else str(fret)
-                        draw.rectangle([current_x - 4, y - 8, current_x + 12, y + 8], fill="white")
-                        draw.text((current_x, y - 8), label, fill="black")
+            if note.duration is not None:
+                # 1. Chord numbers & Slide Logic (Only if chord exists and not a rest)
+                if note.chord and note.style != StrumStyle.NO_HIT:
+                    strings = [note.chord.string1, note.chord.string2, note.chord.string3,
+                               note.chord.string4, note.chord.string5, note.chord.string6]
+                    for i, fret in enumerate(strings):
+                        if fret is not None and fret != -1:
+                            y = row_y_top + (i * LINE_SPACING)
+                            label = "X" if note.style == StrumStyle.MUTED else str(fret)
+                            draw.rectangle([current_x - 4, y - 8, current_x + 12, y + 8], fill="white")
+                            draw.text((current_x, y - 8), label, fill="black")
 
-                        # --- SLIDE LOGIC ---
-                        if note.style == StrumStyle.SLIDE:
-                            # Straight line on the string from current fret text to next x
-                            draw.line([(current_x + 15, y), (next_x - 5, y)], fill="black", width=1)
-                            # Arc above the string
-                            arc_box = [current_x + 5, y - 15, next_x - 5, y - 5]
-                            draw.arc(arc_box, start=180, end=0, fill="black", width=1)
+                            # --- SLIDE LOGIC ---
+                            if note.style == StrumStyle.SLIDE:
+                                draw.line([(current_x + 15, y), (next_x - 5, y)], fill="black", width=1)
+                                arc_box = [current_x + 5, y - 15, next_x - 5, y - 5]
+                                draw.arc(arc_box, start=180, end=0, fill="black", width=1)
 
-                # 2. Palm Mute Logic
-                if note.style == StrumStyle.PALM_MUTED:
-                    pm_y = row_y_top + PM_Y_OFFSET
-                    line_start_x = current_x
-                    if last_style != StrumStyle.PALM_MUTED or is_new_line:
-                        draw.text((current_x, pm_y - 10), "P.M.", fill="black")
-                        line_start_x += 35 
-                    draw_dashed_segment(line_start_x, next_x, pm_y)
-                    is_last_pm = (idx + 1 == len(segment_notes)) or (segment_notes[idx+1].style != StrumStyle.PALM_MUTED)
-                    if is_last_pm:
-                        draw.line([(next_x, pm_y - TICK_H/2), (next_x, pm_y + TICK_H/2)], fill="black", width=1)
+                    # 2. Palm Mute Logic
+                    if note.style == StrumStyle.PALM_MUTED:
+                        pm_y = row_y_top + PM_Y_OFFSET
+                        line_start_x = current_x
+                        if last_style != StrumStyle.PALM_MUTED or is_new_line:
+                            draw.text((current_x, pm_y - 10), "P.M.", fill="black")
+                            line_start_x += 35 
+                        draw_dashed_segment(line_start_x, next_x, pm_y)
+                        is_last_pm = (idx + 1 == len(segment_notes)) or (segment_notes[idx+1].style != StrumStyle.PALM_MUTED)
+                        if is_last_pm:
+                            draw.line([(next_x, pm_y - TICK_H/2), (next_x, pm_y + TICK_H/2)], fill="black", width=1)
 
-                # 3. Rhythmic Stems
+                # 3. Rhythmic Stems (Calculated for BOTH notes and silences)
                 stem_y_start = row_y_top + (6 * LINE_SPACING)
                 stem_x = current_x + 4
                 bottom_y = stem_y_start + 30
                 
+                # Stems for duration >= 2
                 if note.duration >= 2:
                     draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
-                
-                if note.duration == 3:
-                    dot_x = stem_x + 8
-                    dot_y = bottom_y - 5
-                    draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
+                    if note.duration == 3: # Dot
+                        dot_x = stem_x + 8
+                        dot_y = bottom_y - 5
+                        draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
 
-                if note.duration == 1:
+                # 8th note flag/beam logic
+                elif note.duration == 1:
                     draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
                     can_beam_fwd = (unit_in_measure % 2 == 0) and (idx + 1 < len(segment_notes)) and (segment_notes[idx+1].duration == 1)
                     is_beamed_back = (unit_in_measure % 2 != 0) and (idx > 0) and (segment_notes[idx-1].duration == 1)
@@ -152,19 +153,23 @@ def render_tab(segments: list[Segment], output_path="guitar_tab.png"):
                     elif not is_beamed_back:
                         draw.line([(stem_x, bottom_y), (stem_x + 12, bottom_y)], fill="black", width=2)
 
+            # --- Update Shared State ---
             last_style = note.style
             if (acc_dur_segment + note_dur) % UNITS_PER_MEASURE == 0 and note.duration is not None:
                 global_measure_counter += 1
 
+            # System Boundary Closure
             if (acc_dur_segment + note_dur) % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0:
                 draw.line([(MARGIN_LEFT + LINE_CONTENT_WIDTH, row_y_top), 
                            (MARGIN_LEFT + LINE_CONTENT_WIDTH, row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
 
             acc_dur_segment += (note.duration if note.duration else 0)
 
+        # Draw final bar of segment if it didn't land exactly on line end
         if acc_dur_segment % (UNITS_PER_MEASURE * MEASURES_PER_LINE) != 0:
             draw.line([(final_x, final_y), (final_x, final_y + 5 * LINE_SPACING)], fill="black", width=2)
 
+        # Update cursor for the next segment
         num_systems_in_segment = math.ceil(acc_dur_segment / (UNITS_PER_MEASURE * MEASURES_PER_LINE))
         current_y_cursor += (num_systems_in_segment * SYSTEM_HEIGHT) + 20
 

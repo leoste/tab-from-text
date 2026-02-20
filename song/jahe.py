@@ -159,16 +159,12 @@ BREAK = Segment(
         ),
         RhythmicChordSpan(
             Rhythm(
-                [
-                    2,
-                    2,
-                    12
-                ],
+                [ 2 ] * 8,
                 [
                     StrumStyle.SLIDE,
-                    StrumStyle.NORMAL,
-                    StrumStyle.NO_HIT
-                ]
+                    StrumStyle.NORMAL                
+                ] +
+                [ StrumStyle.NO_HIT ] * 6
             ),
             [
                 ChordSpan(2, CHORD_8_C),

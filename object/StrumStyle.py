@@ -6,3 +6,4 @@ class StrumStyle(Enum):
     MUTED = 1
     PALM_MUTED = 2
     BEND = 3
+    SLIDE = 4

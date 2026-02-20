@@ -32,16 +32,17 @@ class Note:
         notes = []
         chords = Note.flattenChordSpans(part)
         durations = Note.flattenRhythmDurations(part)
-
+        
+        note_counter = 0
         for index, chord in enumerate(chords):
             duration = durations[index % len(durations)]
 
-            if (duration) is not None:
-                notes += [Note(
-                    chord,
-                    duration,
-                    part.rhythm.styles[index % len(part.rhythm.styles)]
-                )]
+            if duration is not None:
+                style = part.rhythm.styles[note_counter % len(part.rhythm.styles)]
+                
+                notes += [Note(chord, duration, style)]
+                
+                note_counter += 1
             else:
                 notes += [Note(None, None, None)]
 

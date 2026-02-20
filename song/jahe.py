@@ -160,20 +160,20 @@ BREAK = Segment(
         RhythmicChordSpan(
             Rhythm(
                 [
-                    4,
-                    4,
-                    8
+                    2,
+                    2,
+                    12
                 ],
                 [
                     StrumStyle.BEND,
-                    StrumStyle.MUTED,
+                    StrumStyle.NORMAL,
                     StrumStyle.NO_HIT
                 ]
             ),
             [
-                ChordSpan(4, CHORD_8_C),
-                ChordSpan(4, CHORD_13_F),
-                ChordSpan(8, Chord.get_no_strings_hit_chord())
+                ChordSpan(2, CHORD_8_C),
+                ChordSpan(2, CHORD_13_F),
+                ChordSpan(12, Chord.get_no_strings_hit_chord())
             ]
         )
     ]
@@ -206,11 +206,11 @@ END = Segment(
 SONG = [
     INTRO,
     SALM,
-    CHORUS#,
+    CHORUS,
     #INTRO,
     #SALM,
     #CHORUS,
-    #BREAK,
+    BREAK#,
     #CHORUS,
     #CHORUS,
     #END

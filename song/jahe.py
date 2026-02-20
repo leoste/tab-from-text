@@ -191,9 +191,22 @@ END = Segment(
                 ChordSpan(2, CHORD_13_F),
                 ChordSpan(1, CHORD_13_C),
                 ChordSpan(2, CHORD_13_F),
-                ChordSpan(1, CHORD_13_C),
                 ChordSpan(1, CHORD_13_F),
+                ChordSpan(1, CHORD_13_C),
                 ChordSpan(1, CHORD_13_C)
+            ] * 3
+        ),
+        RhythmicChordSpan(
+            Rhythm(
+                [1] * 8 + [2] * 4,
+                [ StrumStyle.NORMAL ] * 10 +
+                [ StrumStyle.NO_HIT ] * 6
+            ),
+            [
+                ChordSpan(2, CHORD_13_F),
+                ChordSpan(2, CHORD_13_C),
+                ChordSpan(6, CHORD_13_F),
+                ChordSpan(6, Chord.get_no_strings_hit_chord())
             ]
         )
     ]
@@ -206,8 +219,8 @@ SONG = [
     #INTRO,
     #SALM,
     #CHORUS,
-    BREAK#,
+    BREAK,
     #CHORUS,
     #CHORUS,
-    #END
+    END
 ]

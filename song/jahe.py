@@ -206,12 +206,12 @@ END = Segment(
 SONG = [
     INTRO,
     SALM,
-    CHORUS,
-    INTRO,
-    SALM,
-    CHORUS,
-    BREAK,
-    CHORUS,
-    CHORUS,
-    END
+    CHORUS#,
+    #INTRO,
+    #SALM,
+    #CHORUS,
+    #BREAK,
+    #CHORUS,
+    #CHORUS,
+    #END
 ]

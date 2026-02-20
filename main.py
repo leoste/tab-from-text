@@ -1,4 +1,4 @@
-from song.jahe import INTRO, SALM, CHORUS, BREAK, END
+from song.jahe import SONG
 from TabRenderer import render_tab
 
-render_tab(SALM)
+render_tab(SONG)

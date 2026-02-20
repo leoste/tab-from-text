@@ -165,7 +165,7 @@ BREAK = Segment(
                     12
                 ],
                 [
-                    StrumStyle.BEND,
+                    StrumStyle.SLIDE,
                     StrumStyle.NORMAL,
                     StrumStyle.NO_HIT
                 ]

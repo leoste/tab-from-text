@@ -28,6 +28,7 @@ def render_tab(segments: list[Segment], output_path="guitar_tab.png"):
     total_systems = 0
     for segment in segments:
         notes = Note.GetNotesFromSegment(segment)
+        print(notes)
         total_units = sum((n.duration if n.duration else 0.5) for n in notes)
         num_measures = math.ceil(total_units / UNITS_PER_MEASURE)
         num_systems = math.ceil(num_measures / MEASURES_PER_LINE)
@@ -109,6 +110,14 @@ def render_tab(segments: list[Segment], output_path="guitar_tab.png"):
                         draw.rectangle([current_x - 4, y - 8, current_x + 12, y + 8], fill="white")
                         draw.text((current_x, y - 8), label, fill="black")
 
+                        # --- SLIDE LOGIC ---
+                        if note.style == StrumStyle.SLIDE:
+                            # Straight line on the string from current fret text to next x
+                            draw.line([(current_x + 15, y), (next_x - 5, y)], fill="black", width=1)
+                            # Arc above the string
+                            arc_box = [current_x + 5, y - 15, next_x - 5, y - 5]
+                            draw.arc(arc_box, start=180, end=0, fill="black", width=1)
+
                 # 2. Palm Mute Logic
                 if note.style == StrumStyle.PALM_MUTED:
                     pm_y = row_y_top + PM_Y_OFFSET
@@ -121,22 +130,19 @@ def render_tab(segments: list[Segment], output_path="guitar_tab.png"):
                     if is_last_pm:
                         draw.line([(next_x, pm_y - TICK_H/2), (next_x, pm_y + TICK_H/2)], fill="black", width=1)
 
-                # 3. Rhythmic Stems (MODIFIED FOR DOTS)
+                # 3. Rhythmic Stems
                 stem_y_start = row_y_top + (6 * LINE_SPACING)
                 stem_x = current_x + 4
                 bottom_y = stem_y_start + 30
                 
-                # All notes with duration >= 2 get a standard quarter-note stem
                 if note.duration >= 2:
                     draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
                 
-                # DOT LOGIC: If duration is 3, draw a dot to the right of the stem
                 if note.duration == 3:
                     dot_x = stem_x + 8
                     dot_y = bottom_y - 5
                     draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
 
-                # 8th note flag/beam logic
                 if note.duration == 1:
                     draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
                     can_beam_fwd = (unit_in_measure % 2 == 0) and (idx + 1 < len(segment_notes)) and (segment_notes[idx+1].duration == 1)

@@ -1,3 +1,5 @@
 from song.jahe import INTRO
+from object.Note import Note
 
-test = INTRO
+notes = Note.GetNotesFromSegment(INTRO)
+print(notes)

@@ -157,7 +157,18 @@ VIIMANE_CHORUS = Segment(
                 ChordSpan(2, CHORD_5_A),
                 ChordSpan(16, CHORD_5_A),
             ] * 2
-        )        
+        ),
+        RhythmicChordSpan(
+            Rhythm(
+                [3,3,2,2],
+                [StrumStyle.NORMAL] * 10
+            ),
+            [
+                ChordSpan(3, CHORD_8_F),
+                ChordSpan(5, CHORD_5_A),
+                ChordSpan(2, CHORD_5_D)
+            ]
+        )
     ]
 )
 

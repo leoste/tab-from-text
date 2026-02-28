@@ -6,7 +6,7 @@ from object.Segment import Segment
 from object.Note import Note
 
 def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
-    # --- Konstandid (Sama mis varem) ---
+    # --- Konstandid ---
     MEASURES_PER_LINE = 4
     UNITS_PER_MEASURE = 8
     
@@ -31,19 +31,15 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
     MEASURE_WIDTH = (UNITS_PER_MEASURE * BEAT_WIDTH) + BAR_PADDING
     LINE_CONTENT_WIDTH = MEASURES_PER_LINE * MEASURE_WIDTH
 
-    # Globaalne taktilugeja (ei nullita segmentide vahel)
     global_measure_counter = 1
 
-    # Käime läbi iga segmendi ja loome igaühe jaoks eraldi faili
     for seg_idx, segment in enumerate(segments):
-        # 1. Arvutame konkreetse segmendi kõrguse
         segment_notes = Note.GetNotesFromSegment(segment)
         total_units = sum((n.duration if n.duration else 0.5) for n in segment_notes)
         num_measures = math.ceil(total_units / UNITS_PER_MEASURE)
         num_systems = math.ceil(num_measures / MEASURES_PER_LINE)
 
         img_width = LINE_CONTENT_WIDTH + MARGIN_LEFT + MARGIN_RIGHT
-        # Kõrgus ainult selle segmendi süsteemide ja pealkirja jaoks
         img_height = (num_systems * SYSTEM_HEIGHT) + TITLE_HEIGHT + 60
         
         img = Image.new('RGB', (int(img_width), int(img_height)), color='white')
@@ -56,7 +52,6 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
         except:
             title_font = fret_font = small_font = ImageFont.load_default()
 
-        # --- Helperid (Pildi sisesed) ---
         def draw_staff_elements(draw_obj, y_top, start_measure_num):
             string_names = ['e', 'B', 'G', 'D', 'A', 'E']
             for i, name in enumerate(string_names):
@@ -72,7 +67,6 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                 draw_obj.line([(curr, y), (min(curr + DASH_GAP, x_end), y)], fill="black", width=1)
                 curr += DASH_GAP * 2
 
-        # --- Segmendi joonistamine ---
         current_y_cursor = 40
         draw.text((MARGIN_LEFT, current_y_cursor), segment.title, fill="black", font=title_font)
         current_y_cursor += TITLE_HEIGHT
@@ -91,7 +85,6 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
             row_y_top = current_y_cursor + (system_in_segment * SYSTEM_HEIGHT)
             final_y = row_y_top
             
-            # Uue rea algus pildi sees
             is_new_line = (acc_dur_segment % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0)
             if is_new_line:
                 draw_staff_elements(draw, row_y_top, global_measure_counter)
@@ -101,7 +94,6 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
             next_x = current_x + (note_dur * BEAT_WIDTH)
             final_x = next_x
 
-            # Taktijooned keset rida
             if unit_in_measure == 0 and measure_in_system > 0:
                 bar_x = MARGIN_LEFT + (measure_in_system * MEASURE_WIDTH)
                 draw.line([(bar_x, row_y_top), (bar_x, row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
@@ -149,33 +141,41 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                         draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
 
                 elif note.duration == 1:
+                    # Alati joonistame püstise varre
                     draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
-                    can_beam_fwd = (unit_in_measure % 2 == 0) and (idx + 1 < len(segment_notes)) and (segment_notes[idx+1].duration == 1)
-                    is_beamed_back = (unit_in_measure % 2 != 0) and (idx > 0) and (segment_notes[idx-1].duration == 1)
+                    
+                    # --- UUS ÜHENDAMISE LOOGIKA ---
+                    # Kontrollime, kas praegune noot on takti viimane üksus
+                    is_at_measure_end = (acc_dur_segment + 1) % UNITS_PER_MEASURE == 0
+                    
+                    # Saame ühendada ettepoole, kui: 
+                    # 1. Pole takti lõpp 2. Järgmine noot on olemas 3. Järgmine noot on samuti pikkusega 1
+                    can_beam_fwd = (not is_at_measure_end) and (idx + 1 < len(segment_notes)) and (segment_notes[idx+1].duration == 1)
+                    
+                    # Kas meid ühendati eelmise noodiga? (Tagantpoolt ühendus)
+                    is_at_measure_start = (acc_dur_segment % UNITS_PER_MEASURE == 0)
+                    is_beamed_back = (not is_at_measure_start) and (idx > 0) and (segment_notes[idx-1].duration == 1)
+                    
                     if can_beam_fwd:
+                        # Joonistame paksult ühendava tala järgmise noodini
                         draw.line([(stem_x, bottom_y), (stem_x + BEAT_WIDTH, bottom_y)], fill="black", width=4)
                     elif not is_beamed_back:
+                        # Kui pole ühendatud ei ette ega taha, joonistame üksiku saba (flag)
                         draw.line([(stem_x, bottom_y), (stem_x + 12, bottom_y)], fill="black", width=2)
 
             last_style = note.style
-            
-            # Taktilugeja uuendamine (kui takt saab täis)
             if (acc_dur_segment + note_dur) % UNITS_PER_MEASURE == 0 and note.duration is not None:
                 global_measure_counter += 1
 
-            # Süsteemi (rea) lõpetamine pildi sees
             if (acc_dur_segment + note_dur) % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0:
                 draw.line([(MARGIN_LEFT + LINE_CONTENT_WIDTH, row_y_top), 
                            (MARGIN_LEFT + LINE_CONTENT_WIDTH, row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
 
             acc_dur_segment += (note.duration if note.duration else 0)
 
-        # Viimane taktijoon segmendile
         if acc_dur_segment % (UNITS_PER_MEASURE * MEASURES_PER_LINE) != 0:
             draw.line([(final_x, final_y), (final_x, final_y + 5 * LINE_SPACING)], fill="black", width=2)
 
-        # 4. Salvestame konkreetse segmendi pildi
-        # Failinimi kujul: guitar_tab_1_INTRO.png
         safe_title = "".join([c for c in segment.title if c.isalnum() or c in (' ', '_')]).strip().replace(' ', '_')
         file_path = f"{output_base_path}_{seg_idx + 1}_{safe_title}.png"
         img.save(file_path)

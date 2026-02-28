@@ -26,3 +26,14 @@ class Chord:
     @staticmethod
     def get_no_strings_hit_chord():
         return Chord(-1,-1,-1,-1,-1,-1)
+    
+    @staticmethod
+    def get_single_note(base_string: GuitarString, base_fret: int)  -> 'Chord':
+        return Chord(
+            base_fret if base_string == GuitarString.E1 else None,
+            base_fret if base_string == GuitarString.B2 else None,
+            base_fret if base_string == GuitarString.G3 else None,
+            base_fret if base_string == GuitarString.D4 else None,
+            base_fret if base_string == GuitarString.A5 else None,
+            base_fret if base_string == GuitarString.E6 else None
+        )

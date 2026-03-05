@@ -19,8 +19,7 @@ CHORD_6_D_SHARP = Chord.get_power_chord(GuitarString.A5, 6)
 CHORD_4_C_SHARP = Chord.get_power_chord(GuitarString.A5, 4)
 
 intro_first_three_rhythm = Rhythm(
-    [1,1,1,3,2],
-    [StrumStyle.NORMAL] * 8
+    [1,1,1,3,2]
 )
 
 intro_first_three = RhythmicChordSpan(
@@ -43,8 +42,7 @@ intro_first_three_power = RhythmicChordSpan(
 
 intro_last = RhythmicChordSpan(
     Rhythm(
-        [2,2,2,2],
-        [StrumStyle.NORMAL] * 8
+        [2,2,2,2]
     ),
     [
         ChordSpan(2, NOTE_6_D_SHARP),
@@ -86,8 +84,7 @@ DURATIONS_2121 = [ 2,1,1,2,1,1 ]
 riff_chordspans = [
         RhythmicChordSpan(
             Rhythm(
-                DURATIONS_8 + DURATIONS_323,
-                [StrumStyle.NORMAL]
+                DURATIONS_8 + DURATIONS_323
             ),
             [
                 ChordSpan(16, CHORD_6_D_SHARP),
@@ -97,8 +94,7 @@ riff_chordspans = [
         RhythmicChordSpan(
             Rhythm(
                 DURATIONS_WEIRD + DURATIONS_8 +
-                DURATIONS_8 + DURATIONS_WEIRD,
-                [StrumStyle.NORMAL]
+                DURATIONS_8 + DURATIONS_WEIRD
             ),
             [
                 ChordSpan(1, CHORD_7_B),
@@ -117,27 +113,83 @@ RIFF_SALMIGA = Segment(
     [
         RhythmicChordSpan(
             Rhythm(
-                DURATIONS_8,
-                [StrumStyle.NORMAL]
+                DURATIONS_8
             ),
             [
-                ChordSpan(8, CHORD_6_A_SHARP)
+                ChordSpan(7, CHORD_6_A_SHARP),
+                ChordSpan(1, NOTE_6_A_SHARP)
             ]
         )
     ]
 )
 
+chorus_first_rhytm = Rhythm(
+    DURATIONS_2121 + DURATIONS_323
+)
+
+chorus_second_chords = [
+    ChordSpan(8, CHORD_6_A_SHARP),
+    ChordSpan(1.5, CHORD_9_C_SHARP),
+    ChordSpan(1.5, CHORD_7_B),
+    ChordSpan(5, CHORD_6_A_SHARP)
+]
+
 CHORUS = Segment(
     "REFRÄÄN",
     [
         RhythmicChordSpan(
-            Rhythm(
-                DURATIONS_2121 + DURATIONS_323,
-                [StrumStyle.NORMAL]
-            ),
+            chorus_first_rhytm,
             [
                 ChordSpan(8, CHORD_6_D_SHARP),
                 ChordSpan(8, CHORD_6_A_SHARP)
+            ]
+        ),
+        RhythmicChordSpan(
+            Rhythm(
+                [4, 4] + DURATIONS_WEIRD
+            ),
+            [
+                ChordSpan(4, CHORD_7_B),
+                ChordSpan(4, CHORD_6_A_SHARP),
+                ChordSpan(1.5, CHORD_9_C_SHARP),
+                ChordSpan(1.5, CHORD_7_B),
+                ChordSpan(4, CHORD_6_A_SHARP),
+                ChordSpan(1, NOTE_6_A_SHARP)
+            ]
+        ),
+        RhythmicChordSpan(
+            chorus_first_rhytm,
+            [ ChordSpan(16, CHORD_6_D_SHARP) ]
+        ),
+        RhythmicChordSpan(
+            Rhythm(
+                DURATIONS_2121 + DURATIONS_WEIRD
+            ),
+            chorus_second_chords
+        ),
+        RhythmicChordSpan(
+            Rhythm(
+                DURATIONS_8 + DURATIONS_WEIRD
+            ),
+            chorus_second_chords
+        ),
+        RhythmicChordSpan(
+            Rhythm(
+                DURATIONS_8 + [ 1.5, 1.5, 2, 1,2 ]
+            ),
+            [
+                ChordSpan(8, CHORD_6_A_SHARP),
+                ChordSpan(1.5, CHORD_9_C_SHARP),
+                ChordSpan(1.5, CHORD_7_B),
+                ChordSpan(5, CHORD_7_B)
+            ]
+        ),
+        RhythmicChordSpan(
+            Rhythm(
+                [ 16 ]
+            ),
+            [
+                ChordSpan(16, CHORD_6_A_SHARP)
             ]
         )
     ]

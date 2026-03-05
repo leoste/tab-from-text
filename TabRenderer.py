@@ -28,18 +28,27 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
     TICK_H = 8
     MEASURE_NUM_Y_OFFSET = -50
 
-    # Tick thresholds for beam drawing
-    TICKS_SIXTEENTH        = TIME_RESOLUTION // 2
-    TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3
-    TICKS_EIGHTH           = 1 * TIME_RESOLUTION
+    # Tick thresholds
+    # 1 eighth note = TIME_RESOLUTION ticks
+    TICKS_SIXTEENTH        = TIME_RESOLUTION // 2        # 1/16
+    TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3         # 3/16
+    TICKS_EIGHTH           = 1 * TIME_RESOLUTION         # 1/8
+    TICKS_DOTTED_QUARTER   = 3 * TIME_RESOLUTION         # 3/8
+    TICKS_QUARTER          = 4 * TIME_RESOLUTION         # 4/8 = quarter
+    TICKS_HALF_NOTE        = 4 * TIME_RESOLUTION         # 4/8 = half note
+    TICKS_FULL_NOTE        = 8 * TIME_RESOLUTION         # 8/8 = full note
+
+    # Stem height constants (base unit = 30px = 1 stem height)
+    STEM_H        = 30
+    HALF_TOP_H    = int(STEM_H * 0.5)   # 15px
+    HALF_GAP      = int(STEM_H * 1.0)   # 30px
+    HALF_BOTTOM_H = int(STEM_H * 1.5)   # 45px
+    FULL_H        = int(STEM_H * 3.0)   # 90px
 
     MEASURE_WIDTH = (UNITS_PER_MEASURE * BEAT_WIDTH) + BAR_PADDING
     LINE_CONTENT_WIDTH = MEASURES_PER_LINE * MEASURE_WIDTH
 
     def is_dotted(duration):
-        # A plain note duration is a power of 2 (in ticks).
-        # A dotted note is 3/2 of a plain note, so duration = base + base//2
-        # i.e. duration * 2 must be divisible by 3, and duration * 2 / 3 must be a power of 2.
         if duration <= 0:
             return False
         doubled = duration * 2
@@ -148,10 +157,19 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                 # Rütmi varred
                 stem_y_start = row_y_top + (6 * LINE_SPACING)
                 stem_x = current_x + 4
-                bottom_y = stem_y_start + 30
+                bottom_y = stem_y_start + STEM_H
 
-                # 1) Always draw the stem
-                draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
+                # 1) Draw stem based on note length
+                if note.duration >= TICKS_FULL_NOTE:
+                    # Full note: one long continuous stem
+                    draw.line([(stem_x, stem_y_start), (stem_x, stem_y_start + FULL_H)], fill="black", width=2)
+                elif note.duration >= TICKS_HALF_NOTE:
+                    # Half note: short top stem, gap, longer bottom stem
+                    draw.line([(stem_x, stem_y_start), (stem_x, stem_y_start + HALF_TOP_H)], fill="black", width=2)
+                    draw.line([(stem_x, stem_y_start + HALF_TOP_H + HALF_GAP), (stem_x, stem_y_start + HALF_TOP_H + HALF_GAP + HALF_BOTTOM_H)], fill="black", width=2)
+                else:
+                    # Quarter and shorter: plain stem
+                    draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
 
                 # 2) Draw dot if dotted note
                 if is_dotted(note.duration):
@@ -159,7 +177,7 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                     dot_y = stem_y_start + 8
                     draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
 
-                # 3) Draw horizontal beams based on note duration
+                # 3) Draw horizontal beams for eighth notes and dotted eighths
                 if note.duration == TICKS_EIGHTH or note.duration == TICKS_DOTTED_EIGHTH:
                     next_real_idx = next((i for i in range(idx+1, len(segment_notes)) if segment_notes[i].duration is not None), None)
                     next_real_note = segment_notes[next_real_idx] if next_real_idx is not None else None

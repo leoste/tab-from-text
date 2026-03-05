@@ -1,5 +1,4 @@
 import math
-import os
 from PIL import Image, ImageDraw, ImageFont
 from object.StrumStyle import StrumStyle
 from object.Segment import Segment
@@ -32,8 +31,6 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
     TICKS_SIXTEENTH        = TIME_RESOLUTION // 2
     TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3
     TICKS_EIGHTH           = 1 * TIME_RESOLUTION
-    TICKS_DOTTED_QUARTER   = 3 * TIME_RESOLUTION
-    TICKS_QUARTER          = 4 * TIME_RESOLUTION
     TICKS_HALF_NOTE        = 4 * TIME_RESOLUTION
     TICKS_FULL_NOTE        = 8 * TIME_RESOLUTION
 
@@ -72,7 +69,7 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
     global_measure_counter = 1
 
     for seg_idx, segment in enumerate(segments):
-        segment_notes = Note.GetNotesFromSegment(segment)
+        segment_notes = segment.GetNotesFromSegment()
         total_units = sum((n.duration if n.duration else 0) for n in segment_notes)
         num_measures = math.ceil(total_units / UNITS_PER_MEASURE)
         num_systems = math.ceil(num_measures / MEASURES_PER_LINE)

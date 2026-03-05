@@ -28,15 +28,25 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
     TICK_H = 8
     MEASURE_NUM_Y_OFFSET = -50
 
-    # Tick thresholds for stem/beam drawing
+    # Tick thresholds for beam drawing
     TICKS_SIXTEENTH        = TIME_RESOLUTION // 2
-    TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3   # dotted eighth = 3/16ths
+    TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3
     TICKS_EIGHTH           = 1 * TIME_RESOLUTION
-    TICKS_HALF             = 2 * TIME_RESOLUTION
-    TICKS_DOTTED_QUARTER   = 3 * TIME_RESOLUTION
 
     MEASURE_WIDTH = (UNITS_PER_MEASURE * BEAT_WIDTH) + BAR_PADDING
     LINE_CONTENT_WIDTH = MEASURES_PER_LINE * MEASURE_WIDTH
+
+    def is_dotted(duration):
+        # A plain note duration is a power of 2 (in ticks).
+        # A dotted note is 3/2 of a plain note, so duration = base + base//2
+        # i.e. duration * 2 must be divisible by 3, and duration * 2 / 3 must be a power of 2.
+        if duration <= 0:
+            return False
+        doubled = duration * 2
+        if doubled % 3 != 0:
+            return False
+        base = doubled // 3
+        return base > 0 and (base & (base - 1)) == 0
 
     global_measure_counter = 1
 
@@ -140,55 +150,31 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                 stem_x = current_x + 4
                 bottom_y = stem_y_start + 30
 
-                if note.duration >= TICKS_HALF:
-                    # Half note and above: plain stem, optional dot for dotted quarter
-                    draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
-                    if note.duration == TICKS_DOTTED_QUARTER:
-                        dot_x = stem_x + 8
-                        dot_y = stem_y_start + 8
-                        draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
+                # 1) Always draw the stem
+                draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
 
-                elif note.duration == TICKS_EIGHTH:
-                    draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
-
-                    next_real_idx = next((i for i in range(idx+1, len(segment_notes)) if segment_notes[i].duration is not None), None)
-                    next_real_note = segment_notes[next_real_idx] if next_real_idx is not None else None
-
-                    prev_real_idx = next((i for i in range(idx-1, -1, -1) if segment_notes[i].duration is not None), None)
-                    prev_real_note = segment_notes[prev_real_idx] if prev_real_idx is not None else None
-
-                    is_at_measure_end = (acc_dur_segment + TICKS_EIGHTH) % UNITS_PER_MEASURE == 0
-                    can_beam_fwd = (not is_at_measure_end) and (next_real_note is not None) and (next_real_note.duration == TICKS_EIGHTH)
-
-                    is_at_measure_start = (acc_dur_segment % UNITS_PER_MEASURE == 0)
-                    is_beamed_back = (not is_at_measure_start) and (prev_real_note is not None) and (prev_real_note.duration == TICKS_EIGHTH)
-
-                    if can_beam_fwd:
-                        draw.line([(stem_x, bottom_y), (stem_x + BEAT_WIDTH * TICKS_EIGHTH, bottom_y)], fill="black", width=4)
-                    elif not is_beamed_back:
-                        draw.line([(stem_x, bottom_y), (stem_x + 12, bottom_y)], fill="black", width=2)
-
-                elif note.duration == TICKS_DOTTED_EIGHTH:
-                    # Dotted eighth (= 3/16ths): same as eighth beam logic but with a dot
-                    draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
+                # 2) Draw dot if dotted note
+                if is_dotted(note.duration):
                     dot_x = stem_x + 8
                     dot_y = stem_y_start + 8
                     draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
 
+                # 3) Draw horizontal beams based on note duration
+                if note.duration == TICKS_EIGHTH or note.duration == TICKS_DOTTED_EIGHTH:
                     next_real_idx = next((i for i in range(idx+1, len(segment_notes)) if segment_notes[i].duration is not None), None)
                     next_real_note = segment_notes[next_real_idx] if next_real_idx is not None else None
 
                     prev_real_idx = next((i for i in range(idx-1, -1, -1) if segment_notes[i].duration is not None), None)
                     prev_real_note = segment_notes[prev_real_idx] if prev_real_idx is not None else None
 
-                    is_at_measure_end = (acc_dur_segment + TICKS_DOTTED_EIGHTH) % UNITS_PER_MEASURE == 0
-                    can_beam_fwd = (not is_at_measure_end) and (next_real_note is not None) and (next_real_note.duration == TICKS_DOTTED_EIGHTH)
+                    is_at_measure_end = (acc_dur_segment + note.duration) % UNITS_PER_MEASURE == 0
+                    can_beam_fwd = (not is_at_measure_end) and (next_real_note is not None) and (next_real_note.duration == note.duration)
 
                     is_at_measure_start = (acc_dur_segment % UNITS_PER_MEASURE == 0)
-                    is_beamed_back = (not is_at_measure_start) and (prev_real_note is not None) and (prev_real_note.duration == TICKS_DOTTED_EIGHTH)
+                    is_beamed_back = (not is_at_measure_start) and (prev_real_note is not None) and (prev_real_note.duration == note.duration)
 
                     if can_beam_fwd:
-                        draw.line([(stem_x, bottom_y), (stem_x + BEAT_WIDTH * TICKS_DOTTED_EIGHTH, bottom_y)], fill="black", width=4)
+                        draw.line([(stem_x, bottom_y), (stem_x + BEAT_WIDTH * note.duration, bottom_y)], fill="black", width=4)
                     elif not is_beamed_back:
                         draw.line([(stem_x, bottom_y), (stem_x + 12, bottom_y)], fill="black", width=2)
 

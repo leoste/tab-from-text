@@ -145,7 +145,7 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                     draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
                     if note.duration == TICKS_DOTTED_QUARTER:
                         dot_x = stem_x + 8
-                        dot_y = bottom_y - 5
+                        dot_y = stem_y_start + 8
                         draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
 
                 elif note.duration == TICKS_EIGHTH:
@@ -172,7 +172,7 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                     # Dotted eighth (= 3/16ths): same as eighth beam logic but with a dot
                     draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
                     dot_x = stem_x + 8
-                    dot_y = bottom_y - 5
+                    dot_y = stem_y_start + 8
                     draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
 
                     next_real_idx = next((i for i in range(idx+1, len(segment_notes)) if segment_notes[i].duration is not None), None)

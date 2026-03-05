@@ -54,7 +54,7 @@ intro_last = RhythmicChordSpan(
 
 intro_pause = RhythmicChordSpan(
     Rhythm(
-        [2,2,2,2],
+        [6,2],
         [StrumStyle.NO_HIT] * 6 + [StrumStyle.NORMAL] * 2
     ),
     [
@@ -79,7 +79,23 @@ DURATIONS_8 = [ 1,1,1,1,1,1,1,1 ]
 DURATIONS_323 = [ 1,1,1,2,1,1,1 ]
 DURATIONS_122 = [ 1,2,2,1,1,1 ]
 DURATIONS_WEIRD = [ 1.5, 1.5, 2, 1,1,1 ]
+DURATIONS_WEIRD_AND_END = [ 1.5, 1.5, 2, 1,2 ]
 DURATIONS_2121 = [ 2,1,1,2,1,1 ]
+
+riff_end_chordspan = RhythmicChordSpan(
+    Rhythm(
+        DURATIONS_WEIRD + DURATIONS_8 +
+        DURATIONS_8 + DURATIONS_WEIRD
+    ),
+    [
+        ChordSpan(1, CHORD_7_B),
+        ChordSpan(15, CHORD_6_A_SHARP),
+        ChordSpan(8, CHORD_7_B),
+        ChordSpan(1.5, CHORD_9_C_SHARP),
+        ChordSpan(1.5, CHORD_7_B),
+        ChordSpan(5, CHORD_6_A_SHARP)
+    ]
+)
 
 riff_chordspans = [
         RhythmicChordSpan(
@@ -91,20 +107,7 @@ riff_chordspans = [
                 ChordSpan(16, CHORD_4_C_SHARP) 
             ]
         ),
-        RhythmicChordSpan(
-            Rhythm(
-                DURATIONS_WEIRD + DURATIONS_8 +
-                DURATIONS_8 + DURATIONS_WEIRD
-            ),
-            [
-                ChordSpan(1, CHORD_7_B),
-                ChordSpan(15, CHORD_6_A_SHARP),
-                ChordSpan(8, CHORD_7_B),
-                ChordSpan(1.5, CHORD_9_C_SHARP),
-                ChordSpan(1.5, CHORD_7_B),
-                ChordSpan(5, CHORD_6_A_SHARP)
-            ]
-        )
+        riff_end_chordspan
     ]
 
 RIFF_SALMIGA = Segment(
@@ -119,6 +122,42 @@ RIFF_SALMIGA = Segment(
                 ChordSpan(7, CHORD_6_A_SHARP),
                 ChordSpan(1, NOTE_6_A_SHARP)
             ]
+        )
+    ]
+)
+
+wait_chord_span = RhythmicChordSpan(
+    Rhythm(
+        [ 16 ]
+    ),
+    [
+        ChordSpan(16, CHORD_6_A_SHARP)
+    ]
+)
+
+RIFF_ENDIGA = Segment(
+    "RIFF 2x + LÕPP",
+    riff_chordspans * 2 +
+    [
+        riff_end_chordspan,
+        RhythmicChordSpan(
+            Rhythm(
+                DURATIONS_WEIRD + DURATIONS_8 +
+                DURATIONS_8 + DURATIONS_WEIRD_AND_END
+            ),
+            [
+                ChordSpan(1, CHORD_7_B),
+                ChordSpan(15, CHORD_6_A_SHARP),
+                ChordSpan(8, CHORD_7_B),
+                ChordSpan(1.5, CHORD_9_C_SHARP),
+                ChordSpan(1.5, CHORD_7_B),
+                ChordSpan(5, CHORD_6_A_SHARP)
+            ]
+        ),
+        wait_chord_span,
+        RhythmicChordSpan(
+            Rhythm([2]),
+            [ChordSpan(2,CHORD_6_A_SHARP)]
         )
     ]
 )
@@ -175,7 +214,7 @@ CHORUS = Segment(
         ),
         RhythmicChordSpan(
             Rhythm(
-                DURATIONS_8 + [ 1.5, 1.5, 2, 1,2 ]
+                DURATIONS_8 + DURATIONS_WEIRD_AND_END
             ),
             [
                 ChordSpan(8, CHORD_6_A_SHARP),
@@ -184,24 +223,15 @@ CHORUS = Segment(
                 ChordSpan(5, CHORD_7_B)
             ]
         ),
-        RhythmicChordSpan(
-            Rhythm(
-                [ 16 ]
-            ),
-            [
-                ChordSpan(16, CHORD_6_A_SHARP)
-            ]
-        )
+        wait_chord_span
     ]
 )
 
 SONG = [
     INTRO,
     RIFF_SALMIGA,
-    CHORUS
-    #RIFF_SALMIGA,
-    #SALM,
-    #CHORUS,
-    #RIFF_TOPELT,
-    #END
+    CHORUS,
+    RIFF_SALMIGA,
+    CHORUS,
+    RIFF_ENDIGA,
 ]

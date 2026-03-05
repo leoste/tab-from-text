@@ -29,21 +29,20 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
     MEASURE_NUM_Y_OFFSET = -50
 
     # Tick thresholds
-    # 1 eighth note = TIME_RESOLUTION ticks
-    TICKS_SIXTEENTH        = TIME_RESOLUTION // 2        # 1/16
-    TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3         # 3/16
-    TICKS_EIGHTH           = 1 * TIME_RESOLUTION         # 1/8
-    TICKS_DOTTED_QUARTER   = 3 * TIME_RESOLUTION         # 3/8
-    TICKS_QUARTER          = 4 * TIME_RESOLUTION         # 4/8 = quarter
-    TICKS_HALF_NOTE        = 4 * TIME_RESOLUTION         # 4/8 = half note
-    TICKS_FULL_NOTE        = 8 * TIME_RESOLUTION         # 8/8 = full note
+    TICKS_SIXTEENTH        = TIME_RESOLUTION // 2
+    TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3
+    TICKS_EIGHTH           = 1 * TIME_RESOLUTION
+    TICKS_DOTTED_QUARTER   = 3 * TIME_RESOLUTION
+    TICKS_QUARTER          = 4 * TIME_RESOLUTION
+    TICKS_HALF_NOTE        = 4 * TIME_RESOLUTION
+    TICKS_FULL_NOTE        = 8 * TIME_RESOLUTION
 
     # Stem height constants (base unit = 30px = 1 stem height)
     STEM_H        = 30
-    HALF_TOP_H    = int(STEM_H * 0.5)   # 15px
-    HALF_GAP      = int(STEM_H * 1.0)   # 30px
-    HALF_BOTTOM_H = int(STEM_H * 1.5)   # 45px
-    FULL_H        = int(STEM_H * 3.0)   # 90px
+    HALF_TOP_H    = int(STEM_H * 0.5)
+    HALF_GAP      = int(STEM_H * 1.0)
+    HALF_BOTTOM_H = int(STEM_H * 1.5)
+    FULL_H        = int(STEM_H * 3.0)
 
     MEASURE_WIDTH = (UNITS_PER_MEASURE * BEAT_WIDTH) + BAR_PADDING
     LINE_CONTENT_WIDTH = MEASURES_PER_LINE * MEASURE_WIDTH
@@ -56,6 +55,19 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
             return False
         base = doubled // 3
         return base > 0 and (base & (base - 1)) == 0
+
+    def draw_arc(draw_obj, x_start, x_end, y_top):
+        arc_box = [x_start, y_top - 20, x_end, y_top - 5]
+        draw_obj.arc(arc_box, start=180, end=0, fill="black", width=1)
+
+    def draw_stem(draw_obj, stem_x, stem_y_start, duration):
+        if duration >= TICKS_FULL_NOTE:
+            draw_obj.line([(stem_x, stem_y_start), (stem_x, stem_y_start + FULL_H)], fill="black", width=2)
+        elif duration >= TICKS_HALF_NOTE:
+            draw_obj.line([(stem_x, stem_y_start), (stem_x, stem_y_start + HALF_TOP_H)], fill="black", width=2)
+            draw_obj.line([(stem_x, stem_y_start + HALF_TOP_H + HALF_GAP), (stem_x, stem_y_start + HALF_TOP_H + HALF_GAP + HALF_BOTTOM_H)], fill="black", width=2)
+        else:
+            draw_obj.line([(stem_x, stem_y_start), (stem_x, stem_y_start + STEM_H)], fill="black", width=2)
 
     global_measure_counter = 1
 
@@ -126,84 +138,119 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                 draw.text((bar_x, row_y_top + MEASURE_NUM_Y_OFFSET), str(global_measure_counter), fill="gray", font=small_font)
 
             if note.duration is not None:
-                if note.chord and note.style != StrumStyle.NO_HIT:
-                    strings = [note.chord.string1, note.chord.string2, note.chord.string3,
-                               note.chord.string4, note.chord.string5, note.chord.string6]
-                    for i, fret in enumerate(strings):
-                        if fret is not None and fret != -1:
-                            y = row_y_top + (i * LINE_SPACING)
-                            label = "X" if note.style == StrumStyle.MUTED else str(fret)
 
-                            text_w, text_h = draw.textbbox((0, 0), label, font=fret_font)[2:]
-                            draw.rectangle([current_x - 2, y - (text_h//2), current_x + text_w + 2, y + (text_h//2)], fill="white")
-                            draw.text((current_x, y - (text_h // 2)), label, fill="black", font=fret_font)
+                # Split note into measure-sized chunks if it spans multiple measures
+                remaining_dur = note.duration
+                chunk_acc = acc_dur_segment
+                prev_stem_x = None
+                prev_stem_y_start = None
 
-                            if note.style == StrumStyle.SLIDE:
-                                draw.line([(current_x + text_w + 5, y), (next_x - 5, y)], fill="black", width=1)
-                                arc_box = [current_x + 5, y - 20, next_x - 5, y - 5]
-                                draw.arc(arc_box, start=180, end=0, fill="black", width=1)
+                while remaining_dur > 0:
+                    ticks_left_in_measure = UNITS_PER_MEASURE - (chunk_acc % UNITS_PER_MEASURE)
+                    chunk_dur = min(remaining_dur, ticks_left_in_measure)
 
-                    if note.style == StrumStyle.PALM_MUTED:
-                        pm_y = row_y_top + PM_Y_OFFSET
-                        lsx = current_x
-                        if last_style != StrumStyle.PALM_MUTED or is_new_line:
-                            draw.text((current_x, pm_y - 12), "P.M.", fill="black", font=small_font)
-                            lsx += 35
-                        draw_dashed_segment(draw, lsx, next_x, pm_y)
-                        is_last_pm = (idx + 1 == len(segment_notes)) or (segment_notes[idx+1].style != StrumStyle.PALM_MUTED)
-                        if is_last_pm:
-                            draw.line([(next_x, pm_y - TICK_H/2), (next_x, pm_y + TICK_H/2)], fill="black", width=1)
+                    # Calculate position of this chunk
+                    chunk_total_beats = chunk_acc // UNITS_PER_MEASURE
+                    chunk_system = int(chunk_acc // (UNITS_PER_MEASURE * MEASURES_PER_LINE))
+                    chunk_measure_in_system = int(chunk_total_beats % MEASURES_PER_LINE)
+                    chunk_unit_in_measure = chunk_acc % UNITS_PER_MEASURE
 
-                # Rütmi varred
-                stem_y_start = row_y_top + (6 * LINE_SPACING)
-                stem_x = current_x + 4
-                bottom_y = stem_y_start + STEM_H
+                    chunk_row_y_top = current_y_cursor + (chunk_system * SYSTEM_HEIGHT)
+                    chunk_stem_y_start = chunk_row_y_top + (6 * LINE_SPACING)
 
-                # 1) Draw stem based on note length
-                if note.duration >= TICKS_FULL_NOTE:
-                    # Full note: one long continuous stem
-                    draw.line([(stem_x, stem_y_start), (stem_x, stem_y_start + FULL_H)], fill="black", width=2)
-                elif note.duration >= TICKS_HALF_NOTE:
-                    # Half note: short top stem, gap, longer bottom stem
-                    draw.line([(stem_x, stem_y_start), (stem_x, stem_y_start + HALF_TOP_H)], fill="black", width=2)
-                    draw.line([(stem_x, stem_y_start + HALF_TOP_H + HALF_GAP), (stem_x, stem_y_start + HALF_TOP_H + HALF_GAP + HALF_BOTTOM_H)], fill="black", width=2)
-                else:
-                    # Quarter and shorter: plain stem
-                    draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
+                    # Draw new staff line if this chunk starts a new line
+                    chunk_is_new_line = (chunk_acc % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0)
+                    if chunk_is_new_line and chunk_acc != acc_dur_segment:
+                        draw_staff_elements(draw, chunk_row_y_top, global_measure_counter)
 
-                # 2) Draw dot if dotted note
-                if is_dotted(note.duration):
-                    dot_x = stem_x + 8
-                    dot_y = stem_y_start + 8
-                    draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
+                    chunk_x = MARGIN_LEFT + (chunk_measure_in_system * MEASURE_WIDTH) + (chunk_unit_in_measure * BEAT_WIDTH) + BAR_PADDING
+                    chunk_stem_x = chunk_x + 4
+                    chunk_next_x = chunk_x + (chunk_dur * BEAT_WIDTH)
 
-                # 3) Draw horizontal beams for eighth notes and dotted eighths
-                if note.duration == TICKS_EIGHTH or note.duration == TICKS_DOTTED_EIGHTH:
-                    next_real_idx = next((i for i in range(idx+1, len(segment_notes)) if segment_notes[i].duration is not None), None)
-                    next_real_note = segment_notes[next_real_idx] if next_real_idx is not None else None
+                    # Draw barline if this chunk starts a new measure (but not the very first chunk)
+                    if chunk_unit_in_measure == 0 and chunk_acc != acc_dur_segment:
+                        bar_x = MARGIN_LEFT + (chunk_measure_in_system * MEASURE_WIDTH)
+                        draw.line([(bar_x, chunk_row_y_top), (bar_x, chunk_row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
+                        draw.text((bar_x, chunk_row_y_top + MEASURE_NUM_Y_OFFSET), str(global_measure_counter), fill="gray", font=small_font)
 
-                    prev_real_idx = next((i for i in range(idx-1, -1, -1) if segment_notes[i].duration is not None), None)
-                    prev_real_note = segment_notes[prev_real_idx] if prev_real_idx is not None else None
+                    # Draw chord numbers for every chunk
+                    if note.chord and note.style != StrumStyle.NO_HIT:
+                        strings = [note.chord.string1, note.chord.string2, note.chord.string3,
+                                   note.chord.string4, note.chord.string5, note.chord.string6]
+                        for i, fret in enumerate(strings):
+                            if fret is not None and fret != -1:
+                                y = chunk_row_y_top + (i * LINE_SPACING)
+                                label = "X" if note.style == StrumStyle.MUTED else str(fret)
 
-                    is_at_measure_end = (acc_dur_segment + note.duration) % UNITS_PER_MEASURE == 0
-                    can_beam_fwd = (not is_at_measure_end) and (next_real_note is not None) and (next_real_note.duration == note.duration)
+                                text_w, text_h = draw.textbbox((0, 0), label, font=fret_font)[2:]
+                                draw.rectangle([chunk_x - 2, y - (text_h//2), chunk_x + text_w + 2, y + (text_h//2)], fill="white")
+                                draw.text((chunk_x, y - (text_h // 2)), label, fill="black", font=fret_font)
 
-                    is_at_measure_start = (acc_dur_segment % UNITS_PER_MEASURE == 0)
-                    is_beamed_back = (not is_at_measure_start) and (prev_real_note is not None) and (prev_real_note.duration == note.duration)
+                                if note.style == StrumStyle.SLIDE:
+                                    draw.line([(chunk_x + text_w + 5, y), (chunk_next_x - 5, y)], fill="black", width=1)
+                                    draw_arc(draw, chunk_x + 5, chunk_next_x - 5, chunk_row_y_top + (i * LINE_SPACING))
 
-                    if can_beam_fwd:
-                        draw.line([(stem_x, bottom_y), (stem_x + BEAT_WIDTH * note.duration, bottom_y)], fill="black", width=4)
-                    elif not is_beamed_back:
-                        draw.line([(stem_x, bottom_y), (stem_x + 12, bottom_y)], fill="black", width=2)
+                        if note.style == StrumStyle.PALM_MUTED:
+                            pm_y = chunk_row_y_top + PM_Y_OFFSET
+                            lsx = chunk_x
+                            if last_style != StrumStyle.PALM_MUTED or chunk_is_new_line:
+                                draw.text((chunk_x, pm_y - 12), "P.M.", fill="black", font=small_font)
+                                lsx += 35
+                            draw_dashed_segment(draw, lsx, chunk_next_x, pm_y)
+                            is_last_pm = (idx + 1 == len(segment_notes)) or (segment_notes[idx+1].style != StrumStyle.PALM_MUTED)
+                            if is_last_pm:
+                                draw.line([(chunk_next_x, pm_y - TICK_H/2), (chunk_next_x, pm_y + TICK_H/2)], fill="black", width=1)
+
+                    # Draw stem for this chunk
+                    draw_stem(draw, chunk_stem_x, chunk_stem_y_start, chunk_dur)
+
+                    # Draw dot on first chunk only
+                    if chunk_acc == acc_dur_segment and is_dotted(note.duration):
+                        dot_x = chunk_stem_x + 8
+                        dot_y = chunk_stem_y_start + 8
+                        draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
+
+                    # Draw connecting arc from previous chunk's stem top to this chunk's stem top
+                    if prev_stem_x is not None:
+                        draw_arc(draw, prev_stem_x, chunk_stem_x, min(prev_stem_y_start, chunk_stem_y_start))
+
+                    # Draw horizontal beams for eighth/dotted-eighth chunks
+                    if chunk_dur == TICKS_EIGHTH or chunk_dur == TICKS_DOTTED_EIGHTH:
+                        chunk_bottom_y = chunk_stem_y_start + STEM_H
+                        next_real_idx = next((i for i in range(idx+1, len(segment_notes)) if segment_notes[i].duration is not None), None)
+                        next_real_note = segment_notes[next_real_idx] if next_real_idx is not None else None
+
+                        prev_real_idx = next((i for i in range(idx-1, -1, -1) if segment_notes[i].duration is not None), None)
+                        prev_real_note = segment_notes[prev_real_idx] if prev_real_idx is not None else None
+
+                        is_at_measure_end = (chunk_acc + chunk_dur) % UNITS_PER_MEASURE == 0
+                        can_beam_fwd = (not is_at_measure_end) and (next_real_note is not None) and (next_real_note.duration == note.duration)
+
+                        is_at_measure_start = (chunk_acc % UNITS_PER_MEASURE == 0)
+                        is_beamed_back = (not is_at_measure_start) and (prev_real_note is not None) and (prev_real_note.duration == note.duration)
+
+                        if can_beam_fwd:
+                            draw.line([(chunk_stem_x, chunk_bottom_y), (chunk_stem_x + BEAT_WIDTH * chunk_dur, chunk_bottom_y)], fill="black", width=4)
+                        elif not is_beamed_back:
+                            draw.line([(chunk_stem_x, chunk_bottom_y), (chunk_stem_x + 12, chunk_bottom_y)], fill="black", width=2)
+
+                    prev_stem_x = chunk_stem_x
+                    prev_stem_y_start = chunk_stem_y_start
+                    chunk_acc += chunk_dur
+                    remaining_dur -= chunk_dur
+
+                    # Increment measure counter when a measure boundary is crossed
+                    if chunk_acc % UNITS_PER_MEASURE == 0:
+                        global_measure_counter += 1
+
+                    # Draw end-of-line barline if needed
+                    if chunk_acc % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0:
+                        eol_system = int((chunk_acc - 1) // (UNITS_PER_MEASURE * MEASURES_PER_LINE))
+                        eol_row_y_top = current_y_cursor + (eol_system * SYSTEM_HEIGHT)
+                        draw.line([(MARGIN_LEFT + LINE_CONTENT_WIDTH, eol_row_y_top),
+                                   (MARGIN_LEFT + LINE_CONTENT_WIDTH, eol_row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
 
             last_style = note.style
-            if (acc_dur_segment + note_dur) % UNITS_PER_MEASURE == 0 and note.duration is not None:
-                global_measure_counter += 1
-
-            if (acc_dur_segment + note_dur) % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0:
-                draw.line([(MARGIN_LEFT + LINE_CONTENT_WIDTH, row_y_top),
-                           (MARGIN_LEFT + LINE_CONTENT_WIDTH, row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
-
             acc_dur_segment += (note.duration if note.duration else 0)
 
         if acc_dur_segment % (UNITS_PER_MEASURE * MEASURES_PER_LINE) != 0:

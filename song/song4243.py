@@ -80,10 +80,10 @@ INTRO = Segment(
 DURATIONS_8 = [ 1,1,1,1,1,1,1,1 ]
 DURATIONS_323 = [ 1,1,1,2,1,1,1 ]
 DURATIONS_122 = [ 1,2,2,1,1,1 ]
+DURATIONS_WEIRD = [ 1.5, 1.5, 2, 1,1,1 ]
+DURATIONS_2121 = [ 2,1,1,2,1,1 ]
 
-RIFF = Segment(
-    "RIFF",
-    [
+riff_chordspans = [
         RhythmicChordSpan(
             Rhythm(
                 DURATIONS_8 + DURATIONS_323,
@@ -96,17 +96,48 @@ RIFF = Segment(
         ),
         RhythmicChordSpan(
             Rhythm(
-                DURATIONS_122 + DURATIONS_8 +
-                DURATIONS_8 + DURATIONS_122,
+                DURATIONS_WEIRD + DURATIONS_8 +
+                DURATIONS_8 + DURATIONS_WEIRD,
                 [StrumStyle.NORMAL]
             ),
             [
                 ChordSpan(1, CHORD_7_B),
                 ChordSpan(15, CHORD_6_A_SHARP),
                 ChordSpan(8, CHORD_7_B),
-                ChordSpan(1, CHORD_9_C_SHARP), # TODO: tegelikult 1.5
-                ChordSpan(2, CHORD_7_B), # TODO: tegelikult 1.5
+                ChordSpan(1.5, CHORD_9_C_SHARP),
+                ChordSpan(1.5, CHORD_7_B),
                 ChordSpan(5, CHORD_6_A_SHARP)
+            ]
+        )
+    ]
+
+RIFF_SALMIGA = Segment(
+    "RIFF + SALM",
+    riff_chordspans * 2 +
+    [
+        RhythmicChordSpan(
+            Rhythm(
+                DURATIONS_8,
+                [StrumStyle.NORMAL]
+            ),
+            [
+                ChordSpan(8, CHORD_6_A_SHARP)
+            ]
+        )
+    ]
+)
+
+CHORUS = Segment(
+    "REFRÄÄN",
+    [
+        RhythmicChordSpan(
+            Rhythm(
+                DURATIONS_2121 + DURATIONS_323,
+                [StrumStyle.NORMAL]
+            ),
+            [
+                ChordSpan(8, CHORD_6_D_SHARP),
+                ChordSpan(8, CHORD_6_A_SHARP)
             ]
         )
     ]
@@ -114,12 +145,11 @@ RIFF = Segment(
 
 SONG = [
     INTRO,
-    RIFF,
+    RIFF_SALMIGA,
+    CHORUS
+    #RIFF_SALMIGA,
     #SALM,
     #CHORUS,
-    #RIFF,
-    #SALM,
-    #CHORUS,
-    #RIFF,
+    #RIFF_TOPELT,
     #END
 ]

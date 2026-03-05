@@ -3,7 +3,10 @@ from object.Chord import Chord
 from object.StrumStyle import StrumStyle
 from object.Segment import Segment
 from object.RhythmicChordSpan import RhythmicChordSpan
-from typing import Optional
+
+TIME_RESOLUTION = 2
+
+# Important! While Segment durations are in 1/8th notes, Note durations are in ticks
 
 class Note:
     def __init__(self, chord: Chord, duration: int, style: StrumStyle):
@@ -54,7 +57,7 @@ class Note:
         chords = []
 
         for chordSpan in part.chordSpans:
-            chords += [chordSpan.chord] * chordSpan.duration
+            chords += [chordSpan.chord] * Note.convertTimeToTicks(chordSpan.duration)
 
         return chords
     
@@ -63,6 +66,11 @@ class Note:
         durations = []
 
         for duration in part.rhythm.durations:
-            durations += [duration] + [None] * (duration - 1)
+            ticks = Note.convertTimeToTicks(duration)
+            durations += [ticks] + [None] * (ticks - 1)
 
         return durations
+    
+    @staticmethod
+    def convertTimeToTicks(duration) -> int:
+        return round(duration * TIME_RESOLUTION)

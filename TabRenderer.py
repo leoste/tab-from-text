@@ -3,30 +3,37 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 from object.StrumStyle import StrumStyle
 from object.Segment import Segment
-from object.Note import Note
+from object.Note import Note, TIME_RESOLUTION
 
 def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
     # --- Konstandid ---
     MEASURES_PER_LINE = 4
-    UNITS_PER_MEASURE = 8
-    
+    UNITS_PER_MEASURE = 8 * TIME_RESOLUTION
+
     FRET_FONT_SIZE = 26
     TITLE_FONT_SIZE = 28
     MEASURE_NUM_FONT_SIZE = 12
-    
+
     LINE_SPACING = 30
-    BEAT_WIDTH = 55
-    BAR_PADDING = 25  
+    BEAT_WIDTH = 55 / TIME_RESOLUTION
+    BAR_PADDING = 25
     MARGIN_LEFT = 80
-    MARGIN_RIGHT = 80 
-    
-    TITLE_HEIGHT = 80   
-    SYSTEM_HEIGHT = (6 * LINE_SPACING) + 160 
-    
+    MARGIN_RIGHT = 80
+
+    TITLE_HEIGHT = 80
+    SYSTEM_HEIGHT = (6 * LINE_SPACING) + 160
+
     PM_Y_OFFSET = -25
     DASH_GAP = 5
     TICK_H = 8
     MEASURE_NUM_Y_OFFSET = -50
+
+    # Tick thresholds for stem/beam drawing
+    TICKS_SIXTEENTH        = TIME_RESOLUTION // 2
+    TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3   # dotted eighth = 3/16ths
+    TICKS_EIGHTH           = 1 * TIME_RESOLUTION
+    TICKS_HALF             = 2 * TIME_RESOLUTION
+    TICKS_DOTTED_QUARTER   = 3 * TIME_RESOLUTION
 
     MEASURE_WIDTH = (UNITS_PER_MEASURE * BEAT_WIDTH) + BAR_PADDING
     LINE_CONTENT_WIDTH = MEASURES_PER_LINE * MEASURE_WIDTH
@@ -35,16 +42,16 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
 
     for seg_idx, segment in enumerate(segments):
         segment_notes = Note.GetNotesFromSegment(segment)
-        total_units = sum((n.duration if n.duration else 0.5) for n in segment_notes)
+        total_units = sum((n.duration if n.duration else 0) for n in segment_notes)
         num_measures = math.ceil(total_units / UNITS_PER_MEASURE)
         num_systems = math.ceil(num_measures / MEASURES_PER_LINE)
 
         img_width = LINE_CONTENT_WIDTH + MARGIN_LEFT + MARGIN_RIGHT
         img_height = (num_systems * SYSTEM_HEIGHT) + TITLE_HEIGHT + 60
-        
+
         img = Image.new('RGB', (int(img_width), int(img_height)), color='white')
         draw = ImageDraw.Draw(img)
-        
+
         try:
             title_font = ImageFont.truetype("arialbd.ttf", TITLE_FONT_SIZE)
             fret_font = ImageFont.truetype("arial.ttf", FRET_FONT_SIZE)
@@ -81,16 +88,16 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
             system_in_segment = int(acc_dur_segment // (UNITS_PER_MEASURE * MEASURES_PER_LINE))
             measure_in_system = int(total_beats_in_segment % MEASURES_PER_LINE)
             unit_in_measure = acc_dur_segment % UNITS_PER_MEASURE
-            
+
             row_y_top = current_y_cursor + (system_in_segment * SYSTEM_HEIGHT)
             final_y = row_y_top
-            
+
             is_new_line = (acc_dur_segment % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0)
             if is_new_line:
                 draw_staff_elements(draw, row_y_top, global_measure_counter)
 
             current_x = MARGIN_LEFT + (measure_in_system * MEASURE_WIDTH) + (unit_in_measure * BEAT_WIDTH) + BAR_PADDING
-            note_dur = (note.duration or 0.5)
+            note_dur = (note.duration or 0)
             next_x = current_x + (note_dur * BEAT_WIDTH)
             final_x = next_x
 
@@ -107,7 +114,7 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                         if fret is not None and fret != -1:
                             y = row_y_top + (i * LINE_SPACING)
                             label = "X" if note.style == StrumStyle.MUTED else str(fret)
-                            
+
                             text_w, text_h = draw.textbbox((0, 0), label, font=fret_font)[2:]
                             draw.rectangle([current_x - 2, y - (text_h//2), current_x + text_w + 2, y + (text_h//2)], fill="white")
                             draw.text((current_x, y - (text_h // 2)), label, fill="black", font=fret_font)
@@ -122,7 +129,7 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                         lsx = current_x
                         if last_style != StrumStyle.PALM_MUTED or is_new_line:
                             draw.text((current_x, pm_y - 12), "P.M.", fill="black", font=small_font)
-                            lsx += 35 
+                            lsx += 35
                         draw_dashed_segment(draw, lsx, next_x, pm_y)
                         is_last_pm = (idx + 1 == len(segment_notes)) or (segment_notes[idx+1].style != StrumStyle.PALM_MUTED)
                         if is_last_pm:
@@ -132,35 +139,57 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                 stem_y_start = row_y_top + (6 * LINE_SPACING)
                 stem_x = current_x + 4
                 bottom_y = stem_y_start + 30
-                
-                if note.duration >= 2:
+
+                if note.duration >= TICKS_HALF:
+                    # Half note and above: plain stem, optional dot for dotted quarter
                     draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
-                    if note.duration == 3:
+                    if note.duration == TICKS_DOTTED_QUARTER:
                         dot_x = stem_x + 8
                         dot_y = bottom_y - 5
                         draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
 
-                elif note.duration == 1:
-                    # Alati joonistame püstise varre
+                elif note.duration == TICKS_EIGHTH:
                     draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
-                    
-                    # --- UUS ÜHENDAMISE LOOGIKA ---
-                    # Kontrollime, kas praegune noot on takti viimane üksus
-                    is_at_measure_end = (acc_dur_segment + 1) % UNITS_PER_MEASURE == 0
-                    
-                    # Saame ühendada ettepoole, kui: 
-                    # 1. Pole takti lõpp 2. Järgmine noot on olemas 3. Järgmine noot on samuti pikkusega 1
-                    can_beam_fwd = (not is_at_measure_end) and (idx + 1 < len(segment_notes)) and (segment_notes[idx+1].duration == 1)
-                    
-                    # Kas meid ühendati eelmise noodiga? (Tagantpoolt ühendus)
+
+                    next_real_idx = next((i for i in range(idx+1, len(segment_notes)) if segment_notes[i].duration is not None), None)
+                    next_real_note = segment_notes[next_real_idx] if next_real_idx is not None else None
+
+                    prev_real_idx = next((i for i in range(idx-1, -1, -1) if segment_notes[i].duration is not None), None)
+                    prev_real_note = segment_notes[prev_real_idx] if prev_real_idx is not None else None
+
+                    is_at_measure_end = (acc_dur_segment + TICKS_EIGHTH) % UNITS_PER_MEASURE == 0
+                    can_beam_fwd = (not is_at_measure_end) and (next_real_note is not None) and (next_real_note.duration == TICKS_EIGHTH)
+
                     is_at_measure_start = (acc_dur_segment % UNITS_PER_MEASURE == 0)
-                    is_beamed_back = (not is_at_measure_start) and (idx > 0) and (segment_notes[idx-1].duration == 1)
-                    
+                    is_beamed_back = (not is_at_measure_start) and (prev_real_note is not None) and (prev_real_note.duration == TICKS_EIGHTH)
+
                     if can_beam_fwd:
-                        # Joonistame paksult ühendava tala järgmise noodini
-                        draw.line([(stem_x, bottom_y), (stem_x + BEAT_WIDTH, bottom_y)], fill="black", width=4)
+                        draw.line([(stem_x, bottom_y), (stem_x + BEAT_WIDTH * TICKS_EIGHTH, bottom_y)], fill="black", width=4)
                     elif not is_beamed_back:
-                        # Kui pole ühendatud ei ette ega taha, joonistame üksiku saba (flag)
+                        draw.line([(stem_x, bottom_y), (stem_x + 12, bottom_y)], fill="black", width=2)
+
+                elif note.duration == TICKS_DOTTED_EIGHTH:
+                    # Dotted eighth (= 3/16ths): same as eighth beam logic but with a dot
+                    draw.line([(stem_x, stem_y_start), (stem_x, bottom_y)], fill="black", width=2)
+                    dot_x = stem_x + 8
+                    dot_y = bottom_y - 5
+                    draw.ellipse([dot_x - 2, dot_y - 2, dot_x + 2, dot_y + 2], fill="black")
+
+                    next_real_idx = next((i for i in range(idx+1, len(segment_notes)) if segment_notes[i].duration is not None), None)
+                    next_real_note = segment_notes[next_real_idx] if next_real_idx is not None else None
+
+                    prev_real_idx = next((i for i in range(idx-1, -1, -1) if segment_notes[i].duration is not None), None)
+                    prev_real_note = segment_notes[prev_real_idx] if prev_real_idx is not None else None
+
+                    is_at_measure_end = (acc_dur_segment + TICKS_DOTTED_EIGHTH) % UNITS_PER_MEASURE == 0
+                    can_beam_fwd = (not is_at_measure_end) and (next_real_note is not None) and (next_real_note.duration == TICKS_DOTTED_EIGHTH)
+
+                    is_at_measure_start = (acc_dur_segment % UNITS_PER_MEASURE == 0)
+                    is_beamed_back = (not is_at_measure_start) and (prev_real_note is not None) and (prev_real_note.duration == TICKS_DOTTED_EIGHTH)
+
+                    if can_beam_fwd:
+                        draw.line([(stem_x, bottom_y), (stem_x + BEAT_WIDTH * TICKS_DOTTED_EIGHTH, bottom_y)], fill="black", width=4)
+                    elif not is_beamed_back:
                         draw.line([(stem_x, bottom_y), (stem_x + 12, bottom_y)], fill="black", width=2)
 
             last_style = note.style
@@ -168,7 +197,7 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                 global_measure_counter += 1
 
             if (acc_dur_segment + note_dur) % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0:
-                draw.line([(MARGIN_LEFT + LINE_CONTENT_WIDTH, row_y_top), 
+                draw.line([(MARGIN_LEFT + LINE_CONTENT_WIDTH, row_y_top),
                            (MARGIN_LEFT + LINE_CONTENT_WIDTH, row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
 
             acc_dur_segment += (note.duration if note.duration else 0)

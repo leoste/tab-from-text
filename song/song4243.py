@@ -142,11 +142,7 @@ RIFF_SALMIGA = Segment(
     ]
 )
 
-bass_riff_main = [
-    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 6), 8),
-    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 8), 3),
-    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 9), 5),
-    StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 9), 16),
+bass_riff_cool_part = [
     StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 7)),
     StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 15),
     StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 7), 8),
@@ -156,12 +152,33 @@ bass_riff_main = [
     StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3),
 ]
 
+bass_riff_main = ([
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 6), 8),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 8), 3),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 9), 5),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 9), 16)    
+] + bass_riff_cool_part)
+
 BASS_RIFF_SALMIGA = Segment(
     "RIFF + SALM",
     bass_riff_main * 2 +
     [ 
         StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 7),
         StrummedChordSpan(1, Chord.no_strings_hit_chord())
+    ]
+)
+
+BASS_RIFF_ENDIGA = Segment(
+    "RIFF 2x + LÕPP",
+    bass_riff_main * 2 +
+    bass_riff_cool_part +
+    [
+        StrummedChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
+        StrummedChordSpan(1.5, Chord.single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3),
+        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(20, Chord.single_note(GuitarString.E6, 6))
     ]
 )
 
@@ -290,7 +307,8 @@ BASS_CHORUS = Segment(
         StrummedChordSpan(1, None),
         StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 6)),
         StrummedChordSpan(1, None),
-        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3),
+        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 2),
+        StrummedChordSpan(1, None),
         StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
         StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6)),
         StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
@@ -338,9 +356,9 @@ BASS = Instrument(
         BASS_INTRO,
         BASS_RIFF_SALMIGA,
         BASS_CHORUS,
-        #BASS_RIFF_SALMIGA,
-        #BASS_CHORUS,
-        #BASS_RIFF_ENDIGA,
+        BASS_RIFF_SALMIGA,
+        BASS_CHORUS,
+        BASS_RIFF_ENDIGA,
     ]    
 )
 

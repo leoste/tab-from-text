@@ -269,6 +269,18 @@ CHORUS = Segment(
     ]
 )
 
+bass_chorus_cool_part = [
+    StrummedChordSpan(1.5, Chord.get_single_note(GuitarString.E6, 9)),
+    StrummedChordSpan(1.5, Chord.get_single_note(GuitarString.E6, 7)),
+    StrummedChordSpan(2, Chord.get_single_note(GuitarString.E6, 6)),
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6), 3)
+]
+
+bass_chorus_near_end = ([    
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6), 8)
+] +
+bass_chorus_cool_part)
+
 BASS_CHORUS = Segment(
     "REFRÄÄN",
     [
@@ -278,11 +290,33 @@ BASS_CHORUS = Segment(
         StrummedChordSpan(1, None),
         StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 6)),
         StrummedChordSpan(1, None),
-        StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6), 2),
-        StrummedChordSpan(1, None),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6), 3),
         StrummedChordSpan(2, Chord.get_single_note(GuitarString.E6, 6)),
         StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6)),
-        StrummedChordSpan(2, Chord.get_single_note(GuitarString.E6, 6)),        
+        StrummedChordSpan(2, Chord.get_single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(4, Chord.get_single_note(GuitarString.E6, 7)),
+        StrummedChordSpan(4, Chord.get_single_note(GuitarString.E6, 6))
+    ] +
+    bass_chorus_cool_part +
+    [
+        StrummedChordSpan(2, Chord.get_single_note(GuitarString.A5, 6)),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 6), 2),
+        StrummedChordSpan(2, Chord.get_single_note(GuitarString.A5, 6)),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 6), 2),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 6), 3),
+        StrummedChordSpan(2, Chord.get_single_note(GuitarString.A5, 6), 1),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 6), 3)
+    ] +
+    bass_chorus_near_end * 2 +
+    [
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6), 8),
+        StrummedChordSpan(1.5, Chord.get_single_note(GuitarString.E6, 9)),
+        StrummedChordSpan(1.5, Chord.get_single_note(GuitarString.E6, 7)),
+        StrummedChordSpan(2, Chord.get_single_note(GuitarString.E6, 7)),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 7)),
+        StrummedChordSpan(2, Chord.get_single_note(GuitarString.E6, 7)),
+        StrummedChordSpan(12, Chord.get_single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(4, None)
     ]
 )
 

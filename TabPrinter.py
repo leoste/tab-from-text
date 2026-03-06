@@ -1,15 +1,17 @@
 import io
+import os
 from PIL import Image
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
 from object.Song import Song
-from TabRenderer import render_song
+from TabRenderer import render_tab
 
 # --- Constants ---
 PAGE_MARGIN_CM = 2.0
 IMAGE_DPI = 96  # the DPI at which TabRenderer produces its images
+PAGE_NUMBER_FONT_SIZE = 10
 
 # Derived
 CM_TO_PT = 28.3465
@@ -27,9 +29,7 @@ def _px_to_pt(px: float) -> float:
 
 def _image_dimensions_pt(img: Image.Image) -> tuple[float, float]:
     """Return the natural (width, height) of the image in PDF points."""
-    w_pt = _px_to_pt(img.size[0])
-    h_pt = _px_to_pt(img.size[1])
-    return w_pt, h_pt
+    return _px_to_pt(img.size[0]), _px_to_pt(img.size[1])
 
 
 def _fit_to_printable_width(w_pt: float, h_pt: float) -> tuple[float, float]:
@@ -47,23 +47,21 @@ def _image_to_reader(img: Image.Image) -> ImageReader:
     return ImageReader(buf)
 
 
-def print_song(song: Song, output_path: str) -> None:
-    images_with_names = render_song(song)
-
-    # Pre-compute fitted pt dimensions for each image (no pixel resampling)
+def _print_instrument(c: canvas.Canvas, images_with_names: list[tuple[str, Image.Image]]) -> None:
+    """Lay out all images for one instrument onto the canvas, with page numbers."""
     entries: list[tuple[Image.Image, float, float]] = []
     for _filename, img in images_with_names:
         w_pt, h_pt = _image_dimensions_pt(img)
         w_pt, h_pt = _fit_to_printable_width(w_pt, h_pt)
         entries.append((img, w_pt, h_pt))
 
-    c = canvas.Canvas(output_path, pagesize=A4)
-
+    page_num = 1
     page_entries: list[tuple[Image.Image, float, float]] = []
     page_used_h_pt = 0.0
 
     def flush_page() -> None:
-        y_cursor_pt = A4_HEIGHT_PT - PAGE_MARGIN_PT  # top of printable area
+        nonlocal page_num
+        y_cursor_pt = A4_HEIGHT_PT - PAGE_MARGIN_PT
         for im, w, h in page_entries:
             c.drawImage(
                 _image_to_reader(im),
@@ -73,7 +71,11 @@ def print_song(song: Song, output_path: str) -> None:
                 height=h,
             )
             y_cursor_pt -= h
+        # Page number centered at bottom
+        c.setFont("Helvetica", PAGE_NUMBER_FONT_SIZE)
+        c.drawCentredString(A4_WIDTH_PT / 2, PAGE_MARGIN_PT / 2, str(page_num))
         c.showPage()
+        page_num += 1
 
     for img, w_pt, h_pt in entries:
         fits = (page_used_h_pt + h_pt) <= PRINTABLE_HEIGHT_PT
@@ -89,5 +91,19 @@ def print_song(song: Song, output_path: str) -> None:
     if page_entries:
         flush_page()
 
-    c.save()
-    print(f"PDF salvestatud: {output_path}")
+
+def print_song(song: Song, output_dir: str) -> None:
+    """Render each instrument of a song to its own PDF in output_dir."""
+    os.makedirs(output_dir, exist_ok=True)
+    safe_song_title = song.title.lower().replace(' ', '_')
+
+    for instrument in song.instruments:
+        safe_instrument_name = instrument.name.lower().replace(' ', '_')
+        output_base_path = f"tabs/{safe_song_title}/{safe_instrument_name}/tab"
+        images_with_names = render_tab(instrument.segments, output_base_path)
+
+        pdf_path = os.path.join(output_dir, f"{safe_song_title}_{safe_instrument_name}.pdf")
+        c = canvas.Canvas(pdf_path, pagesize=A4)
+        _print_instrument(c, images_with_names)
+        c.save()
+        print(f"PDF salvestatud: {pdf_path}")

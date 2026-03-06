@@ -1,9 +1,8 @@
 from object.Chord import Chord
 from object.StrumStyle import StrumStyle
+from object.TimeUtils import TIME_RESOLUTION, convertTimeToTicks
 
 # Important! While Segment durations are in 1/8th notes, Note durations are in ticks
-TIME_RESOLUTION = 2
-
 class Note:
     def __init__(self, chord: Chord, duration: int, style: StrumStyle):
         self.chord = chord
@@ -18,4 +17,9 @@ class Note:
     
     @staticmethod
     def convertTimeToTicks(duration) -> int:
-        return round(duration * TIME_RESOLUTION)
+        return convertTimeToTicks(duration)
+
+    @staticmethod
+    def flattenDuration(duration) -> list:
+        ticks = convertTimeToTicks(duration)
+        return [ticks] + [None] * (ticks - 1)

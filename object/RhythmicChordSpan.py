@@ -34,19 +34,17 @@ class RhythmicChordSpan(NoteProvider):
     def flattenChordSpans(self) -> List[Chord]:
         chords = []
         for chordSpan in self.chordSpans:
-            chords += [chordSpan.chord] * Note.convertTimeToTicks(chordSpan.duration)
+            chords += chordSpan.flattenChordSpan()
         return chords
     
-    def flattenRhythmDurations(self) -> List[int]:
+    def flattenRhythmDurations(self) -> List:
         durations = []
         for duration in self.rhythm.durations:
-            ticks = Note.convertTimeToTicks(duration)
-            durations += [ticks] + [None] * (ticks - 1)
+            durations += Note.flattenDuration(duration)
         return durations
 
     def flattenStyles(self) -> List[StrumStyle]:
         styles = []
         for style in self.rhythm.styles:
-            ticks = Note.convertTimeToTicks(1)  # each style entry covers one eighth note = TIME_RESOLUTION ticks
-            styles += [style] * ticks
+            styles += StrumStyle.flattenStyle(style)
         return styles

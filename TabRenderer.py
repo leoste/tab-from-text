@@ -2,7 +2,7 @@ import math
 from PIL import Image, ImageDraw, ImageFont
 from object.StrumStyle import StrumStyle
 from object.Segment import Segment
-from object.Note import TIME_RESOLUTION
+from object.TimeUtils import TIME_RESOLUTION
 from object.Song import Song
 
 # --- Konstandid ---

@@ -109,6 +109,8 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
 
         acc_dur_segment = 0
         last_style = None
+        last_pm_x = None
+        last_pm_y = None
         final_x = MARGIN_LEFT
         final_y = current_y_cursor
 
@@ -119,21 +121,24 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
             unit_in_measure = acc_dur_segment % UNITS_PER_MEASURE
 
             row_y_top = current_y_cursor + (system_in_segment * SYSTEM_HEIGHT)
-            final_y = row_y_top
 
             is_new_line = (acc_dur_segment % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0)
-            if is_new_line:
-                draw_staff_elements(draw, row_y_top, global_measure_counter)
 
             current_x = MARGIN_LEFT + (measure_in_system * MEASURE_WIDTH) + (unit_in_measure * BEAT_WIDTH) + BAR_PADDING
             note_dur = (note.duration or 0)
             next_x = current_x + (note_dur * BEAT_WIDTH)
-            final_x = next_x
 
-            if unit_in_measure == 0 and measure_in_system > 0:
-                bar_x = MARGIN_LEFT + (measure_in_system * MEASURE_WIDTH)
-                draw.line([(bar_x, row_y_top), (bar_x, row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
-                draw.text((bar_x, row_y_top + MEASURE_NUM_Y_OFFSET), str(global_measure_counter), fill="gray", font=small_font)
+            if note.duration is not None:
+                final_y = row_y_top
+                final_x = next_x
+                if is_new_line:
+                    draw_staff_elements(draw, row_y_top, global_measure_counter)
+                    last_pm_x = None
+                    last_pm_y = None
+                if unit_in_measure == 0 and measure_in_system > 0:
+                    bar_x = MARGIN_LEFT + (measure_in_system * MEASURE_WIDTH)
+                    draw.line([(bar_x, row_y_top), (bar_x, row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
+                    draw.text((bar_x, row_y_top + MEASURE_NUM_Y_OFFSET), str(global_measure_counter), fill="gray", font=small_font)
 
             if note.duration is not None:
 
@@ -160,6 +165,8 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                     chunk_is_new_line = (chunk_acc % (UNITS_PER_MEASURE * MEASURES_PER_LINE) == 0)
                     if chunk_is_new_line and chunk_acc != acc_dur_segment:
                         draw_staff_elements(draw, chunk_row_y_top, global_measure_counter)
+                        last_pm_x = None
+                        last_pm_y = None
 
                     chunk_x = MARGIN_LEFT + (chunk_measure_in_system * MEASURE_WIDTH) + (chunk_unit_in_measure * BEAT_WIDTH) + BAR_PADDING
                     chunk_stem_x = chunk_x + 4
@@ -190,14 +197,16 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
 
                         if note.style == StrumStyle.PALM_MUTED:
                             pm_y = chunk_row_y_top + PM_Y_OFFSET
-                            lsx = chunk_x
-                            if last_style != StrumStyle.PALM_MUTED or chunk_is_new_line:
+                            is_first_pm_on_line = (last_style != StrumStyle.PALM_MUTED or chunk_is_new_line)
+                            if is_first_pm_on_line:
+                                # Draw P.M. label and opening downward tick
                                 draw.text((chunk_x, pm_y - 12), "P.M.", fill="black", font=small_font)
-                                lsx += 35
-                            draw_dashed_segment(draw, lsx, chunk_next_x, pm_y)
-                            is_last_pm = (idx + 1 == len(segment_notes)) or (segment_notes[idx+1].style != StrumStyle.PALM_MUTED)
-                            if is_last_pm:
-                                draw.line([(chunk_next_x, pm_y - TICK_H/2), (chunk_next_x, pm_y + TICK_H/2)], fill="black", width=1)
+                                draw.line([(chunk_x, pm_y - TICK_H/2), (chunk_x, pm_y + TICK_H/2)], fill="black", width=1)
+                            else:
+                                # Draw dashed line backwards from current note's x to previous note's x
+                                draw_dashed_segment(draw, last_pm_x, chunk_x, pm_y)
+                            last_pm_x = chunk_x
+                            last_pm_y = pm_y
 
                     # Draw stem for this chunk
                     draw_stem(draw, chunk_stem_x, chunk_stem_y_start, chunk_dur)

@@ -211,7 +211,7 @@ END = Segment(
         ),
         RhythmicChordSpan(
             Rhythm(
-                [1] * 8 + [2] * 4,
+                [1] * 8 + [2,6],
                 [ StrumStyle.NORMAL ] * 10 +
                 [ StrumStyle.NO_HIT ] * 6
             ),

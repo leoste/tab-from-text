@@ -198,14 +198,19 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                         if note.style == StrumStyle.PALM_MUTED:
                             pm_y = chunk_row_y_top + PM_Y_OFFSET
                             is_first_pm_on_line = (last_style != StrumStyle.PALM_MUTED or chunk_is_new_line)
+                            next_real_note = next((segment_notes[i] for i in range(idx+1, len(segment_notes)) if segment_notes[i].duration is not None), None)
+                            is_last_pm = next_real_note is None or next_real_note.style != StrumStyle.PALM_MUTED
                             if is_first_pm_on_line:
-                                # Draw P.M. label and opening downward tick
+                                # Draw P.M. label only, no opening tick
                                 draw.text((chunk_x, pm_y - 12), "P.M.", fill="black", font=small_font)
-                                draw.line([(chunk_x, pm_y - TICK_H/2), (chunk_x, pm_y + TICK_H/2)], fill="black", width=1)
+                                last_pm_x = chunk_x + 35  # start of dashed line is after the label
                             else:
                                 # Draw dashed line backwards from current note's x to previous note's x
                                 draw_dashed_segment(draw, last_pm_x, chunk_x, pm_y)
-                            last_pm_x = chunk_x
+                                last_pm_x = chunk_x
+                            # Draw closing tick on the last PM note (but not if it's also the first, as that overlaps the label)
+                            if is_last_pm and not is_first_pm_on_line:
+                                draw.line([(chunk_x, pm_y - TICK_H/2), (chunk_x, pm_y + TICK_H/2)], fill="black", width=1)
                             last_pm_y = pm_y
 
                     # Draw stem for this chunk

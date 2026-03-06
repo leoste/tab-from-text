@@ -134,7 +134,7 @@ CHORUS = Segment(
     "REFRÄÄN",
     [
         RhythmicChordSpan(
-            eight_beat_rhythm,
+            Rhythm([8]),
             [ ChordSpan(64, Chord.get_no_strings_hit_chord()) ]
         )
     ]
@@ -160,13 +160,14 @@ VIIMANE_CHORUS = Segment(
         ),
         RhythmicChordSpan(
             Rhythm(
-                [3,3,2,2],
-                [StrumStyle.NORMAL] * 10
+                [3,3,2,2,6],
+                [StrumStyle.NORMAL] * 16
             ),
             [
                 ChordSpan(3, CHORD_8_F),
                 ChordSpan(5, CHORD_5_A),
-                ChordSpan(2, CHORD_5_D)
+                ChordSpan(2, CHORD_5_D),
+                ChordSpan(6, Chord.get_no_strings_hit_chord())
             ]
         )
     ]

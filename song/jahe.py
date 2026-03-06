@@ -8,15 +8,15 @@ from object.StrumStyle import StrumStyle
 from object.Instrument import Instrument
 from object.Song import Song
 
-CHORD_13_F = Chord.get_power_chord(GuitarString.E6, 13)
+CHORD_13_F = Chord.power_chord(GuitarString.E6, 13)
 CHORD_13_C = Chord(None, None, None, 15, 13, 13)
-CHORD_11_D_SHARP = Chord.get_power_chord(GuitarString.E6, 11)
-CHORD_9_C_SHARP = Chord.get_power_chord(GuitarString.E6, 9)
-CHORD_8_C = Chord.get_power_chord(GuitarString.E6, 8)
-CHORD_6_A_SHARP = Chord.get_power_chord(GuitarString.E6, 6)
-CHORD_4_G_SHARP = Chord.get_power_chord(GuitarString.E6, 4)
-CHORD_2_F_SHARP = Chord.get_power_chord(GuitarString.E6, 2)
-CHORD_1_F = Chord.get_power_chord(GuitarString.E6, 1)
+CHORD_11_D_SHARP = Chord.power_chord(GuitarString.E6, 11)
+CHORD_9_C_SHARP = Chord.power_chord(GuitarString.E6, 9)
+CHORD_8_C = Chord.power_chord(GuitarString.E6, 8)
+CHORD_6_A_SHARP = Chord.power_chord(GuitarString.E6, 6)
+CHORD_4_G_SHARP = Chord.power_chord(GuitarString.E6, 4)
+CHORD_2_F_SHARP = Chord.power_chord(GuitarString.E6, 2)
+CHORD_1_F = Chord.power_chord(GuitarString.E6, 1)
 
 DURATIONS_232 = [1,1,1,2,1,1,1]
 INTRO_RHYTHM = Rhythm(
@@ -184,7 +184,7 @@ BREAK = Segment(
             [
                 ChordSpan(2, CHORD_8_C),
                 ChordSpan(2, CHORD_13_F),
-                ChordSpan(12, Chord.get_no_strings_hit_chord())
+                ChordSpan(12, Chord.no_strings_hit_chord())
             ]
         )
     ]
@@ -221,7 +221,7 @@ END = Segment(
                 ChordSpan(2, CHORD_13_F),
                 ChordSpan(2, CHORD_13_C),
                 ChordSpan(6, CHORD_13_F),
-                ChordSpan(6, Chord.get_no_strings_hit_chord())
+                ChordSpan(6, Chord.no_strings_hit_chord())
             ]
         )
     ]

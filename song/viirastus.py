@@ -8,15 +8,15 @@ from object.StrumStyle import StrumStyle
 from object.Instrument import Instrument
 from object.Song import Song
 
-CHORD_8_F = Chord.get_power_chord(GuitarString.A5, 8)
+CHORD_8_F = Chord.power_chord(GuitarString.A5, 8)
 CHORD_8_F_DOUBLE = Chord(None, None, 10, 10, 8, 8)
-CHORD_13_F = Chord.get_power_chord(GuitarString.E6, 13)
-CHORD_12_E = Chord.get_power_chord(GuitarString.E6, 12)
-CHORD_10_D = Chord.get_power_chord(GuitarString.E6, 10)
-CHORD_5_D = Chord.get_power_chord(GuitarString.A5, 5)
-CHORD_8_C = Chord.get_power_chord(GuitarString.E6, 8)
-CHORD_6_A_SHARP = Chord.get_power_chord(GuitarString.E6, 6)
-CHORD_5_A = Chord.get_power_chord(GuitarString.E6, 5)
+CHORD_13_F = Chord.power_chord(GuitarString.E6, 13)
+CHORD_12_E = Chord.power_chord(GuitarString.E6, 12)
+CHORD_10_D = Chord.power_chord(GuitarString.E6, 10)
+CHORD_5_D = Chord.power_chord(GuitarString.A5, 5)
+CHORD_8_C = Chord.power_chord(GuitarString.E6, 8)
+CHORD_6_A_SHARP = Chord.power_chord(GuitarString.E6, 6)
+CHORD_5_A = Chord.power_chord(GuitarString.E6, 5)
 
 DURATIONS_26 = [ 2,1,1,1,1,1,1 ]
 DURATIONS_323 = [ 1,1,1,2,1,1,1 ]
@@ -137,7 +137,7 @@ CHORUS = Segment(
     [
         RhythmicChordSpan(
             Rhythm([8]),
-            [ ChordSpan(64, Chord.get_no_strings_hit_chord()) ]
+            [ ChordSpan(64, Chord.no_strings_hit_chord()) ]
         )
     ]
 )
@@ -169,7 +169,7 @@ VIIMANE_CHORUS = Segment(
                 ChordSpan(3, CHORD_8_F),
                 ChordSpan(5, CHORD_5_A),
                 ChordSpan(2, CHORD_5_D),
-                ChordSpan(6, Chord.get_no_strings_hit_chord())
+                ChordSpan(6, Chord.no_strings_hit_chord())
             ]
         )
     ]

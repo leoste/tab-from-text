@@ -17,18 +17,18 @@ class Chord:
         return self.__str__()
 
     @staticmethod
-    def get_power_chord(base_string: GuitarString, base_fret: int) -> 'Chord':
+    def power_chord(base_string: GuitarString, base_fret: int) -> 'Chord':
         if base_string == GuitarString.E6:
             return Chord(None, None, None, base_fret + 2, base_fret + 2, base_fret)
         elif base_string == GuitarString.A5:
             return Chord(None, None, base_fret + 2, base_fret + 2, base_fret, None)
 
     @staticmethod
-    def get_no_strings_hit_chord() -> 'Chord':
+    def no_strings_hit_chord() -> 'Chord':
         return Chord(-1,-1,-1,-1,-1,-1)
     
     @staticmethod
-    def get_single_note(base_string: GuitarString, base_fret: int)  -> 'Chord':
+    def single_note(base_string: GuitarString, base_fret: int)  -> 'Chord':
         return Chord(
             base_fret if base_string == GuitarString.E1 else None,
             base_fret if base_string == GuitarString.B2 else None,

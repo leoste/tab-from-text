@@ -88,7 +88,8 @@ def draw_dashed_segment(draw_obj, x_start, x_end, y):
         draw_obj.line([(curr, y), (min(curr + DASH_GAP, x_end), y)], fill="black", width=1)
         curr += DASH_GAP * 2
 
-def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
+def render_tab(segments: list[Segment], output_base_path="guitar_tab") -> list[tuple[str, object]]:
+    results = []
     global_measure_counter = 1
 
     for seg_idx, segment in enumerate(segments):
@@ -271,12 +272,15 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
 
         safe_title = "".join([c for c in segment.title if c.isalnum() or c in (' ', '_')]).strip().replace(' ', '_')
         file_path = f"{output_base_path}_{seg_idx + 1}_{safe_title}.png"
-        img.save(file_path)
-        print(f"Salvestatud: {file_path}")
+        results.append((file_path, img))
 
-def render_song(song: Song):
+    return results
+
+def render_song(song: Song) -> list[tuple[str, object]]:
+    results = []
     safe_song_title = song.title.lower().replace(' ', '_')
     for instrument in song.instruments:
         safe_instrument_name = instrument.name.lower().replace(' ', '_')
         output_base_path = f"tabs/{safe_song_title}/{safe_instrument_name}/tab"
-        render_tab(instrument.segments, output_base_path)
+        results += render_tab(instrument.segments, output_base_path)
+    return results

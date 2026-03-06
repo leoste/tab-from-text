@@ -4,68 +4,90 @@ from object.StrumStyle import StrumStyle
 from object.Segment import Segment
 from object.Note import TIME_RESOLUTION
 
-def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
-    # --- Konstandid ---
-    MEASURES_PER_LINE = 4
-    UNITS_PER_MEASURE = 8 * TIME_RESOLUTION
+# --- Konstandid ---
+MEASURES_PER_LINE = 4
+UNITS_PER_MEASURE = 8 * TIME_RESOLUTION
 
-    FRET_FONT_SIZE = 26
-    TITLE_FONT_SIZE = 28
-    MEASURE_NUM_FONT_SIZE = 12
+FRET_FONT_SIZE = 26
+TITLE_FONT_SIZE = 28
+MEASURE_NUM_FONT_SIZE = 12
 
-    LINE_SPACING = 30
-    BEAT_WIDTH = 55 / TIME_RESOLUTION
-    BAR_PADDING = 25
-    MARGIN_LEFT = 80
-    MARGIN_RIGHT = 80
+LINE_SPACING = 30
+BEAT_WIDTH = 55 / TIME_RESOLUTION
+BAR_PADDING = 25
+MARGIN_LEFT = 80
+MARGIN_RIGHT = 80
 
-    TITLE_HEIGHT = 80
-    SYSTEM_HEIGHT = (6 * LINE_SPACING) + 160
+TITLE_HEIGHT = 80
+SYSTEM_HEIGHT = (6 * LINE_SPACING) + 160
 
-    PM_Y_OFFSET = -25
-    DASH_GAP = 5
-    TICK_H = 8
-    MEASURE_NUM_Y_OFFSET = -50
+PM_Y_OFFSET = -25
+DASH_GAP = 5
+TICK_H = 8
+MEASURE_NUM_Y_OFFSET = -50
 
-    # Tick thresholds
-    TICKS_SIXTEENTH        = TIME_RESOLUTION // 2
-    TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3
-    TICKS_EIGHTH           = 1 * TIME_RESOLUTION
-    TICKS_HALF_NOTE        = 4 * TIME_RESOLUTION
-    TICKS_FULL_NOTE        = 8 * TIME_RESOLUTION
+# Tick thresholds
+TICKS_SIXTEENTH        = TIME_RESOLUTION // 2
+TICKS_DOTTED_EIGHTH    = TICKS_SIXTEENTH * 3
+TICKS_EIGHTH           = 1 * TIME_RESOLUTION
+TICKS_HALF_NOTE        = 4 * TIME_RESOLUTION
+TICKS_FULL_NOTE        = 8 * TIME_RESOLUTION
 
-    # Stem height constants (base unit = 30px = 1 stem height)
-    STEM_H        = 30
-    HALF_TOP_H    = int(STEM_H * 0.5)
-    HALF_GAP      = int(STEM_H * 1.0)
-    HALF_BOTTOM_H = int(STEM_H * 1.5)
-    FULL_H        = int(STEM_H * 3.0)
+# Stem height constants (base unit = 30px = 1 stem height)
+STEM_H        = 30
+HALF_TOP_H    = int(STEM_H * 0.5)
+HALF_GAP      = int(STEM_H * 1.0)
+HALF_BOTTOM_H = int(STEM_H * 1.5)
+FULL_H        = int(STEM_H * 3.0)
 
-    MEASURE_WIDTH = (UNITS_PER_MEASURE * BEAT_WIDTH) + BAR_PADDING
-    LINE_CONTENT_WIDTH = MEASURES_PER_LINE * MEASURE_WIDTH
+MEASURE_WIDTH = (UNITS_PER_MEASURE * BEAT_WIDTH) + BAR_PADDING
+LINE_CONTENT_WIDTH = MEASURES_PER_LINE * MEASURE_WIDTH
 
-    def is_dotted(duration):
-        if duration <= 0:
-            return False
-        doubled = duration * 2
-        if doubled % 3 != 0:
-            return False
-        base = doubled // 3
-        return base > 0 and (base & (base - 1)) == 0
+try:
+    title_font = ImageFont.truetype("arialbd.ttf", TITLE_FONT_SIZE)
+    fret_font = ImageFont.truetype("arial.ttf", FRET_FONT_SIZE)
+    small_font = ImageFont.truetype("arial.ttf", MEASURE_NUM_FONT_SIZE)
+except:
+    title_font = fret_font = small_font = ImageFont.load_default()
 
-    def draw_arc(draw_obj, x_start, x_end, y_top):
+def is_dotted(duration):
+    if duration <= 0:
+        return False
+    doubled = duration * 2
+    if doubled % 3 != 0:
+        return False
+    base = doubled // 3
+    return base > 0 and (base & (base - 1)) == 0
+
+def draw_arc(draw_obj, x_start, x_end, y_top):
         arc_box = [x_start, y_top - 20, x_end, y_top - 5]
         draw_obj.arc(arc_box, start=180, end=0, fill="black", width=1)
 
-    def draw_stem(draw_obj, stem_x, stem_y_start, duration):
-        if duration >= TICKS_FULL_NOTE:
-            draw_obj.line([(stem_x, stem_y_start), (stem_x, stem_y_start + FULL_H)], fill="black", width=2)
-        elif duration >= TICKS_HALF_NOTE:
-            draw_obj.line([(stem_x, stem_y_start), (stem_x, stem_y_start + HALF_TOP_H)], fill="black", width=2)
-            draw_obj.line([(stem_x, stem_y_start + HALF_TOP_H + HALF_GAP), (stem_x, stem_y_start + HALF_TOP_H + HALF_GAP + HALF_BOTTOM_H)], fill="black", width=2)
-        else:
-            draw_obj.line([(stem_x, stem_y_start), (stem_x, stem_y_start + STEM_H)], fill="black", width=2)
+def draw_stem(draw_obj, stem_x, stem_y_start, duration):
+    if duration >= TICKS_FULL_NOTE:
+        draw_obj.line([(stem_x, stem_y_start), (stem_x, stem_y_start + FULL_H)], fill="black", width=2)
+    elif duration >= TICKS_HALF_NOTE:
+        draw_obj.line([(stem_x, stem_y_start), (stem_x, stem_y_start + HALF_TOP_H)], fill="black", width=2)
+        draw_obj.line([(stem_x, stem_y_start + HALF_TOP_H + HALF_GAP), (stem_x, stem_y_start + HALF_TOP_H + HALF_GAP + HALF_BOTTOM_H)], fill="black", width=2)
+    else:
+        draw_obj.line([(stem_x, stem_y_start), (stem_x, stem_y_start + STEM_H)], fill="black", width=2)
 
+def draw_staff_elements(draw_obj, y_top, start_measure_num):
+    string_names = ['e', 'B', 'G', 'D', 'A', 'E']
+    for i, name in enumerate(string_names):
+        y = y_top + (i * LINE_SPACING)
+        draw_obj.text((20, y - (MEASURE_NUM_FONT_SIZE // 2)), name, fill="black")
+        draw_obj.line([(MARGIN_LEFT, y), (MARGIN_LEFT + LINE_CONTENT_WIDTH, y)], fill=(200, 200, 200))
+    draw_obj.line([(MARGIN_LEFT, y_top), (MARGIN_LEFT, y_top + 5 * LINE_SPACING)], fill="black", width=2)
+    draw_obj.text((MARGIN_LEFT, y_top + MEASURE_NUM_Y_OFFSET), str(start_measure_num), fill="gray", font=small_font)
+
+def draw_dashed_segment(draw_obj, x_start, x_end, y):
+    curr = x_start
+    while curr < x_end:
+        draw_obj.line([(curr, y), (min(curr + DASH_GAP, x_end), y)], fill="black", width=1)
+        curr += DASH_GAP * 2
+
+def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
     global_measure_counter = 1
 
     for seg_idx, segment in enumerate(segments):
@@ -79,28 +101,6 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
 
         img = Image.new('RGB', (int(img_width), int(img_height)), color='white')
         draw = ImageDraw.Draw(img)
-
-        try:
-            title_font = ImageFont.truetype("arialbd.ttf", TITLE_FONT_SIZE)
-            fret_font = ImageFont.truetype("arial.ttf", FRET_FONT_SIZE)
-            small_font = ImageFont.truetype("arial.ttf", MEASURE_NUM_FONT_SIZE)
-        except:
-            title_font = fret_font = small_font = ImageFont.load_default()
-
-        def draw_staff_elements(draw_obj, y_top, start_measure_num):
-            string_names = ['e', 'B', 'G', 'D', 'A', 'E']
-            for i, name in enumerate(string_names):
-                y = y_top + (i * LINE_SPACING)
-                draw_obj.text((20, y - (MEASURE_NUM_FONT_SIZE // 2)), name, fill="black")
-                draw_obj.line([(MARGIN_LEFT, y), (MARGIN_LEFT + LINE_CONTENT_WIDTH, y)], fill=(200, 200, 200))
-            draw_obj.line([(MARGIN_LEFT, y_top), (MARGIN_LEFT, y_top + 5 * LINE_SPACING)], fill="black", width=2)
-            draw_obj.text((MARGIN_LEFT, y_top + MEASURE_NUM_Y_OFFSET), str(start_measure_num), fill="gray", font=small_font)
-
-        def draw_dashed_segment(draw_obj, x_start, x_end, y):
-            curr = x_start
-            while curr < x_end:
-                draw_obj.line([(curr, y), (min(curr + DASH_GAP, x_end), y)], fill="black", width=1)
-                curr += DASH_GAP * 2
 
         current_y_cursor = 40
         draw.text((MARGIN_LEFT, current_y_cursor), segment.title, fill="black", font=title_font)

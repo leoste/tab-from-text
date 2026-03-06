@@ -1,15 +1,15 @@
 from typing import List
-from object.RhythmicChordSpan import RhythmicChordSpan
+from object.NoteProvider import NoteProvider
 from object.Note import Note
 
 
 class Segment:
-    def __init__(self, title: str, parts: List[RhythmicChordSpan]):
+    def __init__(self, title: str, parts: List[NoteProvider]):
         self.title = title
         self.parts = parts
 
-    def GetNotesFromSegment(self) -> 'List[Note]':        
+    def GetNotesFromSegment(self) -> List[Note]:        
         notes = []
         for part in self.parts:
-            notes += part.GetNotesFromRhythmicChordSpan()
+            notes += part.getNotes()
         return notes

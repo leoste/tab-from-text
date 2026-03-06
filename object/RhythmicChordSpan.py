@@ -4,13 +4,15 @@ from object.Rhythm import Rhythm
 from object.Note import Note
 from object.Chord import Chord
 from object.StrumStyle import StrumStyle
+from object.NoteProvider import NoteProvider
 
-class RhythmicChordSpan:
+
+class RhythmicChordSpan(NoteProvider):
     def __init__(self, rhythm: Rhythm, chordSpans: List[ChordSpan]) -> None:
         self.rhythm: Rhythm = rhythm
         self.chordSpans: List[ChordSpan] = chordSpans
 
-    def GetNotesFromRhythmicChordSpan(self) -> 'List[Note]':
+    def getNotes(self) -> List[Note]:
         notes = []
         chords = self.flattenChordSpans()
         durations = self.flattenRhythmDurations()
@@ -29,20 +31,20 @@ class RhythmicChordSpan:
                 notes += [Note(None, None, None)]
         return notes
             
-    def flattenChordSpans(self) -> 'List[Chord]':
+    def flattenChordSpans(self) -> List[Chord]:
         chords = []
         for chordSpan in self.chordSpans:
             chords += [chordSpan.chord] * Note.convertTimeToTicks(chordSpan.duration)
         return chords
     
-    def flattenRhythmDurations(self) -> 'List[int]':
+    def flattenRhythmDurations(self) -> List[int]:
         durations = []
         for duration in self.rhythm.durations:
             ticks = Note.convertTimeToTicks(duration)
             durations += [ticks] + [None] * (ticks - 1)
         return durations
 
-    def flattenStyles(self) -> 'List[StrumStyle]':
+    def flattenStyles(self) -> List[StrumStyle]:
         styles = []
         for style in self.rhythm.styles:
             ticks = Note.convertTimeToTicks(1)  # each style entry covers one eighth note = TIME_RESOLUTION ticks

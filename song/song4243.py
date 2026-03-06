@@ -6,6 +6,7 @@ from object.Segment import Segment
 from object.GuitarString import GuitarString
 from object.StrumStyle import StrumStyle
 from object.Instrument import Instrument
+from object.StrummedChordSpan import StrummedChordSpan
 from object.Song import Song
 
 NOTE_6_A_SHARP = Chord.get_single_note(GuitarString.E6, 6)
@@ -77,6 +78,19 @@ INTRO = Segment(
     ]
 )
 
+BASS_INTRO = Segment(
+    "INTRO",
+    [
+        RhythmicChordSpan(
+            Rhythm(
+                [8],
+                [StrumStyle.NO_HIT]
+            ),
+            [ChordSpan(8, Chord.get_no_strings_hit_chord())] * 9
+        )
+    ]
+)
+
 DURATIONS_8 = [ 1,1,1,1,1,1,1,1 ]
 DURATIONS_323 = [ 1,1,1,2,1,1,1 ]
 DURATIONS_122 = [ 1,2,2,1,1,1 ]
@@ -86,7 +100,7 @@ DURATIONS_2121 = [ 2,1,1,2,1,1 ]
 
 riff_end_chordspan = RhythmicChordSpan(
     Rhythm(
-        DURATIONS_WEIRD + DURATIONS_8 +
+        DURATIONS_122 + DURATIONS_8 +
         DURATIONS_8 + DURATIONS_WEIRD
     ),
     [
@@ -125,6 +139,29 @@ RIFF_SALMIGA = Segment(
                 ChordSpan(1, NOTE_6_A_SHARP)
             ]
         )
+    ]
+)
+
+bass_riff_main = [
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 6), 8),
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 8), 3),
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 9), 5),
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 9), 16),
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 7)),
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6), 15),
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 7), 8),
+    StrummedChordSpan(1.5, Chord.get_single_note(GuitarString.E6, 9)),
+    StrummedChordSpan(1.5, Chord.get_single_note(GuitarString.E6, 7)),
+    StrummedChordSpan(2, Chord.get_single_note(GuitarString.E6, 6)),
+    StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6), 3),
+]
+
+BASS_RIFF_SALMIGA = Segment(
+    "RIFF + SALM",
+    bass_riff_main * 2 +
+    [ 
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6), 7),
+        StrummedChordSpan(1, Chord.get_no_strings_hit_chord())
     ]
 )
 
@@ -232,6 +269,23 @@ CHORUS = Segment(
     ]
 )
 
+BASS_CHORUS = Segment(
+    "REFRÄÄN",
+    [
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 6), 3),
+        StrummedChordSpan(1, None),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 6)),
+        StrummedChordSpan(1, None),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.A5, 6)),
+        StrummedChordSpan(1, None),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6), 2),
+        StrummedChordSpan(1, None),
+        StrummedChordSpan(2, Chord.get_single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(1, Chord.get_single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(2, Chord.get_single_note(GuitarString.E6, 6)),        
+    ]
+)
+
 RHYTHM = Instrument(
     "RHYTHM",
     [
@@ -244,4 +298,19 @@ RHYTHM = Instrument(
     ]
 )
 
-SONG = Song("4243", [RHYTHM])
+BASS = Instrument(
+    "BASS",
+    [
+        BASS_INTRO,
+        BASS_RIFF_SALMIGA,
+        BASS_CHORUS,
+        #BASS_RIFF_SALMIGA,
+        #BASS_CHORUS,
+        #BASS_RIFF_ENDIGA,
+    ]    
+)
+
+SONG = Song("4243", [
+    RHYTHM,
+    BASS
+])

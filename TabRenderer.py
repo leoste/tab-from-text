@@ -222,10 +222,10 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                         prev_real_note = segment_notes[prev_real_idx] if prev_real_idx is not None else None
 
                         is_at_measure_end = (chunk_acc + chunk_dur) % UNITS_PER_MEASURE == 0
-                        can_beam_fwd = (not is_at_measure_end) and (next_real_note is not None) and (next_real_note.duration == note.duration)
+                        can_beam_fwd = (not is_at_measure_end) and (next_real_note is not None) and (next_real_note.duration == note.duration) and (note.chord is not None) and (next_real_note.chord is not None)
 
                         is_at_measure_start = (chunk_acc % UNITS_PER_MEASURE == 0)
-                        is_beamed_back = (not is_at_measure_start) and (prev_real_note is not None) and (prev_real_note.duration == note.duration)
+                        is_beamed_back = (not is_at_measure_start) and (prev_real_note is not None) and (prev_real_note.duration == note.duration) and (note.chord is not None) and (prev_real_note.chord is not None)
 
                         if can_beam_fwd:
                             draw.line([(chunk_stem_x, chunk_bottom_y), (chunk_stem_x + BEAT_WIDTH * chunk_dur, chunk_bottom_y)], fill="black", width=4)
@@ -264,5 +264,5 @@ def render_song(song: Song):
     safe_song_title = song.title.lower().replace(' ', '_')
     for instrument in song.instruments:
         safe_instrument_name = instrument.name.lower().replace(' ', '_')
-        output_base_path = f"tabs/{safe_song_title}/{safe_instrument_name}_tab"
+        output_base_path = f"tabs/{safe_song_title}/{safe_instrument_name}/tab"
         render_tab(instrument.segments, output_base_path)

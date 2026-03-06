@@ -24,7 +24,7 @@ class Chord:
             return Chord(None, None, base_fret + 2, base_fret + 2, base_fret, None)
 
     @staticmethod
-    def get_no_strings_hit_chord():
+    def get_no_strings_hit_chord() -> 'Chord':
         return Chord(-1,-1,-1,-1,-1,-1)
     
     @staticmethod

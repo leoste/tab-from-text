@@ -5,6 +5,8 @@ from object.Rhythm import Rhythm
 from object.Segment import Segment
 from object.GuitarString import GuitarString
 from object.StrumStyle import StrumStyle
+from object.Instrument import Instrument
+from object.Song import Song
 
 CHORD_13_F = Chord.get_power_chord(GuitarString.E6, 13)
 CHORD_13_C = Chord(None, None, None, 15, 13, 13)
@@ -225,15 +227,20 @@ END = Segment(
     ]
 )
 
-SONG = [
-    INTRO,
-    SALM,
-    CHORUS,
-    INTRO,
-    SALM,
-    CHORUS,
-    BREAK,
-    CHORUS,
-    INSTRUMENTAL_CHORUS,
-    END
-]
+RHYTHM = Instrument(
+    "RHYTHM",
+    [
+        INTRO,
+        SALM,
+        CHORUS,
+        INTRO,
+        SALM,
+        CHORUS,
+        BREAK,
+        CHORUS,
+        INSTRUMENTAL_CHORUS,
+        END
+    ]
+)
+
+SONG = Song("Jahe", [RHYTHM])

@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 from object.StrumStyle import StrumStyle
 from object.Segment import Segment
 from object.Note import TIME_RESOLUTION
+from object.Song import Song
 
 # --- Konstandid ---
 MEASURES_PER_LINE = 4
@@ -258,3 +259,10 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
         file_path = f"{output_base_path}_{seg_idx + 1}_{safe_title}.png"
         img.save(file_path)
         print(f"Salvestatud: {file_path}")
+
+def render_song(song: Song):
+    safe_song_title = song.title.lower().replace(' ', '_')
+    for instrument in song.instruments:
+        safe_instrument_name = instrument.name.lower().replace(' ', '_')
+        output_base_path = f"tabs/{safe_song_title}/{safe_instrument_name}_tab"
+        render_tab(instrument.segments, output_base_path)

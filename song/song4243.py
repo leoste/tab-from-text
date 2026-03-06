@@ -5,6 +5,8 @@ from object.Rhythm import Rhythm
 from object.Segment import Segment
 from object.GuitarString import GuitarString
 from object.StrumStyle import StrumStyle
+from object.Instrument import Instrument
+from object.Song import Song
 
 NOTE_6_A_SHARP = Chord.get_single_note(GuitarString.E6, 6)
 NOTE_9_C_SHARP = Chord.get_single_note(GuitarString.E6, 9)
@@ -156,8 +158,11 @@ RIFF_ENDIGA = Segment(
         ),
         wait_chord_span,
         RhythmicChordSpan(
-            Rhythm([2]),
-            [ChordSpan(2,CHORD_6_A_SHARP)]
+            Rhythm([2,6]),
+            [
+                ChordSpan(2,CHORD_6_A_SHARP),
+                ChordSpan(6,Chord.get_no_strings_hit_chord())
+            ]
         )
     ]
 )
@@ -227,11 +232,16 @@ CHORUS = Segment(
     ]
 )
 
-SONG = [
-    INTRO,
-    RIFF_SALMIGA,
-    CHORUS,
-    RIFF_SALMIGA,
-    CHORUS,
-    RIFF_ENDIGA,
-]
+RHYTHM = Instrument(
+    "RHYTHM",
+    [
+        INTRO,
+        RIFF_SALMIGA,
+        CHORUS,
+        RIFF_SALMIGA,
+        CHORUS,
+        RIFF_ENDIGA,
+    ]
+)
+
+SONG = Song("4243", [RHYTHM])

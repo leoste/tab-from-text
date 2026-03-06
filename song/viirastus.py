@@ -5,6 +5,8 @@ from object.Rhythm import Rhythm
 from object.Segment import Segment
 from object.GuitarString import GuitarString
 from object.StrumStyle import StrumStyle
+from object.Instrument import Instrument
+from object.Song import Song
 
 CHORD_8_F = Chord.get_power_chord(GuitarString.A5, 8)
 CHORD_8_F_DOUBLE = Chord(None, None, 10, 10, 8, 8)
@@ -173,14 +175,19 @@ VIIMANE_CHORUS = Segment(
     ]
 )
 
-SONG = [
-    FIRST_INTRO,
-    SALM,
-    CHORUS,
-    SECOND_INTRO,
-    SALM,
-    CHORUS,
-    THIRD_INTRO,
-    VIIMANE_SALM,
-    VIIMANE_CHORUS
-]
+RHYTHM = Instrument(
+    "RHYTHM",
+    [
+        FIRST_INTRO,
+        SALM,
+        CHORUS,
+        SECOND_INTRO,
+        SALM,
+        CHORUS,
+        THIRD_INTRO,
+        VIIMANE_SALM,
+        VIIMANE_CHORUS
+    ]
+)
+
+SONG = Song("Viirastus", [RHYTHM])

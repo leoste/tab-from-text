@@ -230,7 +230,11 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                         if can_beam_fwd:
                             draw.line([(chunk_stem_x, chunk_bottom_y), (chunk_stem_x + BEAT_WIDTH * chunk_dur, chunk_bottom_y)], fill="black", width=4)
                         elif not is_beamed_back:
-                            draw.line([(chunk_stem_x, chunk_bottom_y), (chunk_stem_x + 12, chunk_bottom_y)], fill="black", width=2)
+                            if note.chord is None:
+                                # Pause: draw stub at top pointing left
+                                draw.line([(chunk_stem_x - 12, chunk_stem_y_start), (chunk_stem_x, chunk_stem_y_start)], fill="black", width=2)
+                            else:
+                                draw.line([(chunk_stem_x, chunk_bottom_y), (chunk_stem_x + 12, chunk_bottom_y)], fill="black", width=2)
 
                     prev_stem_x = chunk_stem_x
                     prev_stem_y_start = chunk_stem_y_start

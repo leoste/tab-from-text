@@ -2,7 +2,7 @@ import math
 from PIL import Image, ImageDraw, ImageFont
 from object.StrumStyle import StrumStyle
 from object.Segment import Segment
-from object.Note import Note, TIME_RESOLUTION
+from object.Note import TIME_RESOLUTION
 
 def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
     # --- Konstandid ---
@@ -247,7 +247,8 @@ def render_tab(segments: list[Segment], output_base_path="guitar_tab"):
                         draw.line([(MARGIN_LEFT + LINE_CONTENT_WIDTH, eol_row_y_top),
                                    (MARGIN_LEFT + LINE_CONTENT_WIDTH, eol_row_y_top + 5 * LINE_SPACING)], fill="black", width=2)
 
-            last_style = note.style
+            if note.style is not None:
+                last_style = note.style
             acc_dur_segment += (note.duration if note.duration else 0)
 
         if acc_dur_segment % (UNITS_PER_MEASURE * MEASURES_PER_LINE) != 0:

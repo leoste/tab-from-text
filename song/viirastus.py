@@ -280,7 +280,7 @@ BASS_VIIMANE_CHORUS = Segment(
 )
 
 RHYTHM = Instrument(
-    "RHYTHM",
+    "Rhythm",
     [
         FIRST_INTRO,
         SALM,
@@ -295,7 +295,7 @@ RHYTHM = Instrument(
 )
 
 BASS = Instrument(
-    "BASS",
+    "Bass",
     [
         BASS_FIRST_INTRO,
         BASS_SALM,

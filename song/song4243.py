@@ -336,7 +336,7 @@ BASS_CHORUS = Segment(
 )
 
 RHYTHM = Instrument(
-    "RHYTHM",
+    "Rhythm",
     [
         INTRO,
         RIFF_SALMIGA,
@@ -348,7 +348,7 @@ RHYTHM = Instrument(
 )
 
 BASS = Instrument(
-    "BASS",
+    "Bass",
     [
         BASS_INTRO,
         BASS_RIFF_SALMIGA,

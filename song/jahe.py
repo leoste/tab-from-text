@@ -228,7 +228,7 @@ END = Segment(
 )
 
 RHYTHM = Instrument(
-    "RHYTHM",
+    "Rhythm",
     [
         INTRO,
         SALM,

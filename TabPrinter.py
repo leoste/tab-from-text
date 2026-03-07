@@ -47,7 +47,7 @@ def _image_to_reader(img: Image.Image) -> ImageReader:
     return ImageReader(buf)
 
 
-def _print_instrument(c: canvas.Canvas, images_with_names: list[tuple[str, Image.Image]]) -> None:
+def _print_instrument(c: canvas.Canvas, images_with_names: list[tuple[str, Image.Image]], title: str = "") -> None:
     """Lay out all images for one instrument onto the canvas, with page numbers."""
     entries: list[tuple[Image.Image, float, float]] = []
     for _filename, img in images_with_names:
@@ -74,6 +74,9 @@ def _print_instrument(c: canvas.Canvas, images_with_names: list[tuple[str, Image
         # Page number centered at bottom
         c.setFont("Helvetica", PAGE_NUMBER_FONT_SIZE)
         c.drawCentredString(A4_WIDTH_PT / 2, PAGE_MARGIN_PT / 2, str(page_num))
+        # Title at bottom left
+        if title:
+            c.drawString(PAGE_MARGIN_PT, PAGE_MARGIN_PT / 2, title)
         c.showPage()
         page_num += 1
 
@@ -104,6 +107,6 @@ def print_song(song: Song, output_dir: str) -> None:
 
         pdf_path = os.path.join(output_dir, f"{safe_song_title}_{safe_instrument_name}.pdf")
         c = canvas.Canvas(pdf_path, pagesize=A4)
-        _print_instrument(c, images_with_names)
+        _print_instrument(c, images_with_names, title=song.title)
         c.save()
         print(f"PDF salvestatud: {pdf_path}")

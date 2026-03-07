@@ -10,16 +10,18 @@ from TabRenderer import render_tab
 
 # --- Constants ---
 PAGE_MARGIN_CM = 2.0
+PAGE_VERTICAL_MARGIN_CM = 1.8
 IMAGE_DPI = 96  # the DPI at which TabRenderer produces its images
 PAGE_NUMBER_FONT_SIZE = 10
 
 # Derived
 CM_TO_PT = 28.3465
 PAGE_MARGIN_PT = PAGE_MARGIN_CM * CM_TO_PT
+PAGE_VERTICAL_MARGIN_PT = PAGE_VERTICAL_MARGIN_CM * CM_TO_PT
 
 A4_WIDTH_PT, A4_HEIGHT_PT = A4  # 595.27 x 841.89 pt
 PRINTABLE_WIDTH_PT = A4_WIDTH_PT - 2 * PAGE_MARGIN_PT
-PRINTABLE_HEIGHT_PT = A4_HEIGHT_PT - 2 * PAGE_MARGIN_PT
+PRINTABLE_HEIGHT_PT = A4_HEIGHT_PT - 2 * PAGE_VERTICAL_MARGIN_PT
 
 
 def _px_to_pt(px: float) -> float:
@@ -61,7 +63,7 @@ def _print_instrument(c: canvas.Canvas, images_with_names: list[tuple[str, Image
 
     def flush_page() -> None:
         nonlocal page_num
-        y_cursor_pt = A4_HEIGHT_PT - PAGE_MARGIN_PT
+        y_cursor_pt = A4_HEIGHT_PT - PAGE_VERTICAL_MARGIN_PT
         for im, w, h in page_entries:
             c.drawImage(
                 _image_to_reader(im),
@@ -73,10 +75,10 @@ def _print_instrument(c: canvas.Canvas, images_with_names: list[tuple[str, Image
             y_cursor_pt -= h
         # Page number centered at bottom
         c.setFont("Helvetica", PAGE_NUMBER_FONT_SIZE)
-        c.drawCentredString(A4_WIDTH_PT / 2, PAGE_MARGIN_PT / 2, str(page_num))
+        c.drawCentredString(A4_WIDTH_PT / 2, PAGE_VERTICAL_MARGIN_PT / 2, str(page_num))
         # Title at bottom left
         if title:
-            c.drawString(PAGE_MARGIN_PT, PAGE_MARGIN_PT / 2, title)
+            c.drawString(PAGE_MARGIN_PT, PAGE_VERTICAL_MARGIN_PT / 2, title)
         c.showPage()
         page_num += 1
 

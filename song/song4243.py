@@ -81,13 +81,10 @@ INTRO = Segment(
 BASS_INTRO = Segment(
     "INTRO",
     [
-        RhythmicChordSpan(
-            Rhythm(
-                [8],
-                [StrumStyle.NO_HIT]
-            ),
-            [ChordSpan(8, Chord.no_strings_hit_chord())] * 9
-        )
+        intro_first_three,
+        intro_last
+    ] * 4 + [
+        intro_pause
     ]
 )
 

@@ -32,7 +32,7 @@ class LayoutConfig:
     # --- String lines ---
     line_spacing_pt:    float = 6    # gap between adjacent string lines
     above_strings_pt:   float = 12   # space above 1st string (annotations live here)
-    below_strings_pt:   float = 36   # space below 6th string (stems live here)
+    below_strings_pt:   float = 22   # space below 6th string (stems live here) use 36 for text
 
     # --- Title block ---
     title_padding_pt:   float = 8.0    # gap between title baseline and first system

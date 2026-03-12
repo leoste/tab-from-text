@@ -32,7 +32,7 @@ class LayoutConfig:
     # --- String lines ---
     line_spacing_pt:    float = 6    # gap between adjacent string lines
     above_strings_pt:   float = 12   # space above 1st string (annotations live here)
-    below_strings_pt:   float = 22   # space below 6th string (stems live here)
+    below_strings_pt:   float = 36   # space below 6th string (stems live here)
 
     # --- Title block ---
     title_padding_pt:   float = 8.0    # gap between title baseline and first system
@@ -40,11 +40,14 @@ class LayoutConfig:
     # --- Horizontal layout ---
     eighth_note_width_pt: float = 6.0  # per tick; one eighth note = 2 ticks = 2 × this
     bar_padding_pt:       float = 8.0  # gap at start of each measure before first note
-    margin_left_pt:       float = 18.0
-    margin_right_pt:      float = 18.0
+    margin_left_pt:       float = 64   # includes former 2cm page margin (56.7pt) + 18pt content indent
+    margin_right_pt:      float = 64
 
     # --- Page layout ---
-    block_gap_pt:       float = 0.0    # vertical gap between stacked segment images
+    block_gap_pt:            float = 0.0    # vertical gap between stacked segment images
+    page_top_margin_pt:      float = 34.0
+    page_bottom_margin_pt:   float = 64.0
+    footer_margin_pt:        float = 64.0   # horizontal indent for footer text (keep in sync with margin_left_pt)
 
     # --- Stems ---
     stem_h_pt:          float = 8
@@ -71,7 +74,7 @@ class LayoutConfig:
     measure_num_y_offset_pt: float = -12.0  # offset from top of system upward
 
     # --- String names ---
-    string_name_x_pt:   float = 4   # x position from left edge of image
+    string_name_x_pt:   float = 4   # gap between string name letter and the left barline
 
     # --- Line widths ---
     line_width_thin_pt:   float = 0.25

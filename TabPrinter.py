@@ -10,22 +10,12 @@ from object.Song import Song
 from TabRenderer import render_tab
 from LayoutConfig import LayoutConfig
 
-CM_TO_PT = 28.3465
-
-# Page margins (these become part of step 6 cleanup, but live here for now)
-PAGE_MARGIN_CM          = 2.0
-PAGE_VERTICAL_MARGIN_CM = 1.8
-PAGE_MARGIN_PT          = PAGE_MARGIN_CM * CM_TO_PT
-PAGE_VERTICAL_MARGIN_PT = PAGE_VERTICAL_MARGIN_CM * CM_TO_PT
-
 A4_WIDTH_PT, A4_HEIGHT_PT = A4
-PRINTABLE_WIDTH_PT  = A4_WIDTH_PT  - 2 * PAGE_MARGIN_PT
-PRINTABLE_HEIGHT_PT = A4_HEIGHT_PT - 2 * PAGE_VERTICAL_MARGIN_PT
 
 
 def _make_layout_config() -> LayoutConfig:
     cfg = LayoutConfig()
-    cfg.printable_width_pt = PRINTABLE_WIDTH_PT
+    cfg.printable_width_pt = A4_WIDTH_PT
     return cfg
 
 
@@ -37,7 +27,6 @@ def _image_to_reader(img: Image.Image) -> ImageReader:
 
 
 def _pt_per_px(cfg: LayoutConfig) -> float:
-    """How many PDF points correspond to one rendered pixel."""
     return 72.0 / (cfg.dpi * cfg.scale)
 
 
@@ -53,51 +42,42 @@ def _print_instrument(
     title: str = "",
     instrument_name: str = "",
 ) -> None:
-    """Lay out all segment images for one instrument onto the canvas.
-
-    Segment images are stacked vertically with cfg.block_gap_pt between them.
-    Images that don't fit on the current page trigger a page break.
-    """
-    block_gap_pt = cfg.block_gap_pt
-    footer_font_size = cfg.footer_font_size_pt
+    v_margin_top = cfg.page_top_margin_pt
+    v_margin_bot = cfg.page_bottom_margin_pt
+    f_margin     = cfg.footer_margin_pt
+    block_gap    = cfg.block_gap_pt
+    footer_font  = cfg.footer_font_size_pt
+    printable_h  = A4_HEIGHT_PT - v_margin_top - v_margin_bot
 
     entries: list[tuple[Image.Image, float, float]] = []
     for _filename, img in images_with_names:
         w_pt, h_pt = _image_dimensions_pt(img, cfg)
         entries.append((img, w_pt, h_pt))
 
-    page_num   = 1
+    page_num       = 1
     page_entries: list[tuple[Image.Image, float, float]] = []
     page_used_h_pt = 0.0
 
     def flush_page() -> None:
         nonlocal page_num
-        y_cursor_pt = A4_HEIGHT_PT - PAGE_VERTICAL_MARGIN_PT
+        y_cursor_pt = A4_HEIGHT_PT - v_margin_top
         for i, (im, w, h) in enumerate(page_entries):
             if i > 0:
-                y_cursor_pt -= block_gap_pt
-            c.drawImage(
-                _image_to_reader(im),
-                PAGE_MARGIN_PT,
-                y_cursor_pt - h,
-                width=w,
-                height=h,
-            )
+                y_cursor_pt -= block_gap
+            c.drawImage(_image_to_reader(im), 0, y_cursor_pt - h, width=w, height=h)
             y_cursor_pt -= h
-        c.setFont("Helvetica", footer_font_size)
-        c.drawCentredString(A4_WIDTH_PT / 2, PAGE_VERTICAL_MARGIN_PT / 2, str(page_num))
+        c.setFont("Helvetica", footer_font)
+        c.drawCentredString(A4_WIDTH_PT / 2, v_margin_bot / 2, str(page_num))
         if title:
-            c.drawString(PAGE_MARGIN_PT, PAGE_VERTICAL_MARGIN_PT / 2, title)
+            c.drawString(f_margin, v_margin_bot / 2, title)
         if instrument_name:
-            c.drawRightString(A4_WIDTH_PT - PAGE_MARGIN_PT,
-                              PAGE_VERTICAL_MARGIN_PT / 2, instrument_name)
+            c.drawRightString(A4_WIDTH_PT - f_margin, v_margin_bot / 2, instrument_name)
         c.showPage()
         page_num += 1
 
     for img, w_pt, h_pt in entries:
-        # Gap is only added between blocks, not before the first one on a page
-        gap = block_gap_pt if page_entries else 0.0
-        fits = (page_used_h_pt + gap + h_pt) <= PRINTABLE_HEIGHT_PT
+        gap  = block_gap if page_entries else 0.0
+        fits = (page_used_h_pt + gap + h_pt) <= printable_h
 
         if not fits and page_entries:
             flush_page()

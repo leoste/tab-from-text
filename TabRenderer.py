@@ -68,7 +68,7 @@ def draw_staff_elements(draw_obj, cfg: LayoutConfig, fret_font, small_font, stri
 
     for i, name in enumerate(string_names):
         y = y_top + (i * line_sp)
-        draw_obj.text((cfg.px(cfg.string_name_x_pt), y - (font_h // 2)),
+        draw_obj.text((margin_left - cfg.px(cfg.string_name_x_pt) - font_h, y - (font_h // 2)),
                       name, fill="black", font=string_name_font)
         draw_obj.line([(margin_left, y), (margin_left + content_w, y)],
                       fill=(200, 200, 200), width=cfg.lw(cfg.line_width_thin_pt))

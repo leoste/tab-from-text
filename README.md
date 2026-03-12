@@ -8,4 +8,7 @@ It's very limited, there are no pause symbols for example. The system only rende
 
 Most code is hand-written by me. Only exception is TabRenderer.py, TabPrinter.py and LayoutConfig.py which are AI-generated, because who wants to write frontend code or worse yet, configuration files fr.
 
-<img width="2020" height="2520" alt="guitar_tab_6_RIFF_2x__LÕPP" src="https://github.com/user-attachments/assets/040f34e0-09eb-4786-bb8b-48d06cd4ce7c" />
+<img width="2397" height="1583" alt="image" src="https://github.com/user-attachments/assets/f3bd937d-d0cd-4936-a225-20cd7fdbc3f0" />
+<img width="2058" height="1586" alt="image" src="https://github.com/user-attachments/assets/eeb82338-21cf-4f9d-8b53-d956eee71259" />
+
+

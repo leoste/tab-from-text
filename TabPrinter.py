@@ -4,6 +4,7 @@ from PIL import Image
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase.pdfdoc import PDFDictionary, PDFName
 
 from object.Song import Song
 from TabRenderer import render_tab
@@ -120,6 +121,7 @@ def print_song(song: Song, output_dir: str) -> None:
 
         pdf_path = os.path.join(output_dir, f"{safe_song_title}_{safe_instrument_name}.pdf")
         c = canvas.Canvas(pdf_path, pagesize=A4)
+        c._doc.Catalog.ViewerPreferences = PDFDictionary({"PrintScaling": PDFName("None")})
         _print_instrument(c, images_with_names, cfg, title=song.title, instrument_name=instrument.name)
         c.save()
         print(f"PDF salvestatud: {pdf_path}")

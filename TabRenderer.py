@@ -98,7 +98,7 @@ def render_tab(segments: list[Segment], output_base_path: str = "guitar_tab",
     if cfg is None:
         cfg = LayoutConfig()
 
-    title_font, fret_font, small_font, string_name_font, annotation_font = cfg.load_fonts()
+    title_font, fret_font, small_font, string_name_font, annotation_font, _lyrics_font = cfg.load_fonts()
 
     line_content_width_pt = _line_content_width_pt(cfg)
     measure_width_pt      = (UNITS_PER_MEASURE * cfg.eighth_note_width_pt) + cfg.bar_padding_pt
@@ -350,6 +350,89 @@ def render_tab(segments: list[Segment], output_base_path: str = "guitar_tab",
         results.append((file_path, img))
 
     return results
+
+
+def render_title_page(song: Song, cfg: LayoutConfig = None,
+                      num_columns: int = 2) -> Image.Image | None:
+    if not song.structure:
+        return None
+
+    if cfg is None:
+        cfg = LayoutConfig()
+
+    title_font, _fret, _small, _str_name, _ann, lyrics_font = cfg.load_fonts()
+
+    from reportlab.lib.pagesizes import A4
+    A4_WIDTH_PT, A4_HEIGHT_PT = A4
+
+    img_w_px = cfg.px(cfg.printable_width_pt if cfg.printable_width_pt > 0
+                      else cfg._natural_width_pt)
+    page_h_pt = A4_HEIGHT_PT - cfg.page_top_margin_pt - cfg.page_bottom_margin_pt
+    img_h_px  = cfg.px(page_h_pt)
+
+    img  = Image.new('RGB', (img_w_px, img_h_px), color='white')
+    draw = ImageDraw.Draw(img)
+
+    margin_px    = cfg.px(cfg.margin_left_pt)
+    title_fs_px  = cfg.px(cfg.title_font_size_pt)
+    lyrics_fs_px = cfg.px(cfg.lyrics_font_size_pt)
+
+    title_line_h  = int(title_fs_px  * 1.4)
+    lyrics_line_h = int(lyrics_fs_px * 1.4)
+    section_gap   = lyrics_line_h
+
+    top_pad_px = cfg.px(cfg.page_top_margin_pt * 0.5)
+
+    # --- Song title (centered across full width) ---
+    title_w = draw.textbbox((0, 0), song.title, font=title_font)[2]
+    title_x = (img_w_px - title_w) // 2
+    draw.text((title_x, top_pad_px), song.title, fill="black", font=title_font)
+    columns_top_y = top_pad_px + title_line_h * 2
+
+    # --- Column geometry ---
+    usable_w   = img_w_px - 2 * margin_px
+    col_gap    = margin_px
+    col_w      = (usable_w - col_gap * (num_columns - 1)) // num_columns
+    col_starts = [margin_px + i * (col_w + col_gap) for i in range(num_columns)]
+    col_bottom = img_h_px
+    col_height = col_bottom - columns_top_y
+
+    # --- Pre-compute height of each section block ---
+    def section_height(section) -> int:
+        h = title_line_h
+        if section.lyrics:
+            h += len(section.lyrics.splitlines()) * lyrics_line_h
+        h += section_gap
+        return h
+
+    # --- Distribute sections into columns greedily ---
+    columns: list[list] = [[] for _ in range(num_columns)]
+    col_used = [0] * num_columns
+    col_idx  = 0
+
+    for section in song.structure:
+        sh = section_height(section)
+        if col_used[col_idx] + sh > col_height and col_idx < num_columns - 1:
+            col_idx += 1
+        columns[col_idx].append(section)
+        col_used[col_idx] += sh
+
+    # --- Draw columns ---
+    for c_idx, col_sections in enumerate(columns):
+        x = col_starts[c_idx]
+        y = columns_top_y
+        for section in col_sections:
+            draw.text((x, y), section.title, fill="black", font=title_font)
+            y += title_line_h
+
+            if section.lyrics:
+                for line in section.lyrics.splitlines():
+                    draw.text((x, y), line, fill="black", font=lyrics_font)
+                    y += lyrics_line_h
+
+            y += section_gap
+
+    return img
 
 
 def render_song(song: Song, cfg: LayoutConfig = None) -> list[tuple[str, object]]:

@@ -8,6 +8,7 @@ from object.StrumStyle import StrumStyle
 from object.Instrument import Instrument
 from object.StrummedChordSpan import StrummedChordSpan
 from object.Song import Song
+from object.SongSection import SongSection
 
 CHORD_8_F = Chord.power_chord(GuitarString.A5, 8)
 CHORD_8_F_DOUBLE = Chord(None, None, 10, 10, 8, 8)
@@ -309,4 +310,62 @@ BASS = Instrument(
     ]
 )
 
-SONG = Song("Viirastus", [RHYTHM, BASS])
+salm_1_lyrics = """\
+On kätte jõudnud aeg
+Ja maksma ma pean
+Ei jää siin pidama
+Maksan eluaeg
+
+Pingutatud sai
+ülemääragi
+Ei ole midagi
+Käes hoida vaid\
+"""
+
+salm_2_lyrics = """\
+silme ees on mul
+mingi viirastus
+mingi vastutus
+ei tea kas olen hull
+
+silmad lahti teen
+pilt mu ees siis kaob
+kuid kõrvus ikka taob
+kaja ülipeen\
+"""
+
+salm_3_lyrics = """\
+on kätte jõudnud aeg
+ja maksnud olen ma
+ei jää siin pidama
+maksan eluaeg
+
+pingutatud sai
+ülemääragi
+ja teada sedagi
+jätkub see vaid\
+"""
+
+ref_lyrics = """\
+kas saaksin proovida veel
+või ongi läbi mu tee\
+"""
+
+final_ref_lyrics = """\
+ei saagi proovida veel
+ongi nüüd läbi mu tee
+ei saagi proovida veel
+ongi nüüd läbi mu tee
+"""
+
+SONG = Song("Viirastus", [RHYTHM, BASS], structure=[
+    SongSection("INTRO WITH 2x END"),
+    SongSection("SALM", salm_1_lyrics),
+    SongSection("REFRÄÄN", ref_lyrics),
+    SongSection("INTRO WITH 1x END"),
+    SongSection("SALM", salm_2_lyrics),
+    SongSection("REFRÄÄN", ref_lyrics),
+    SongSection("DOUBLE INTRO"),
+    SongSection("VIIMANE SALM", salm_3_lyrics),
+    SongSection("VIIMANE REFRÄÄN", final_ref_lyrics),
+])

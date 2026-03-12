@@ -7,7 +7,7 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase.pdfdoc import PDFDictionary, PDFName
 
 from object.Song import Song
-from TabRenderer import render_tab
+from TabRenderer import render_tab, render_title_page
 from LayoutConfig import LayoutConfig
 
 A4_WIDTH_PT, A4_HEIGHT_PT = A4
@@ -106,6 +106,16 @@ def print_song(song: Song, output_dir: str) -> None:
         pdf_path = os.path.join(output_dir, f"{safe_song_title}_{safe_instrument_name}.pdf")
         c = canvas.Canvas(pdf_path, pagesize=A4)
         c._doc.Catalog.ViewerPreferences = PDFDictionary({"PrintScaling": PDFName("None")})
+
+        # --- Title page (one per instrument PDF, shared song structure) ---
+        title_page_img = render_title_page(song, cfg, num_columns=2)
+        if title_page_img is not None:
+            w_pt, h_pt = _image_dimensions_pt(title_page_img, cfg)
+            c.drawImage(_image_to_reader(title_page_img), 0,
+                        A4_HEIGHT_PT - cfg.page_top_margin_pt - h_pt,
+                        width=w_pt, height=h_pt)
+            c.showPage()
+
         _print_instrument(c, images_with_names, cfg,
                           title=song.title, instrument_name=instrument.name)
         c.save()

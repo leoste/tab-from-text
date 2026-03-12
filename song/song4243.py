@@ -8,6 +8,7 @@ from object.StrumStyle import StrumStyle
 from object.Instrument import Instrument
 from object.StrummedChordSpan import StrummedChordSpan
 from object.Song import Song
+from object.SongSection import SongSection
 
 NOTE_6_A_SHARP = Chord.single_note(GuitarString.E6, 6)
 NOTE_9_C_SHARP = Chord.single_note(GuitarString.E6, 9)
@@ -359,7 +360,37 @@ BASS = Instrument(
     ]    
 )
 
+salm_1_lyrics = """\
+väärtushinnangutesse ei ole mõtet laskuda
+see on salalik tee, kuskil ei või astuda
+ainult üks on oluline ja ka kõige peamine
+kas on õhtul rõõmus meel või siis oled nutune\
+"""
+
+salm_2_lyrics = """\
+loota võid et inimene muudab ennast nagu tahad
+aga katse kinnitab et muutus see on väga paha
+suvaline küll ei sobi, vaid üks viis on õiglane
+valituks saab osutuda enda moodi kaaslane\
+"""
+
+ref_lyrics = """\
+mida võib tahta iga mees
+peitub südames
+kui oled kinni sügaval sees
+ära saad vaid kaevates 
+ära saad vaid kaevates
+ära saad vaid kaevates\
+"""
+
 SONG = Song("4243", [
     RHYTHM,
     BASS
+], structure=[
+    SongSection("INTRO"),
+    SongSection("RIFF + SALM", salm_1_lyrics),
+    SongSection("REFRÄÄN", ref_lyrics),
+    SongSection("RIFF + SALM", salm_2_lyrics),
+    SongSection("REFRÄÄN", ref_lyrics),
+    SongSection("RIFF 2x + LÕPP"),
 ])

@@ -28,6 +28,7 @@ class LayoutConfig:
     measure_num_font_size_pt:  float = 4
     string_name_font_size_pt:  float = 4
     footer_font_size_pt:       float = 10   # page number, song title, instrument name
+    lyrics_font_size_pt:       float = 12   # lyrics on the title page
 
     # --- String lines ---
     line_spacing_pt:    float = 6    # gap between adjacent string lines
@@ -129,7 +130,8 @@ class LayoutConfig:
             small_font       = ImageFont.truetype("arial.ttf",   self.px(self.measure_num_font_size_pt))
             string_name_font = ImageFont.truetype("arial.ttf",   self.px(self.string_name_font_size_pt))
             annotation_font  = ImageFont.truetype("arial.ttf",   self.px(self.annotation_font_size_pt))
+            lyrics_font      = ImageFont.truetype("arial.ttf",   self.px(self.lyrics_font_size_pt))
         except Exception:
             default = ImageFont.load_default()
-            title_font = fret_font = small_font = string_name_font = annotation_font = default
-        return title_font, fret_font, small_font, string_name_font, annotation_font
+            title_font = fret_font = small_font = string_name_font = annotation_font = lyrics_font = default
+        return title_font, fret_font, small_font, string_name_font, annotation_font, lyrics_font

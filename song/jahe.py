@@ -7,6 +7,7 @@ from object.GuitarString import GuitarString
 from object.StrumStyle import StrumStyle
 from object.Instrument import Instrument
 from object.Song import Song
+from object.SongSection import SongSection
 
 CHORD_13_F = Chord.power_chord(GuitarString.E6, 13)
 CHORD_13_C = Chord(None, None, None, 15, 13, 13)
@@ -243,4 +244,36 @@ RHYTHM = Instrument(
     ]
 )
 
-SONG = Song("Jahe", [RHYTHM])
+salm_1_lyrics = """\
+sõpradena võime ju koos
+minna sinna kuhu tahtnud hoos
+aga tulla sealt ära me
+vaid võhivõõrastena või-me\
+"""
+
+salm_2_lyrics = """\
+tuulega mul kõrvus kõlab noot
+pilvedega toob ta miskit uut
+aimasingi et nii minna võib
+selguse see mulle pähe tõi\
+"""
+
+chorus_lyrics = """\
+siiski ootan mina sinu järel
+järgnen sulle kasvõi kui oleks hambad sul verel
+tahan teada vaid et mis on su tahe
+suhtlus tundub pikimööda täitsa meil jahe\
+"""
+
+SONG = Song("Jahe", [RHYTHM], structure=[
+    SongSection("INTRO"),
+    SongSection("SALM", salm_1_lyrics),
+    SongSection("REFRÄÄN", chorus_lyrics),
+    SongSection("INTRO"),
+    SongSection("SALM", salm_2_lyrics),
+    SongSection("REFRÄÄN", chorus_lyrics),
+    SongSection("BREAKDOWN"),
+    SongSection("REFRÄÄN", chorus_lyrics),
+    SongSection("INSTRUMENTAALNE REFRÄÄN"),
+    SongSection("LÕPP"),
+])

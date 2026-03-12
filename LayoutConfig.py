@@ -34,16 +34,8 @@ class LayoutConfig:
     above_strings_pt:   float = 12   # space above 1st string (annotations live here)
     below_strings_pt:   float = 22   # space below 6th string (stems live here)
 
-    @property
-    def string_block_pt(self) -> float: return 5 * self.line_spacing_pt
-    @property
-    def system_height_pt(self) -> float: return self.above_strings_pt + self.string_block_pt + self.below_strings_pt
-
     # --- Title block ---
     title_padding_pt:   float = 8.0    # gap between title baseline and first system
-
-    @property
-    def title_height_pt(self) -> float: return self.title_font_size_pt + self.title_padding_pt
 
     # --- Horizontal layout ---
     eighth_note_width_pt: float = 6.0  # per tick; one eighth note = 2 ticks = 2 × this
@@ -52,20 +44,11 @@ class LayoutConfig:
     margin_right_pt:      float = 18.0
 
     # --- Page layout ---
-    block_gap_pt:       float = 18.0    # vertical gap between stacked segment images
+    block_gap_pt:       float = 0.0    # vertical gap between stacked segment images
 
     # --- Stems ---
     stem_h_pt:          float = 8
     stem_x_offset_pt:   float = 1.0   # how far right of note x the stem is drawn
-
-    @property
-    def half_top_h_pt(self):    return self.stem_h_pt * 0.5
-    @property
-    def half_gap_pt(self):      return self.stem_h_pt * 1.0
-    @property
-    def half_bottom_h_pt(self): return self.stem_h_pt * 1.5
-    @property
-    def full_h_pt(self):        return self.stem_h_pt * 3.0
 
     # --- Beams & dots ---
     beam_stub_pt:       float = 2    # flag stub on an unbeamed eighth note
@@ -97,6 +80,25 @@ class LayoutConfig:
 
     # --- Page geometry (set by TabPrinter) ---
     printable_width_pt: float = 0.0
+
+
+
+    @property
+    def string_block_pt(self) -> float: return 5 * self.line_spacing_pt
+    @property
+    def system_height_pt(self) -> float: return self.above_strings_pt + self.string_block_pt + self.below_strings_pt
+
+    @property
+    def title_height_pt(self) -> float: return self.title_font_size_pt + self.title_padding_pt
+
+    @property
+    def half_top_h_pt(self):    return self.stem_h_pt * 0.5
+    @property
+    def half_gap_pt(self):      return self.stem_h_pt * 1.0
+    @property
+    def half_bottom_h_pt(self): return self.stem_h_pt * 1.5
+    @property
+    def full_h_pt(self):        return self.stem_h_pt * 3.0
 
     @property
     def _natural_width_pt(self) -> float:

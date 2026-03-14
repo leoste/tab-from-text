@@ -1,3 +1,4 @@
+from song.object.Lyrics import Lyrics
 from song.object.RhythmicChordSpan import RhythmicChordSpan
 from song.object.ChordSpan import ChordSpan
 from song.object.Chord import Chord
@@ -206,26 +207,43 @@ end_parts = [
     )
 ]
 
-salm_1_lyrics = """\
+salm_1_lyrics = Lyrics("""\
 sõpradena võime ju koos
 minna sinna kuhu tahtnud hoos
 aga tulla sealt ära me
 vaid võhivõõrastena või-me\
-"""
+""", [
+    2,2,1,3,1,2,5,16,
+    2,1,3,2,1,2,3,2,16,
+    1,2,3,2,4,1,3,16,
+    2,1,1,2,2,1,3,4,16
+]
+) 
 
-salm_2_lyrics = """\
+salm_2_lyrics = Lyrics("""\
 tuulega mul kõrvus kõlab noot
 pilvedega toob ta miskit uut
 aimasingi et nii minna võib
 selguse see mulle pähe tõi\
-"""
+""", [
+    1,2,3,2,2,2,1,3,16,
+    3,1,1,3,2,1,3,2,16,
+    2,2,1,3,2,2,2,2,16,
+    2,1,3,2,2,2,1,3,16
+]
+)
 
-chorus_lyrics = """\
+chorus_lyrics = Lyrics("""\
 siiski ootan mina sinu järel
 järgnen sulle kasvõi kui oleks hambad sul verel
 tahan teada vaid et mis on su tahe
 suhtlus tundub pikimööda täitsa meil jahe\
-"""
+""", [
+    2,2,2,2,1,3,1,3,1,15,
+    2,2,2,2,2,2,2,1,1,2,4,2,1,6,1,
+    3,3,2,2,2,1,1,1,1,16,
+    2,2,2,2,3,1,3,1,2,4,2,1,7
+])
 
 INTRO = Segment("INTRO", {RHYTHM: intro_parts})
 SALM_1 = Segment("SALM", {RHYTHM: salm_parts}, lyrics=salm_1_lyrics)

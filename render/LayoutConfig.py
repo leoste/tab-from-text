@@ -30,6 +30,12 @@ class LayoutConfig:
     footer_font_size_pt:       float = 10   # page number, song title, instrument name
     lyrics_font_size_pt:       float = 12   # lyrics on the title page
 
+    # --- Inline tab lyrics ---
+    # lyrics_y_offset_pt: vertical distance from the 6th string line downward
+    # to the baseline of the inline lyric text.
+    lyrics_y_offset_pt:        float = 18.0
+    lyrics_tab_font_size_pt:   float = 8.0
+
     # --- String lines ---
     line_spacing_pt:    float = 6    # gap between adjacent string lines
     above_strings_pt:   float = 12   # space above 1st string (annotations live here)
@@ -131,7 +137,9 @@ class LayoutConfig:
             string_name_font = ImageFont.truetype("arial.ttf",   self.px(self.string_name_font_size_pt))
             annotation_font  = ImageFont.truetype("arial.ttf",   self.px(self.annotation_font_size_pt))
             lyrics_font      = ImageFont.truetype("arial.ttf",   self.px(self.lyrics_font_size_pt))
+            lyrics_tab_font  = ImageFont.truetype("arial.ttf",   self.px(self.lyrics_tab_font_size_pt))
         except Exception:
             default = ImageFont.load_default()
             title_font = fret_font = small_font = string_name_font = annotation_font = lyrics_font = default
-        return title_font, fret_font, small_font, string_name_font, annotation_font, lyrics_font
+            lyrics_tab_font = default
+        return title_font, fret_font, small_font, string_name_font, annotation_font, lyrics_font, lyrics_tab_font

@@ -99,7 +99,7 @@ def render_tab(segments: list[Segment], instrument_name: str,
     if cfg is None:
         cfg = LayoutConfig()
 
-    title_font, fret_font, small_font, string_name_font, annotation_font, _lyrics_font = cfg.load_fonts()
+    title_font, fret_font, small_font, string_name_font, annotation_font, _lyrics_font, lyrics_tab_font = cfg.load_fonts()
 
     line_content_width_pt = _line_content_width_pt(cfg)
     measure_width_pt      = (UNITS_PER_MEASURE * cfg.eighth_note_width_pt) + cfg.bar_padding_pt
@@ -344,6 +344,42 @@ def render_tab(segments: list[Segment], instrument_name: str,
                        (final_x, final_y + 5 * line_sp_px)],
                       fill="black", width=cfg.lw(cfg.line_width_normal_pt))
 
+        if segment.lyrics is not None:
+            from object.SyllableUtils import split_syllables
+
+            lyrics_y_off_px = cfg.px(cfg.lyrics_y_offset_pt)
+            flat_syllables  = split_syllables(segment.lyrics.text)
+            tick_list       = segment.lyrics.flatten_durations()
+
+            syllable_events: list[tuple[int, str]] = []
+            syl_idx  = 0
+            abs_tick = 0
+            for entry in tick_list:
+                if entry is not None and syl_idx < len(flat_syllables):
+                    syllable_events.append((abs_tick, flat_syllables[syl_idx]))
+                    syl_idx += 1
+                abs_tick += 1
+
+            for abs_tick, syl_text in syllable_events:
+                syl_system          = int(abs_tick // (UNITS_PER_MEASURE * MEASURES_PER_LINE))
+                syl_total_measures  = abs_tick // UNITS_PER_MEASURE
+                syl_measure_in_sys  = int(syl_total_measures % MEASURES_PER_LINE)
+                syl_unit_in_measure = abs_tick % UNITS_PER_MEASURE
+
+                syl_row_y_top   = current_y_cursor + (syl_system * system_h_px)
+                syl_strings_y   = syl_row_y_top + above_str_px
+                syl_y           = syl_strings_y + (5 * line_sp_px) + lyrics_y_off_px
+
+                syl_x_left = (margin_left_px
+                              + syl_measure_in_sys * measure_w_px
+                              + syl_unit_in_measure * beat_w_px
+                              + bar_pad_px)
+
+                text_w = draw.textbbox((0, 0), syl_text, font=lyrics_tab_font)[2]
+                syl_x  = syl_x_left - text_w // 2
+
+                draw.text((syl_x, syl_y), syl_text, fill="black", font=lyrics_tab_font)
+
         safe_title = "".join(
             [c for c in segment.title if c.isalnum() or c in (' ', '_')]
         ).strip().replace(' ', '_')
@@ -356,7 +392,7 @@ def render_tab(segments: list[Segment], instrument_name: str,
 def render_title_page(song: Song, cfg: LayoutConfig = None,
                       num_columns: int = 2) -> Image.Image | None:
     # Collect segments that have lyrics or are worth listing on the title page
-    sections = [(seg.title, seg.lyrics) for seg in song.segments]
+    sections = [(seg.title, seg.lyrics.text if seg.lyrics is not None else None) for seg in song.segments]
     has_content = any(lyrics for _, lyrics in sections)
     if not sections:
         return None
@@ -364,7 +400,7 @@ def render_title_page(song: Song, cfg: LayoutConfig = None,
     if cfg is None:
         cfg = LayoutConfig()
 
-    title_font, _fret, _small, _str_name, _ann, lyrics_font = cfg.load_fonts()
+    title_font, _fret, _small, _str_name, _ann, lyrics_font, _lyrics_tab = cfg.load_fonts()
 
     from reportlab.lib.pagesizes import A4
     A4_WIDTH_PT, A4_HEIGHT_PT = A4

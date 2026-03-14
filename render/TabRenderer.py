@@ -2,7 +2,7 @@ import math
 from PIL import Image, ImageDraw
 from song.object.StrumStyle import StrumStyle
 from song.object.Segment import Segment
-from object.TimeUtils import TIME_RESOLUTION
+from object.TimeUtils import TIME_RESOLUTION, convertTimeToTicks
 from song.object.Song import Song
 from render.LayoutConfig import LayoutConfig
 
@@ -350,10 +350,11 @@ def render_tab(segments: list[Segment], instrument_name: str,
             lyrics_y_off_px = cfg.px(cfg.lyrics_y_offset_pt)
             flat_syllables  = split_syllables(segment.lyrics.text)
             tick_list       = segment.lyrics.flatten_durations()
+            offset_ticks    = convertTimeToTicks(segment.lyrics.offset)
 
             syllable_events: list[tuple[int, str]] = []
             syl_idx  = 0
-            abs_tick = 0
+            abs_tick = offset_ticks
             for entry in tick_list:
                 if entry is not None and syl_idx < len(flat_syllables):
                     syllable_events.append((abs_tick, flat_syllables[syl_idx]))

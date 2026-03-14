@@ -1,3 +1,4 @@
+from song.object.Lyrics import Lyrics
 from song.object.RhythmicChordSpan import RhythmicChordSpan
 from song.object.ChordSpan import ChordSpan
 from song.object.Chord import Chord
@@ -315,28 +316,45 @@ bass_chorus_parts = (
     ]
 )
 
-salm_1_lyrics = """\
+salm_1_lyrics = Lyrics("""\
 väärtushinnangutesse ei ole mõtet laskuda
 see on salalik tee, kuskil ei või astuda
 ainult üks on oluline ja ka kõige peamine
 kas on õhtul rõõmus meel või siis oled nutune\
-"""
+""", [
+1,1,1,1,1,1,1,1, 1,1,1,1,1,1,2,
+1,1,1,1,2,2, 1,1,1,1,1,1,2,
+1,1,1,1,1,1,1,1, 1,1,1,1,1,1,2,
+1,1,1,1,1,1,2, 1,1,1,1,1,1,2
+], 64)
 
-salm_2_lyrics = """\
+salm_2_lyrics = Lyrics("""\
 loota võid et inimene muudab ennast nagu tahad
 aga katse kinnitab et muutus see on väga paha
 suvaline küll ei sobi, vaid üks viis on õiglane
 valituks saab osutuda enda moodi kaaslane\
-"""
+""", [
+1,1,1,1,1,1,1,1, 1,1,1,1,0.5,1.5,0.5,1.5,
+1,1,1,1,1,1,1,0.5, 1.5,1,1,1,0.5,1.5,0.5,1.5,
+1,1,1,1,1,1,1,1, 1,1,1,1,1,1,2,
+1,1,1,1,1,1,1,1, 1,1,1,1,1,1,2
+], 64)
 
-ref_lyrics = """\
+ref_lyrics = Lyrics("""\
 mida võib tahta iga mees
 peitub südames
 kui oled kinni sügaval sees
 ära saad vaid kaevates 
 ära saad vaid kaevates
-ära saad vaid kaevates\
-"""
+ära saad vaid kaevate e e es\
+""", [
+1,1,2,2,2,1,2,5,
+4,4,1.5,1.5,5,
+2,1,1,2,2,1,1,1,5,
+1,3,2,2,1.5,1.5,5,
+1,3,2,2,1.5,1.5,5,
+1,3,2,2,1.5,1.5,2,1,2,8
+])
 
 INTRO = Segment("INTRO", {
     RHYTHM: rhythm_intro_parts,

@@ -1,3 +1,4 @@
+from song.object.Lyrics import Lyrics
 from song.object.RhythmicChordSpan import RhythmicChordSpan
 from song.object.ChordSpan import ChordSpan
 from song.object.Chord import Chord
@@ -253,53 +254,85 @@ bass_viimane_chorus_parts = (
     ]
 )
 
-salm_1_lyrics = """\
-On kätte jõudnud aeg
-Ja maksma ma pean
-Ei jää siin pidama
-Maksan eluaeg
-
-Pingutatud sai
+salm_1_lyrics = Lyrics("""\
+on kätte jõudnud aeg
+kus maksma ma pean
+ja ühte ma nean
+on korvamata vaev
+pingutatud sai
 ülemääragi
-Ei ole midagi
-Käes hoida vaid\
-"""
+ei ole midagi
+käes hoida vaid
+""", [
+1, 1.5,0.5,1,1,11,
+1, 2,1,1,11,
+1, 2,1,1,11,
+1, 1.5,0.5,1,1,12,
+1,1,1,1,12,
+1,1,1,1,11,
+1, 1,1,1,1,12,
+2,1.5,0.5,12
+], -1)
 
-salm_2_lyrics = """\
+salm_2_lyrics = Lyrics("""\
 silme ees on mul
 mingi viirastus
 mingi vastutus
 ei tea kas olen hull
-
 silmad lahti teen
 pilt mu ees siis kaob
 kuid kõrvus ikka taob
 kaja ülipeen\
-"""
+""", [
+1,1,1,1,12,
+1.5,0.5,1,1,12,
+1.5,0.5,1,1,11,
+1, 1,1,0.5,1.5,12,
+1,1,1.5,0.5,12,
+1.5,0.5,1,1,11,
+1, 1,1,1.5,0.5,12,
+1,1,1,1,12
+],)
 
-salm_3_lyrics = """\
+salm_3_lyrics = Lyrics("""\
 on kätte jõudnud aeg
 ja maksnud olen ma
 ei jää siin pidama
-maksan eluaeg
-
+maksan elu- aeg
 pingutatud sai
 ülemääragi
 ja teada sedagi
 jätkub see vaid\
-"""
+""", [
+1, 1.5,0.5,1,1,11,
+1, 1.5,0.5,1,1,11,
+1, 1.5,0.5,1,1,12,
+1,1,1,1,12,
+1,1,1,1,12,
+1,1,1,1,11,
+1, 1.5,0.5,1,1,12,
+2,1,1,12
+], -1)
 
-ref_lyrics = """\
+ref_lyrics = Lyrics("""\
 kas saaksin proovida veel
 või ongi läbi mu tee\
-"""
+""", [
+4,2,2,4,2,2,16,
+4,2,2,4,2,2,16
+])
 
-final_ref_lyrics = """\
+final_ref_lyrics = Lyrics("""\
 ei saagi proovida veel
 ongi nüüd läbi mu tee
 ei saagi proovida veel
 ongi nüüd läbi mu tee
-"""
+""", [
+4,2,2,4,2,2,16,
+4,2,2,4,2,2,16,
+4,2,2,4,2,2,16,
+4,2,2,4,2,2,16
+])
 
 FIRST_INTRO = Segment("INTRO WITH 2x END", {
     RHYTHM: rhythm_first_intro_parts,

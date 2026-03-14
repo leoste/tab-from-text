@@ -34,7 +34,7 @@ class LayoutConfig:
     # lyrics_y_offset_pt: vertical distance from the 6th string line downward
     # to the baseline of the inline lyric text.
     lyrics_y_offset_pt:        float = 18.0
-    lyrics_tab_font_size_pt:   float = 8.0
+    lyrics_tab_font_size_pt:   float = 6.0
 
     # --- String lines ---
     line_spacing_pt:    float = 6    # gap between adjacent string lines

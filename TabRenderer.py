@@ -93,7 +93,8 @@ def _line_content_width_pt(cfg: LayoutConfig) -> float:
     return MEASURES_PER_LINE * measure_width_pt
 
 
-def render_tab(segments: list[Segment], output_base_path: str = "guitar_tab",
+def render_tab(segments: list[Segment], instrument_name: str,
+               output_base_path: str = "guitar_tab",
                cfg: LayoutConfig = None) -> list[tuple[str, object]]:
     if cfg is None:
         cfg = LayoutConfig()
@@ -134,7 +135,7 @@ def render_tab(segments: list[Segment], output_base_path: str = "guitar_tab",
     global_measure_counter = 1
 
     for seg_idx, segment in enumerate(segments):
-        segment_notes = segment.GetNotesFromSegment()
+        segment_notes = segment.GetNotesFromSegment(instrument_name)
         total_units   = sum((n.duration if n.duration else 0) for n in segment_notes)
         num_measures  = math.ceil(total_units / UNITS_PER_MEASURE)
         num_systems   = math.ceil(num_measures / MEASURES_PER_LINE)
@@ -354,7 +355,10 @@ def render_tab(segments: list[Segment], output_base_path: str = "guitar_tab",
 
 def render_title_page(song: Song, cfg: LayoutConfig = None,
                       num_columns: int = 2) -> Image.Image | None:
-    if not song.structure:
+    # Collect segments that have lyrics or are worth listing on the title page
+    sections = [(seg.title, seg.lyrics) for seg in song.segments]
+    has_content = any(lyrics for _, lyrics in sections)
+    if not sections:
         return None
 
     if cfg is None:
@@ -398,10 +402,10 @@ def render_title_page(song: Song, cfg: LayoutConfig = None,
     col_height = col_bottom - columns_top_y
 
     # --- Pre-compute height of each section block ---
-    def section_height(section) -> int:
+    def section_height(title, lyrics) -> int:
         h = title_line_h
-        if section.lyrics:
-            h += len(section.lyrics.splitlines()) * lyrics_line_h
+        if lyrics:
+            h += len(lyrics.splitlines()) * lyrics_line_h
         h += section_gap
         return h
 
@@ -410,23 +414,23 @@ def render_title_page(song: Song, cfg: LayoutConfig = None,
     col_used = [0] * num_columns
     col_idx  = 0
 
-    for section in song.structure:
-        sh = section_height(section)
+    for title, lyrics in sections:
+        sh = section_height(title, lyrics)
         if col_used[col_idx] + sh > col_height and col_idx < num_columns - 1:
             col_idx += 1
-        columns[col_idx].append(section)
+        columns[col_idx].append((title, lyrics))
         col_used[col_idx] += sh
 
     # --- Draw columns ---
     for c_idx, col_sections in enumerate(columns):
         x = col_starts[c_idx]
         y = columns_top_y
-        for section in col_sections:
-            draw.text((x, y), section.title, fill="black", font=title_font)
+        for title, lyrics in col_sections:
+            draw.text((x, y), title, fill="black", font=title_font)
             y += title_line_h
 
-            if section.lyrics:
-                for line in section.lyrics.splitlines():
+            if lyrics:
+                for line in lyrics.splitlines():
                     draw.text((x, y), line, fill="black", font=lyrics_font)
                     y += lyrics_line_h
 
@@ -441,5 +445,5 @@ def render_song(song: Song, cfg: LayoutConfig = None) -> list[tuple[str, object]
     for instrument in song.instruments:
         safe_instrument_name = instrument.name.lower().replace(' ', '_')
         output_base_path = f"tabs/{safe_song_title}/{safe_instrument_name}/tab"
-        results += render_tab(instrument.segments, output_base_path, cfg)
+        results += render_tab(instrument.segments, instrument.name, output_base_path, cfg)
     return results

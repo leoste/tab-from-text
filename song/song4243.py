@@ -5,10 +5,8 @@ from object.Rhythm import Rhythm
 from object.Segment import Segment
 from object.GuitarString import GuitarString
 from object.StrumStyle import StrumStyle
-from object.Instrument import Instrument
 from object.StrummedChordSpan import StrummedChordSpan
 from object.Song import Song
-from object.SongSection import SongSection
 
 NOTE_6_A_SHARP = Chord.single_note(GuitarString.E6, 6)
 NOTE_9_C_SHARP = Chord.single_note(GuitarString.E6, 9)
@@ -66,28 +64,16 @@ intro_pause = RhythmicChordSpan(
     ]
 )
 
-INTRO = Segment(
-    "INTRO",
-    [
-        intro_first_three,
-        intro_last
-    ] * 2 + [
-        intro_first_three_power,
-        intro_last
-    ] * 2 + [
-        intro_pause
-    ]
-)
+rhythm_intro_parts = [
+    *[intro_first_three, intro_last] * 2,
+    *[intro_first_three_power, intro_last] * 2,
+    intro_pause,
+]
 
-BASS_INTRO = Segment(
-    "INTRO",
-    [
-        intro_first_three,
-        intro_last
-    ] * 4 + [
-        intro_pause
-    ]
-)
+bass_intro_parts = [
+    *[intro_first_three, intro_last] * 4,
+    intro_pause,
+]
 
 DURATIONS_8 = [ 1,1,1,1,1,1,1,1 ]
 DURATIONS_323 = [ 1,1,1,2,1,1,1 ]
@@ -124,22 +110,6 @@ riff_chordspans = [
         riff_end_chordspan
     ]
 
-RIFF_SALMIGA = Segment(
-    "RIFF + SALM",
-    riff_chordspans * 2 +
-    [
-        RhythmicChordSpan(
-            Rhythm(
-                DURATIONS_8
-            ),
-            [
-                ChordSpan(7, CHORD_6_A_SHARP),
-                ChordSpan(1, NOTE_6_A_SHARP)
-            ]
-        )
-    ]
-)
-
 bass_riff_cool_part = [
     StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 7)),
     StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 15),
@@ -157,29 +127,6 @@ bass_riff_main = ([
     StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 9), 16)    
 ] + bass_riff_cool_part)
 
-BASS_RIFF_SALMIGA = Segment(
-    "RIFF + SALM",
-    bass_riff_main * 2 +
-    [ 
-        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 7),
-        StrummedChordSpan(1, Chord.no_strings_hit_chord())
-    ]
-)
-
-BASS_RIFF_ENDIGA = Segment(
-    "RIFF 2x + LÕPP",
-    bass_riff_main * 2 +
-    bass_riff_cool_part +
-    [
-        StrummedChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
-        StrummedChordSpan(1.5, Chord.single_note(GuitarString.E6, 6)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
-        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
-        StrummedChordSpan(20, Chord.single_note(GuitarString.E6, 6))
-    ]
-)
-
 wait_chord_span = RhythmicChordSpan(
     Rhythm(
         [ 16 ]
@@ -189,8 +136,39 @@ wait_chord_span = RhythmicChordSpan(
     ]
 )
 
-RIFF_ENDIGA = Segment(
-    "RIFF 2x + LÕPP",
+chorus_first_rhytm = Rhythm(
+    DURATIONS_2121 + DURATIONS_323
+)
+
+chorus_second_chords = [
+    ChordSpan(8, CHORD_6_A_SHARP),
+    ChordSpan(1.5, CHORD_9_C_SHARP),
+    ChordSpan(1.5, CHORD_7_B),
+    ChordSpan(5, CHORD_6_A_SHARP)
+]
+
+rhythm_riff_salmiga_parts = (
+    riff_chordspans * 2 +
+    [
+        RhythmicChordSpan(
+            Rhythm(DURATIONS_8),
+            [
+                ChordSpan(7, CHORD_6_A_SHARP),
+                ChordSpan(1, NOTE_6_A_SHARP)
+            ]
+        )
+    ]
+)
+
+bass_riff_salmiga_parts = (
+    bass_riff_main * 2 +
+    [ 
+        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 7),
+        StrummedChordSpan(1, Chord.no_strings_hit_chord())
+    ]
+)
+
+rhythm_riff_endiga_parts = (
     riff_chordspans * 2 +
     [
         riff_end_chordspan,
@@ -212,75 +190,23 @@ RIFF_ENDIGA = Segment(
         RhythmicChordSpan(
             Rhythm([2,6]),
             [
-                ChordSpan(2,CHORD_6_A_SHARP),
-                ChordSpan(6,Chord.no_strings_hit_chord())
+                ChordSpan(2, CHORD_6_A_SHARP),
+                ChordSpan(6, Chord.no_strings_hit_chord())
             ]
         )
     ]
 )
 
-chorus_first_rhytm = Rhythm(
-    DURATIONS_2121 + DURATIONS_323
-)
-
-chorus_second_chords = [
-    ChordSpan(8, CHORD_6_A_SHARP),
-    ChordSpan(1.5, CHORD_9_C_SHARP),
-    ChordSpan(1.5, CHORD_7_B),
-    ChordSpan(5, CHORD_6_A_SHARP)
-]
-
-CHORUS = Segment(
-    "REFRÄÄN",
+bass_riff_endiga_parts = (
+    bass_riff_main * 2 +
+    bass_riff_cool_part +
     [
-        RhythmicChordSpan(
-            chorus_first_rhytm,
-            [
-                ChordSpan(8, CHORD_6_D_SHARP),
-                ChordSpan(8, CHORD_6_A_SHARP)
-            ]
-        ),
-        RhythmicChordSpan(
-            Rhythm(
-                [4, 4] + DURATIONS_WEIRD
-            ),
-            [
-                ChordSpan(4, CHORD_7_B),
-                ChordSpan(4, CHORD_6_A_SHARP),
-                ChordSpan(1.5, CHORD_9_C_SHARP),
-                ChordSpan(1.5, CHORD_7_B),
-                ChordSpan(4, CHORD_6_A_SHARP),
-                ChordSpan(1, NOTE_6_A_SHARP)
-            ]
-        ),
-        RhythmicChordSpan(
-            chorus_first_rhytm,
-            [ ChordSpan(16, CHORD_6_D_SHARP) ]
-        ),
-        RhythmicChordSpan(
-            Rhythm(
-                DURATIONS_2121 + DURATIONS_WEIRD
-            ),
-            chorus_second_chords
-        ),
-        RhythmicChordSpan(
-            Rhythm(
-                DURATIONS_8 + DURATIONS_WEIRD
-            ),
-            chorus_second_chords
-        ),
-        RhythmicChordSpan(
-            Rhythm(
-                DURATIONS_8 + DURATIONS_WEIRD_AND_END
-            ),
-            [
-                ChordSpan(8, CHORD_6_A_SHARP),
-                ChordSpan(1.5, CHORD_9_C_SHARP),
-                ChordSpan(1.5, CHORD_7_B),
-                ChordSpan(5, CHORD_7_B)
-            ]
-        ),
-        wait_chord_span
+        StrummedChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
+        StrummedChordSpan(1.5, Chord.single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3),
+        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+        StrummedChordSpan(20, Chord.single_note(GuitarString.E6, 6))
     ]
 )
 
@@ -296,8 +222,58 @@ bass_chorus_near_end = ([
 ] +
 bass_chorus_cool_part)
 
-BASS_CHORUS = Segment(
-    "REFRÄÄN",
+rhythm_chorus_parts = [
+    RhythmicChordSpan(
+        chorus_first_rhytm,
+        [
+            ChordSpan(8, CHORD_6_D_SHARP),
+            ChordSpan(8, CHORD_6_A_SHARP)
+        ]
+    ),
+    RhythmicChordSpan(
+        Rhythm(
+            [4, 4] + DURATIONS_WEIRD
+        ),
+        [
+            ChordSpan(4, CHORD_7_B),
+            ChordSpan(4, CHORD_6_A_SHARP),
+            ChordSpan(1.5, CHORD_9_C_SHARP),
+            ChordSpan(1.5, CHORD_7_B),
+            ChordSpan(4, CHORD_6_A_SHARP),
+            ChordSpan(1, NOTE_6_A_SHARP)
+        ]
+    ),
+    RhythmicChordSpan(
+        chorus_first_rhytm,
+        [ ChordSpan(16, CHORD_6_D_SHARP) ]
+    ),
+    RhythmicChordSpan(
+        Rhythm(
+            DURATIONS_2121 + DURATIONS_WEIRD
+        ),
+        chorus_second_chords
+    ),
+    RhythmicChordSpan(
+        Rhythm(
+            DURATIONS_8 + DURATIONS_WEIRD
+        ),
+        chorus_second_chords
+    ),
+    RhythmicChordSpan(
+        Rhythm(
+            DURATIONS_8 + DURATIONS_WEIRD_AND_END
+        ),
+        [
+            ChordSpan(8, CHORD_6_A_SHARP),
+            ChordSpan(1.5, CHORD_9_C_SHARP),
+            ChordSpan(1.5, CHORD_7_B),
+            ChordSpan(5, CHORD_7_B)
+        ]
+    ),
+    wait_chord_span
+]
+
+bass_chorus_parts = (
     [
         StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 6), 3),
         StrummedChordSpan(1, None),
@@ -336,30 +312,6 @@ BASS_CHORUS = Segment(
     ]
 )
 
-RHYTHM = Instrument(
-    "Rhythm",
-    [
-        INTRO,
-        RIFF_SALMIGA,
-        CHORUS,
-        RIFF_SALMIGA,
-        CHORUS,
-        RIFF_ENDIGA,
-    ]
-)
-
-BASS = Instrument(
-    "Bass",
-    [
-        BASS_INTRO,
-        BASS_RIFF_SALMIGA,
-        BASS_CHORUS,
-        BASS_RIFF_SALMIGA,
-        BASS_CHORUS,
-        BASS_RIFF_ENDIGA,
-    ]    
-)
-
 salm_1_lyrics = """\
 väärtushinnangutesse ei ole mõtet laskuda
 see on salalik tee, kuskil ei või astuda
@@ -383,14 +335,41 @@ kui oled kinni sügaval sees
 ära saad vaid kaevates\
 """
 
+INTRO = Segment("INTRO", {
+    "Rhythm": rhythm_intro_parts,
+    "Bass":   bass_intro_parts,
+})
+
+RIFF_SALM_1 = Segment("RIFF + SALM", {
+    "Rhythm": rhythm_riff_salmiga_parts,
+    "Bass":   bass_riff_salmiga_parts,
+}, lyrics=salm_1_lyrics)
+
+RIFF_SALM_2 = Segment("RIFF + SALM", {
+    "Rhythm": rhythm_riff_salmiga_parts,
+    "Bass":   bass_riff_salmiga_parts,
+}, lyrics=salm_2_lyrics)
+
+CHORUS_1 = Segment("REFRÄÄN", {
+    "Rhythm": rhythm_chorus_parts,
+    "Bass":   bass_chorus_parts,
+}, lyrics=ref_lyrics)
+
+CHORUS_2 = Segment("REFRÄÄN", {
+    "Rhythm": rhythm_chorus_parts,
+    "Bass":   bass_chorus_parts,
+}, lyrics=ref_lyrics)
+
+RIFF_ENDIGA = Segment("RIFF 2x + LÕPP", {
+    "Rhythm": rhythm_riff_endiga_parts,
+    "Bass":   bass_riff_endiga_parts,
+})
+
 SONG = Song("4243", [
-    RHYTHM,
-    BASS
-], structure=[
-    SongSection("INTRO"),
-    SongSection("RIFF + SALM", salm_1_lyrics),
-    SongSection("REFRÄÄN", ref_lyrics),
-    SongSection("RIFF + SALM", salm_2_lyrics),
-    SongSection("REFRÄÄN", ref_lyrics),
-    SongSection("RIFF 2x + LÕPP"),
+    INTRO,
+    RIFF_SALM_1,
+    CHORUS_1,
+    RIFF_SALM_2,
+    CHORUS_2,
+    RIFF_ENDIGA,
 ])

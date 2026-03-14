@@ -1,8 +1,7 @@
 from typing import List
-from object.Segment import Segment
 
 
 class Instrument:
-    def __init__(self, name: str, segments: List[Segment]):
+    def __init__(self, name: str, segments: list):
         self.name = name
-        self.segments = segments
+        self.segments = segments   # list[Segment] — shared objects, not copies

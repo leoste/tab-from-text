@@ -5,9 +5,7 @@ from object.Rhythm import Rhythm
 from object.Segment import Segment
 from object.GuitarString import GuitarString
 from object.StrumStyle import StrumStyle
-from object.Instrument import Instrument
 from object.Song import Song
-from object.SongSection import SongSection
 
 CHORD_13_F = Chord.power_chord(GuitarString.E6, 13)
 CHORD_13_C = Chord(None, None, None, 15, 13, 13)
@@ -25,24 +23,21 @@ INTRO_RHYTHM = Rhythm(
     [StrumStyle.NORMAL] * 16
 )
 
-INTRO = Segment(
-    "INTRO",
-    [
-        RhythmicChordSpan(
-            INTRO_RHYTHM,
-            [
-                ChordSpan(16, CHORD_6_A_SHARP),
-                ChordSpan(16, CHORD_2_F_SHARP),
-                ChordSpan(16, CHORD_4_G_SHARP),
-                ChordSpan(16, CHORD_1_F),
-                ChordSpan(16, CHORD_6_A_SHARP),
-                ChordSpan(16, CHORD_2_F_SHARP),
-                ChordSpan(16, CHORD_11_D_SHARP),
-                ChordSpan(32, CHORD_1_F)
-            ]
-        )
-    ]
-)
+intro_parts = [
+    RhythmicChordSpan(
+        INTRO_RHYTHM,
+        [
+            ChordSpan(16, CHORD_6_A_SHARP),
+            ChordSpan(16, CHORD_2_F_SHARP),
+            ChordSpan(16, CHORD_4_G_SHARP),
+            ChordSpan(16, CHORD_1_F),
+            ChordSpan(16, CHORD_6_A_SHARP),
+            ChordSpan(16, CHORD_2_F_SHARP),
+            ChordSpan(16, CHORD_11_D_SHARP),
+            ChordSpan(32, CHORD_1_F)
+        ]
+    )
+]
 
 SALM_RHYTHM = Rhythm(
     [1] * 16,
@@ -59,35 +54,32 @@ SALM_END_RHYTHM = Rhythm(
     [StrumStyle.NORMAL] * 16
 )
 
-SALM = Segment(
-    "SALM",
-    [
-        RhythmicChordSpan(
-            SALM_RHYTHM,
-            [
-                ChordSpan(16, CHORD_6_A_SHARP),
-                ChordSpan(16, CHORD_4_G_SHARP),
-                ChordSpan(16, CHORD_2_F_SHARP),
-            ]
-        ),
-        RhythmicChordSpan(
-            SALM_HALF_END_RHYTHM,
-            [ ChordSpan(16, CHORD_1_F) ]
-        ),
-        RhythmicChordSpan(
-            SALM_RHYTHM,
-            [
-                ChordSpan(16, CHORD_6_A_SHARP),
-                ChordSpan(16, CHORD_4_G_SHARP),
-                ChordSpan(16, CHORD_2_F_SHARP),
-            ]
-        ),
-        RhythmicChordSpan(
-            SALM_END_RHYTHM,
-            [ ChordSpan(16, CHORD_1_F) ]
-        )
-    ]
-)
+salm_parts = [
+    RhythmicChordSpan(
+        SALM_RHYTHM,
+        [
+            ChordSpan(16, CHORD_6_A_SHARP),
+            ChordSpan(16, CHORD_4_G_SHARP),
+            ChordSpan(16, CHORD_2_F_SHARP),
+        ]
+    ),
+    RhythmicChordSpan(
+        SALM_HALF_END_RHYTHM,
+        [ ChordSpan(16, CHORD_1_F) ]
+    ),
+    RhythmicChordSpan(
+        SALM_RHYTHM,
+        [
+            ChordSpan(16, CHORD_6_A_SHARP),
+            ChordSpan(16, CHORD_4_G_SHARP),
+            ChordSpan(16, CHORD_2_F_SHARP),
+        ]
+    ),
+    RhythmicChordSpan(
+        SALM_END_RHYTHM,
+        [ ChordSpan(16, CHORD_1_F) ]
+    )
+]
 
 CHORUS_FIRST_MEASURE_RHYTHM = Rhythm(
     [2] + [1] * 14,
@@ -125,124 +117,92 @@ chorus_parts = [
         )
     ] * 2
 
-CHORUS = Segment(
-    "REFRÄÄN",
-    chorus_parts
-)
-
-INSTRUMENTAL_CHORUS = Segment(
-    "INSTRUMENTAALNE REFRÄÄN",
-    chorus_parts
-)
-
 BREAK_LAST_MEASURE_RHYTHM = Rhythm(
     [1] * 8 + DURATIONS_232,
     [StrumStyle.NORMAL] * 16
 )
 
-BREAK = Segment(
-    "BREAKDOWN",
-    [
-        RhythmicChordSpan(
-            Rhythm(
-                [1] * 16,
-                [StrumStyle.NORMAL] * 16
-            ),
-            [
-                ChordSpan(16, CHORD_13_F),
-                ChordSpan(4, CHORD_9_C_SHARP),
-                ChordSpan(4, CHORD_8_C),
-                ChordSpan(8, CHORD_9_C_SHARP),
-                ChordSpan(16, CHORD_6_A_SHARP),
-                ChordSpan(16, CHORD_8_C),
-                ChordSpan(16, CHORD_13_F),
-                ChordSpan(4, CHORD_9_C_SHARP),
-                ChordSpan(4, CHORD_8_C),
-                ChordSpan(8, CHORD_9_C_SHARP),
-                ChordSpan(16, CHORD_6_A_SHARP)
-            ]
+breakdown_parts = [
+    RhythmicChordSpan(
+        Rhythm(
+            [1] * 16,
+            [StrumStyle.NORMAL] * 16
         ),
-        RhythmicChordSpan(
-            BREAK_LAST_MEASURE_RHYTHM,
-            [ ChordSpan(16, CHORD_8_C) ]
-        ),
-        RhythmicChordSpan(
-            Rhythm(
-                [ 
-                    2,
-                    2,
-                    4,
-                    8
-                ],
-                [
-                    StrumStyle.SLIDE,
-                    StrumStyle.SLIDE,
-                    StrumStyle.NORMAL,
-                    StrumStyle.NORMAL                
-                ] +
-                [ StrumStyle.NO_HIT ] * 12
-            ),
+        [
+            ChordSpan(16, CHORD_13_F),
+            ChordSpan(4, CHORD_9_C_SHARP),
+            ChordSpan(4, CHORD_8_C),
+            ChordSpan(8, CHORD_9_C_SHARP),
+            ChordSpan(16, CHORD_6_A_SHARP),
+            ChordSpan(16, CHORD_8_C),
+            ChordSpan(16, CHORD_13_F),
+            ChordSpan(4, CHORD_9_C_SHARP),
+            ChordSpan(4, CHORD_8_C),
+            ChordSpan(8, CHORD_9_C_SHARP),
+            ChordSpan(16, CHORD_6_A_SHARP)
+        ]
+    ),
+    RhythmicChordSpan(
+        BREAK_LAST_MEASURE_RHYTHM,
+        [ ChordSpan(16, CHORD_8_C) ]
+    ),
+    RhythmicChordSpan(
+        Rhythm(
+            [ 
+                2,
+                2,
+                4,
+                8
+            ],
             [
-                ChordSpan(2, CHORD_8_C),
-                ChordSpan(2, CHORD_13_F),
-                ChordSpan(12, Chord.no_strings_hit_chord())
-            ]
-        )
-    ]
-)
+                StrumStyle.SLIDE,
+                StrumStyle.SLIDE,
+                StrumStyle.NORMAL,
+                StrumStyle.NORMAL                
+            ] +
+            [ StrumStyle.NO_HIT ] * 12
+        ),
+        [
+            ChordSpan(2, CHORD_8_C),
+            ChordSpan(2, CHORD_13_F),
+            ChordSpan(12, Chord.no_strings_hit_chord())
+        ]
+    )
+]
 
-END = Segment(
-    "LÕPP",
-    [
-        RhythmicChordSpan(
-            Rhythm(
-                [1] * 8 + DURATIONS_232,
-                [StrumStyle.NORMAL] * 16
-            ),
-            [
-                ChordSpan(2, CHORD_13_F),
-                ChordSpan(2, CHORD_13_C),
-                ChordSpan(2, CHORD_13_F),
-                ChordSpan(2, CHORD_13_C),
-                ChordSpan(2, CHORD_13_F),
-                ChordSpan(1, CHORD_13_C),
-                ChordSpan(2, CHORD_13_F),
-                ChordSpan(1, CHORD_13_F),
-                ChordSpan(1, CHORD_13_C),
-                ChordSpan(1, CHORD_13_C)
-            ] * 3
+end_parts = [
+    RhythmicChordSpan(
+        Rhythm(
+            [1] * 8 + DURATIONS_232,
+            [StrumStyle.NORMAL] * 16
         ),
-        RhythmicChordSpan(
-            Rhythm(
-                [1] * 8 + [2,6],
-                [ StrumStyle.NORMAL ] * 10 +
-                [ StrumStyle.NO_HIT ] * 6
-            ),
-            [
-                ChordSpan(2, CHORD_13_F),
-                ChordSpan(2, CHORD_13_C),
-                ChordSpan(6, CHORD_13_F),
-                ChordSpan(6, Chord.no_strings_hit_chord())
-            ]
-        )
-    ]
-)
-
-RHYTHM = Instrument(
-    "Rhythm",
-    [
-        INTRO,
-        SALM,
-        CHORUS,
-        INTRO,
-        SALM,
-        CHORUS,
-        BREAK,
-        CHORUS,
-        INSTRUMENTAL_CHORUS,
-        END
-    ]
-)
+        [
+            ChordSpan(2, CHORD_13_F),
+            ChordSpan(2, CHORD_13_C),
+            ChordSpan(2, CHORD_13_F),
+            ChordSpan(2, CHORD_13_C),
+            ChordSpan(2, CHORD_13_F),
+            ChordSpan(1, CHORD_13_C),
+            ChordSpan(2, CHORD_13_F),
+            ChordSpan(1, CHORD_13_F),
+            ChordSpan(1, CHORD_13_C),
+            ChordSpan(1, CHORD_13_C)
+        ] * 3
+    ),
+    RhythmicChordSpan(
+        Rhythm(
+            [1] * 8 + [2,6],
+            [ StrumStyle.NORMAL ] * 10 +
+            [ StrumStyle.NO_HIT ] * 6
+        ),
+        [
+            ChordSpan(2, CHORD_13_F),
+            ChordSpan(2, CHORD_13_C),
+            ChordSpan(6, CHORD_13_F),
+            ChordSpan(6, Chord.no_strings_hit_chord())
+        ]
+    )
+]
 
 salm_1_lyrics = """\
 sõpradena võime ju koos
@@ -265,15 +225,23 @@ tahan teada vaid et mis on su tahe
 suhtlus tundub pikimööda täitsa meil jahe\
 """
 
-SONG = Song("Jahe", [RHYTHM], structure=[
-    SongSection("INTRO"),
-    SongSection("SALM", salm_1_lyrics),
-    SongSection("REFRÄÄN", chorus_lyrics),
-    SongSection("INTRO"),
-    SongSection("SALM", salm_2_lyrics),
-    SongSection("REFRÄÄN", chorus_lyrics),
-    SongSection("BREAKDOWN"),
-    SongSection("REFRÄÄN", chorus_lyrics),
-    SongSection("INSTRUMENTAALNE REFRÄÄN"),
-    SongSection("LÕPP"),
+INTRO = Segment("INTRO", {"Rhythm": intro_parts})
+SALM_1 = Segment("SALM", {"Rhythm": salm_parts}, lyrics=salm_1_lyrics)
+SALM_2 = Segment("SALM", {"Rhythm": salm_parts}, lyrics=salm_2_lyrics)
+CHORUS = Segment("REFRÄÄN", {"Rhythm": chorus_parts}, lyrics=chorus_lyrics)
+INSTRUMENTAL_CHORUS = Segment("INSTRUMENTAALNE REFRÄÄN", {"Rhythm": chorus_parts})
+BREAKDOWN = Segment("BREAKDOWN", {"Rhythm": breakdown_parts})
+END = Segment("LÕPP", {"Rhythm": end_parts})
+
+SONG = Song("Jahe", [
+    INTRO,
+    SALM_1,
+    CHORUS,
+    INTRO,
+    SALM_2,
+    CHORUS,
+    BREAKDOWN,
+    CHORUS,
+    INSTRUMENTAL_CHORUS,
+    END,
 ])

@@ -66,7 +66,7 @@ class LayoutConfig:
 
     # --- P.M. annotation ---
     pm_y_offset_pt:     float = -6.0  # offset from 1st string line upward
-    pm_label_y_pt:      float = 4   # label baseline offset above pm_y
+    pm_label_y_pt:      float = 2   # label baseline offset above pm_y
     pm_label_w_pt:      float = 8   # width of "P.M." text (where dashed line starts)
     dash_gap_pt:        float = 2   # dash length (inter-dash gap is also this value)
     tick_h_pt:          float = 2   # half-height of the P.M. end tick

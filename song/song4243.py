@@ -8,6 +8,9 @@ from object.StrumStyle import StrumStyle
 from object.StrummedChordSpan import StrummedChordSpan
 from object.Song import Song
 
+RHYTHM = "Rhythm"
+BASS = "Bass"
+
 NOTE_6_A_SHARP = Chord.single_note(GuitarString.E6, 6)
 NOTE_9_C_SHARP = Chord.single_note(GuitarString.E6, 9)
 NOTE_7_B = Chord.single_note(GuitarString.E6, 7)
@@ -336,33 +339,33 @@ kui oled kinni sügaval sees
 """
 
 INTRO = Segment("INTRO", {
-    "Rhythm": rhythm_intro_parts,
-    "Bass":   bass_intro_parts,
+    RHYTHM: rhythm_intro_parts,
+    BASS:   bass_intro_parts,
 })
 
 RIFF_SALM_1 = Segment("RIFF + SALM", {
-    "Rhythm": rhythm_riff_salmiga_parts,
-    "Bass":   bass_riff_salmiga_parts,
+    RHYTHM: rhythm_riff_salmiga_parts,
+    BASS:   bass_riff_salmiga_parts,
 }, lyrics=salm_1_lyrics)
 
 RIFF_SALM_2 = Segment("RIFF + SALM", {
-    "Rhythm": rhythm_riff_salmiga_parts,
-    "Bass":   bass_riff_salmiga_parts,
+    RHYTHM: rhythm_riff_salmiga_parts,
+    BASS:   bass_riff_salmiga_parts,
 }, lyrics=salm_2_lyrics)
 
 CHORUS_1 = Segment("REFRÄÄN", {
-    "Rhythm": rhythm_chorus_parts,
-    "Bass":   bass_chorus_parts,
+    RHYTHM: rhythm_chorus_parts,
+    BASS:   bass_chorus_parts,
 }, lyrics=ref_lyrics)
 
 CHORUS_2 = Segment("REFRÄÄN", {
-    "Rhythm": rhythm_chorus_parts,
-    "Bass":   bass_chorus_parts,
+    RHYTHM: rhythm_chorus_parts,
+    BASS:   bass_chorus_parts,
 }, lyrics=ref_lyrics)
 
 RIFF_ENDIGA = Segment("RIFF 2x + LÕPP", {
-    "Rhythm": rhythm_riff_endiga_parts,
-    "Bass":   bass_riff_endiga_parts,
+    RHYTHM: rhythm_riff_endiga_parts,
+    BASS:   bass_riff_endiga_parts,
 })
 
 SONG = Song("4243", [

@@ -7,6 +7,8 @@ from object.GuitarString import GuitarString
 from object.StrumStyle import StrumStyle
 from object.Song import Song
 
+RHYTHM = "Rhythm"
+
 CHORD_13_F = Chord.power_chord(GuitarString.E6, 13)
 CHORD_13_C = Chord(None, None, None, 15, 13, 13)
 CHORD_11_D_SHARP = Chord.power_chord(GuitarString.E6, 11)
@@ -225,13 +227,13 @@ tahan teada vaid et mis on su tahe
 suhtlus tundub pikimööda täitsa meil jahe\
 """
 
-INTRO = Segment("INTRO", {"Rhythm": intro_parts})
-SALM_1 = Segment("SALM", {"Rhythm": salm_parts}, lyrics=salm_1_lyrics)
-SALM_2 = Segment("SALM", {"Rhythm": salm_parts}, lyrics=salm_2_lyrics)
-CHORUS = Segment("REFRÄÄN", {"Rhythm": chorus_parts}, lyrics=chorus_lyrics)
-INSTRUMENTAL_CHORUS = Segment("INSTRUMENTAALNE REFRÄÄN", {"Rhythm": chorus_parts})
-BREAKDOWN = Segment("BREAKDOWN", {"Rhythm": breakdown_parts})
-END = Segment("LÕPP", {"Rhythm": end_parts})
+INTRO = Segment("INTRO", {RHYTHM: intro_parts})
+SALM_1 = Segment("SALM", {RHYTHM: salm_parts}, lyrics=salm_1_lyrics)
+SALM_2 = Segment("SALM", {RHYTHM: salm_parts}, lyrics=salm_2_lyrics)
+CHORUS = Segment("REFRÄÄN", {RHYTHM: chorus_parts}, lyrics=chorus_lyrics)
+INSTRUMENTAL_CHORUS = Segment("INSTRUMENTAALNE REFRÄÄN", {RHYTHM: chorus_parts})
+BREAKDOWN = Segment("BREAKDOWN", {RHYTHM: breakdown_parts})
+END = Segment("LÕPP", {RHYTHM: end_parts})
 
 SONG = Song("Jahe", [
     INTRO,

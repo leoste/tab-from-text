@@ -8,6 +8,9 @@ from object.StrumStyle import StrumStyle
 from object.StrummedChordSpan import StrummedChordSpan
 from object.Song import Song
 
+RHYTHM = "Rhythm"
+BASS = "Bass"
+
 CHORD_8_F = Chord.power_chord(GuitarString.A5, 8)
 CHORD_8_F_DOUBLE = Chord(None, None, 10, 10, 8, 8)
 CHORD_13_F = Chord.power_chord(GuitarString.E6, 13)
@@ -299,48 +302,48 @@ ongi nüüd läbi mu tee
 """
 
 FIRST_INTRO = Segment("INTRO WITH 2x END", {
-    "Rhythm": rhythm_first_intro_parts,
-    "Bass":   bass_first_intro_parts,
+    RHYTHM: rhythm_first_intro_parts,
+    BASS:   bass_first_intro_parts,
 })
 
 SECOND_INTRO = Segment("INTRO WITH 1x END", {
-    "Rhythm": rhythm_second_intro_parts,
-    "Bass":   bass_second_intro_parts,
+    RHYTHM: rhythm_second_intro_parts,
+    BASS:   bass_second_intro_parts,
 })
 
 THIRD_INTRO = Segment("DOUBLE INTRO", {
-    "Rhythm": rhythm_third_intro_parts,
-    "Bass":   bass_third_intro_parts,
+    RHYTHM: rhythm_third_intro_parts,
+    BASS:   bass_third_intro_parts,
 })
 
 SALM_1 = Segment("SALM", {
-    "Rhythm": rhythm_salm_parts,
-    "Bass":   bass_salm_parts,
+    RHYTHM: rhythm_salm_parts,
+    BASS:   bass_salm_parts,
 }, lyrics=salm_1_lyrics)
 
 SALM_2 = Segment("SALM", {
-    "Rhythm": rhythm_salm_parts,
-    "Bass":   bass_salm_parts,
+    RHYTHM: rhythm_salm_parts,
+    BASS:   bass_salm_parts,
 }, lyrics=salm_2_lyrics)
 
 VIIMANE_SALM = Segment("VIIMANE SALM", {
-    "Rhythm": rhythm_viimane_salm_parts,
-    "Bass":   bass_viimane_salm_parts,   # same notes as bass_salm_parts
+    RHYTHM: rhythm_viimane_salm_parts,
+    BASS:   bass_viimane_salm_parts,   # same notes as bass_salm_parts
 }, lyrics=salm_3_lyrics)
 
 CHORUS_1 = Segment("REFRÄÄN", {
-    "Rhythm": rhythm_chorus_parts,
-    "Bass":   bass_chorus_parts,
+    RHYTHM: rhythm_chorus_parts,
+    BASS:   bass_chorus_parts,
 }, lyrics=ref_lyrics)
 
 CHORUS_2 = Segment("REFRÄÄN", {
-    "Rhythm": rhythm_chorus_parts,
-    "Bass":   bass_chorus_parts,
+    RHYTHM: rhythm_chorus_parts,
+    BASS:   bass_chorus_parts,
 }, lyrics=ref_lyrics)
 
 VIIMANE_CHORUS = Segment("VIIMANE REFRÄÄN", {
-    "Rhythm": rhythm_viimane_chorus_parts,
-    "Bass":   bass_viimane_chorus_parts,
+    RHYTHM: rhythm_viimane_chorus_parts,
+    BASS:   bass_viimane_chorus_parts,
 }, lyrics=final_ref_lyrics)
 
 SONG = Song("Viirastus", [

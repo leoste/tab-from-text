@@ -9,7 +9,6 @@ class Song:
 
     @property
     def instruments(self) -> List[Instrument]:
-        # Collect instrument names in order of first appearance across all segments
         seen = {}
         for segment in self.segments:
             for name in segment.instrument_names():

@@ -1,5 +1,5 @@
 from typing import List
-from object.StrumStyle import StrumStyle
+from song.object.StrumStyle import StrumStyle
 
 class Rhythm:
     def __init__(self, durations: List[int], styles: List[StrumStyle] = [StrumStyle.NORMAL]):

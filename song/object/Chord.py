@@ -1,4 +1,4 @@
-from object.GuitarString import GuitarString
+from song.object.GuitarString import GuitarString
 
 class Chord:    
 

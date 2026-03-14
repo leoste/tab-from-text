@@ -6,9 +6,9 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.pdfdoc import PDFDictionary, PDFName
 
-from object.Song import Song
-from TabRenderer import render_tab, render_title_page
-from LayoutConfig import LayoutConfig
+from song.object.Song import Song
+from render.TabRenderer import render_tab, render_title_page
+from render.LayoutConfig import LayoutConfig
 
 A4_WIDTH_PT, A4_HEIGHT_PT = A4
 

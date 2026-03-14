@@ -1,8 +1,8 @@
-from object.NoteProvider import NoteProvider
-from object.ChordSpan import ChordSpan
-from object.StrumStyle import StrumStyle
-from object.Note import Note
-from object.Chord import Chord
+from song.object.NoteProvider import NoteProvider
+from song.object.ChordSpan import ChordSpan
+from song.object.StrumStyle import StrumStyle
+from song.object.Note import Note
+from song.object.Chord import Chord
 
 
 class StrummedChordSpan(NoteProvider):

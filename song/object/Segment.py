@@ -1,6 +1,6 @@
 from typing import List
-from object.NoteProvider import NoteProvider
-from object.Note import Note
+from song.object.NoteProvider import NoteProvider
+from song.object.Note import Note
 
 
 class Segment:

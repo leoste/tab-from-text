@@ -1,5 +1,5 @@
-from object.Chord import Chord
-from object.StrumStyle import StrumStyle
+from song.object.Chord import Chord
+from song.object.StrumStyle import StrumStyle
 from object.TimeUtils import convertTimeToTicks
 
 # Important! While Segment durations are in 1/8th notes, Note durations are in ticks

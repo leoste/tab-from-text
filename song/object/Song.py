@@ -1,5 +1,5 @@
 from typing import List
-from object.Instrument import Instrument
+from render.object.Instrument import Instrument
 
 
 class Song:

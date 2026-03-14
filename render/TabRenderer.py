@@ -1,10 +1,10 @@
 import math
 from PIL import Image, ImageDraw
-from object.StrumStyle import StrumStyle
-from object.Segment import Segment
+from song.object.StrumStyle import StrumStyle
+from song.object.Segment import Segment
 from object.TimeUtils import TIME_RESOLUTION
-from object.Song import Song
-from LayoutConfig import LayoutConfig
+from song.object.Song import Song
+from render.LayoutConfig import LayoutConfig
 
 MEASURES_PER_LINE = 4
 UNITS_PER_MEASURE = 8 * TIME_RESOLUTION

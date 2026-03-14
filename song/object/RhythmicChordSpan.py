@@ -1,10 +1,10 @@
 from typing import List
-from object.ChordSpan import ChordSpan
-from object.Rhythm import Rhythm
-from object.Note import Note
-from object.Chord import Chord
-from object.StrumStyle import StrumStyle
-from object.NoteProvider import NoteProvider
+from song.object.ChordSpan import ChordSpan
+from song.object.Rhythm import Rhythm
+from song.object.Note import Note
+from song.object.Chord import Chord
+from song.object.StrumStyle import StrumStyle
+from song.object.NoteProvider import NoteProvider
 
 
 class RhythmicChordSpan(NoteProvider):

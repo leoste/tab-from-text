@@ -298,7 +298,7 @@ salm_3_lyrics = Lyrics("""\
 on kätte jõudnud aeg
 ja maksnud olen ma
 ei jää siin pidama
-maksan elu- aeg
+maksan eluaeg
 pingutatud sai
 ülemääragi
 ja teada sedagi

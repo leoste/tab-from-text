@@ -8,6 +8,11 @@ class Language(Enum):
 
 ESTONIAN_VOWELS = set("aeiouõäöü")
 
+# Vowel pairs that always split into separate syllables.
+# Add new pairs here as edge cases are discovered.
+# For irregular words, manually hyphenate in the lyrics string instead.
+ESTONIAN_VOWEL_SPLITS = {"ua", "ia"}
+
 
 def _split_estonian(word: str) -> list[str]:
     """
@@ -20,6 +25,9 @@ def _split_estonian(word: str) -> list[str]:
          consonant belongs to the next syllable; all preceding consonants
          stay in the current syllable.
          e.g. "korst-na" not "kors-tna", "püh-ki-ja" not "pü-hki-ja"
+      4. Adjacent vowel pairs listed in ESTONIAN_VOWEL_SPLITS always split,
+         e.g. "ua" -> u|a, "ia" -> i|a.
+         Other adjacent vowel pairs (diphthongs) stay in the same syllable.
 
     Dashes are NOT added here — the caller (split_syllables) appends them.
     """
@@ -41,12 +49,16 @@ def _split_estonian(word: str) -> list[str]:
         current_vowel_pos = vowel_positions[v_idx]
         next_vowel_pos    = vowel_positions[v_idx + 1]
 
-        # Collect consonants between the two vowel groups
         between = list(range(current_vowel_pos + 1, next_vowel_pos))
         consonants_between = [i for i in between if word[i] not in ESTONIAN_VOWELS]
 
         if not consonants_between:
-            # No consonants between vowels — no split here (e.g. "au", "öö")
+            # Adjacent vowels — split only if the pair is in ESTONIAN_VOWEL_SPLITS
+            pair = word[current_vowel_pos] + word[next_vowel_pos]
+            if pair in ESTONIAN_VOWEL_SPLITS:
+                split_at = next_vowel_pos
+                syllables.append(word[start:split_at])
+                start = split_at
             continue
 
         # Split point: last consonant in the gap starts the new syllable
@@ -54,10 +66,7 @@ def _split_estonian(word: str) -> list[str]:
         syllables.append(word[start:split_at])
         start = split_at
 
-    # Append remainder as the final syllable
     syllables.append(word[start:])
-
-    # Remove any empty syllables that can arise from edge cases
     syllables = [s for s in syllables if s]
 
     return syllables

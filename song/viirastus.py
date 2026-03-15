@@ -177,8 +177,23 @@ bass_viimane_salm_parts = bass_salm_parts
 
 rhythm_chorus_parts = [
     RhythmicChordSpan(
-        Rhythm([8]),
-        [ ChordSpan(64, Chord.no_strings_hit_chord()) ]
+        Rhythm(
+            [1,1,1,1,1,1,2],
+            [StrumStyle.NORMAL] * 2 +
+            [StrumStyle.MUTED, StrumStyle.NORMAL] * 2 +
+            [StrumStyle.NORMAL] * 2
+        ),
+        [ 
+            ChordSpan(8, CHORD_5_A),
+            ChordSpan(8, CHORD_8_F),            
+            ChordSpan(16, CHORD_10_D),
+            ChordSpan(8, CHORD_5_A),
+            ChordSpan(8, CHORD_8_F),            
+            ChordSpan(8, CHORD_10_D),
+        ]
+    ),
+    RhythmicChordSpan(
+        Rhythm([2]), [ChordSpan(8, CHORD_10_D)]
     )
 ]
 
@@ -318,8 +333,8 @@ ref_lyrics = Lyrics("""\
 kas saaksin proovida veel
 või ongi läbi mu tee\
 """, [
-4,2,2,4,2,2,16,
-4,2,2,4,2,2,16
+3,3,2,3,3,2,16,
+3,3,2,3,3,2,16
 ])
 
 final_ref_lyrics = Lyrics("""\

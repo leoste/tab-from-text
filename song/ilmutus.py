@@ -31,25 +31,31 @@ riff_chord_spans = [
     ChordSpan(2, Chord.power_chord(GuitarString.E6, 7)),
 ]
 
-riff_rhythm = Rhythm(
+RIFF = Segment("RIFF", {
+    RHYTHM: [RhythmicChordSpan(
+        Rhythm(
+            [1,1,1,1] * 3 + [2,2],
+            [StrumStyle.NORMAL] * 16
+       ),
+       riff_chord_spans
+    )] * 4
+})
+
+salm_rhythm = Rhythm(
     [1,1,1,1] * 4,
     ([StrumStyle.NORMAL] * 3 + [StrumStyle.NO_HIT]) * 3 + [StrumStyle.NORMAL, StrumStyle.NO_HIT] * 2
 )
 
-riff_measure = RhythmicChordSpan(
-            riff_rhythm,
-            riff_chord_spans
-        )
-
-RIFF = Segment("RIFF", {
-    RHYTHM: [riff_measure] * 4
-})
+salm_measure = RhythmicChordSpan(
+    salm_rhythm,
+    riff_chord_spans
+)
 
 salm_main_durations = [1,1,2,1,1,2,1,1,2,2,2]
 salm_alt_durations = [1,1,2,1,1,2,2,1,1,2,2]
 
 SALM_1 = Segment("1. SALM", {
-    RHYTHM: [riff_measure] * 3 + [
+    RHYTHM: [salm_measure] * 3 + [
         RhythmicChordSpan(
             Rhythm(
                 [1,1,1,1] * 3 + [2,1,1],
@@ -67,7 +73,7 @@ kajaga lajatab lämmatav luumurd\
 
 SALM_2 = Segment("2. SALM", {
     RHYTHM: [
-        riff_measure,
+        salm_measure,
         RhythmicChordSpan(
             Rhythm(
                 [1,1,1,1] * 2 + [2,1,1,2,2],
@@ -77,7 +83,7 @@ SALM_2 = Segment("2. SALM", {
             ),
             riff_chord_spans
         ),
-        riff_measure,
+        salm_measure,
         RhythmicChordSpan(
             Rhythm(
                 [1,1,1,1] * 3 + [1,1,1,1],
@@ -95,21 +101,98 @@ tuttavalt ustavalt tuntavalt kuulen
 sügaval pinnapeal kõikjal on juured\
 """, (salm_main_durations + salm_alt_durations) * 2))
 
+rhythm_first_measures = [
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),8),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 7),2),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 6),1),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 7),2),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 6),1),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 7),1),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 6),1),]
+
+rhythm_chorus = rhythm_first_measures + [
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),8),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),2),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),1,StrumStyle.MUTED),
+    StrummedChordSpan(2, Chord.power_chord(GuitarString.A5, 2),1),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 2),3)        
+] + rhythm_first_measures + [
+    StrummedChordSpan(2, Chord.power_chord(GuitarString.E6, 5),2),
+    StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),3),
+    StrummedChordSpan(9, Chord.power_chord(GuitarString.E6, 4))
+]
+
 CHORUS = Segment("REFRÄÄN", {
-    RHYTHM: [
-        
-    ]
-}, Lyrics("", []))
+    RHYTHM: rhythm_chorus
+}, Lyrics("""\
+otse minu ees
+on maailma-asja paigutus
+tunnen vastust enda sees
+see on ilmutus
+""", [
+    2,2,1,2,4,
+    1, 2,2,2,2, 1,2,5,
+    2,2,2,2, 2,1,5,
+    2,2, 1,2,5
+], 4))
 
-TOPELT_CHORUS = Segment("REFRÄÄN", {
-    RHYTHM: [
-
-    ]
-}, Lyrics("", []))
+TOPELT_CHORUS = Segment("TOPELT REFRÄÄN", {
+    RHYTHM: rhythm_first_measures + [
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),8),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),2),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),1,StrumStyle.MUTED),
+        StrummedChordSpan(2, Chord.power_chord(GuitarString.A5, 2),1),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.A5, 2),3)        
+    ] + rhythm_first_measures + [
+        StrummedChordSpan(2, Chord.power_chord(GuitarString.E6, 5),2),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),3),
+        StrummedChordSpan(5, Chord.power_chord(GuitarString.E6, 4)),
+        StrummedChordSpan(4, Chord.power_chord(GuitarString.E6, 4)),
+    ] + rhythm_chorus
+}, Lyrics("""\
+otse minu ees
+on maailma-asja paigutus
+tunnen vastust enda sees
+see on ilmutus
+otse minu ees
+on maailma-asja paigutus
+tunnen vastust enda sees
+see on ilmutus
+""", [
+    2,2,1,2,4,
+    1, 2,2,2,2, 1,2,5,
+    2,2,2,2, 2,1,5,
+    2,2, 1,2,13
+] + [
+    2,2,1,2,4,
+    1, 2,2,2,2, 1,2,5,
+    2,2,2,2, 2,1,5,
+    2,2, 1,2,5
+], 4))
 
 END = Segment("END", {
     RHYTHM: [
-        
+        StrummedChordSpan(4, Chord.power_chord(GuitarString.E6, 9)),
+        StrummedChordSpan(4, Chord.power_chord(GuitarString.E6, 7)),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 5)),
+        StrummedChordSpan(2, Chord.power_chord(GuitarString.E6, 5)),
+        StrummedChordSpan(3, Chord.power_chord(GuitarString.E6, 4)),
+        StrummedChordSpan(2, Chord.power_chord(GuitarString.E6, 4)),
+    ] + [
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2, StrumStyle.MUTED),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2, StrumStyle.MUTED),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),2),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),1, StrumStyle.MUTED),
+        StrummedChordSpan(2, Chord.power_chord(GuitarString.E6, 4)),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 4),3),
+    ] * 3 + [
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2, StrumStyle.MUTED),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2),
+        StrummedChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2, StrumStyle.MUTED),
+        StrummedChordSpan(8, Chord.power_chord(GuitarString.E6, 4))
     ]
 })
 

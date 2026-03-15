@@ -180,7 +180,7 @@ rhythm_chorus_parts = [
         Rhythm(
             [1,1,1,1,1,1,2],
             [StrumStyle.NORMAL] * 2 +
-            [StrumStyle.MUTED, StrumStyle.NORMAL] * 2 +
+            [StrumStyle.PALM_MUTED, StrumStyle.NORMAL] * 2 +
             [StrumStyle.NORMAL] * 2
         ),
         [ 

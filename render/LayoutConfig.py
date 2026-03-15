@@ -35,6 +35,7 @@ class LayoutConfig:
     # to the baseline of the inline lyric text.
     lyrics_y_offset_pt:        float = 18.0
     lyrics_tab_font_size_pt:   float = 6.0
+    rest_stem_pt:              float = 2.0  # height of the stem drawn for silent notes
 
     # --- String lines ---
     line_spacing_pt:    float = 6    # gap between adjacent string lines

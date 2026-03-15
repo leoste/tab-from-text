@@ -6,7 +6,7 @@ I wrote this cause clicking and copy-pasting in existing tab editor websites or 
 
 It's very limited, there are no pause symbols for example. The system only renders 1 to 1/8th notes, though it can support 3/16 notes and other 1.5x lengths. It's only useful for writing existing songs from your head into tabs, not composing.
 
-Most code is hand-written by me. Only exception is TabRenderer.py, TabPrinter.py and LayoutConfig.py which are AI-generated, because who wants to write frontend code or worse yet, configuration files fr.
+Most code is hand-written by me. Only exception is TabRenderer.py, TabPrinter.py, LayoutConfig.py and SyllableUtils which are AI-generated, because who wants to write frontend code or worse yet, configuration files fr.
 
 <img width="2397" height="1583" alt="image" src="https://github.com/user-attachments/assets/f3bd937d-d0cd-4936-a225-20cd7fdbc3f0" />
 <img width="2188" height="1613" alt="image" src="https://github.com/user-attachments/assets/385bdb09-f44d-4b2c-9c2a-8f8940fb07be" />

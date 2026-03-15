@@ -34,7 +34,14 @@ def draw_arc(draw_obj, cfg: LayoutConfig, x_start, x_end, y_top):
     draw_obj.arc(arc_box, start=180, end=0, fill="black", width=cfg.lw(cfg.line_width_thin_pt))
 
 
-def draw_stem(draw_obj, cfg: LayoutConfig, stem_x, stem_y_start, duration):
+def draw_stem(draw_obj, cfg: LayoutConfig, stem_x, stem_y_start, duration, is_rest: bool = False):
+    if is_rest:
+        full_h = cfg.px(cfg.stem_h_pt)
+        rest_h = cfg.px(cfg.rest_stem_pt)
+        draw_obj.line([(stem_x, stem_y_start + full_h - rest_h),
+                       (stem_x, stem_y_start + full_h)],
+                      fill="black", width=cfg.lw(cfg.line_width_normal_pt))
+        return
     if duration >= TICKS_FULL_NOTE:
         draw_obj.line([(stem_x, stem_y_start),
                        (stem_x, stem_y_start + cfg.px(cfg.full_h_pt))],
@@ -273,7 +280,8 @@ def render_tab(segments: list[Segment], instrument_name: str,
                                           fill="black", width=cfg.lw(cfg.line_width_thin_pt))
                             last_pm_y = pm_y
 
-                    draw_stem(draw, cfg, chunk_stem_x, chunk_stem_y_start, chunk_dur)
+                    is_rest = (note.chord is None or note.style == StrumStyle.NO_HIT)
+                    draw_stem(draw, cfg, chunk_stem_x, chunk_stem_y_start, chunk_dur, is_rest=is_rest)
 
                     if chunk_acc == acc_dur_segment and is_dotted(note.duration):
                         dot_x = chunk_stem_x + dot_offset_px

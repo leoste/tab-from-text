@@ -17,6 +17,8 @@ _cfg = LayoutConfig()
 
 MEASURES_PER_LINE = 4
 UNITS_PER_MEASURE = 8 * TIME_RESOLUTION
+STRING_COUNT      = 6   # number of strings on the instrument
+STRING_GAPS       = STRING_COUNT - 1  # number of gaps between string lines
 
 _measure_width_pt      = (UNITS_PER_MEASURE * _cfg.notes.eighth_note_width_pt) + _cfg.notes.bar_padding_pt
 _line_content_width_pt = MEASURES_PER_LINE * _measure_width_pt
@@ -53,10 +55,10 @@ measure_w_px    = px(_measure_width_pt)
 content_w_px    = px(_line_content_width_pt)
 img_width_px    = content_w_px + margin_left_px + margin_right_px
 title_h_px      = px(_cfg.fonts.title_pt + _cfg.page.title_padding_pt)
-system_h_px     = px(_cfg.row.above_strings_pt + 5 * _cfg.row.line_spacing_pt + _cfg.row.below_strings_pt)
+system_h_px     = px(_cfg.row.above_strings_pt + STRING_GAPS * _cfg.row.line_spacing_pt + _cfg.row.below_strings_pt)
 above_str_px    = px(_cfg.row.above_strings_pt)
 below_str_px    = px(_cfg.row.below_strings_pt)
-string_block_px = px(5 * _cfg.row.line_spacing_pt)
+string_block_px = px(STRING_GAPS * _cfg.row.line_spacing_pt)
 
 # ---------------------------------------------------------------------------
 # Fonts (loaded once)
@@ -118,7 +120,7 @@ def tick_to_strings_y(tick: int, base_y: int) -> int:
 
 def tick_to_stem_y(tick: int, base_y: int) -> int:
     """Pixel y where stems start (just below the 6th string)."""
-    return tick_to_strings_y(tick, base_y) + 6 * line_sp_px
+    return tick_to_strings_y(tick, base_y) + STRING_COUNT * line_sp_px
 
 
 def barline_x(tick: int) -> int:

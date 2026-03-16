@@ -1,6 +1,7 @@
 """Row-level drawing — things that belong to a system of six string lines,
 including lyrics which span the full row."""
 import tabfromtext.render.LayoutUtils as lu
+from tabfromtext.render.LayoutUtils import STRING_GAPS, STRING_COUNT
 from tabfromtext.util.TimeUtils import convertTimeToTicks
 
 
@@ -27,7 +28,7 @@ def draw_row(draw_obj, y_top, start_measure_num):
 
     draw_obj.line(
         [(lu.margin_left_px, y_top),
-         (lu.margin_left_px, y_top + 5 * lu.line_sp_px)],
+         (lu.margin_left_px, y_top + STRING_GAPS * lu.line_sp_px)],
         fill="black", width=lu.lw(cfg.line_width.normal_pt),
     )
     draw_obj.text(
@@ -41,7 +42,7 @@ def draw_barline(draw_obj, strings_y, bar_x, measure_num):
     cfg = lu.cfg
     draw_obj.line(
         [(bar_x, strings_y),
-         (bar_x, strings_y + 5 * lu.line_sp_px)],
+         (bar_x, strings_y + STRING_GAPS * lu.line_sp_px)],
         fill="black", width=lu.lw(cfg.line_width.normal_pt),
     )
     draw_obj.text(
@@ -55,7 +56,7 @@ def draw_row_end_barline(draw_obj, strings_y):
     cfg = lu.cfg
     draw_obj.line(
         [(lu.margin_left_px + lu.content_w_px, strings_y),
-         (lu.margin_left_px + lu.content_w_px, strings_y + 5 * lu.line_sp_px)],
+         (lu.margin_left_px + lu.content_w_px, strings_y + STRING_GAPS * lu.line_sp_px)],
         fill="black", width=lu.lw(cfg.line_width.normal_pt),
     )
 
@@ -65,7 +66,7 @@ def draw_final_barline(draw_obj, final_x, final_y):
     cfg = lu.cfg
     draw_obj.line(
         [(final_x, final_y),
-         (final_x, final_y + 5 * lu.line_sp_px)],
+         (final_x, final_y + STRING_GAPS * lu.line_sp_px)],
         fill="black", width=lu.lw(cfg.line_width.normal_pt),
     )
 
@@ -90,7 +91,7 @@ def draw_lyrics(draw_obj, segment, base_y):
 
     for abs_tick, syl_text in syllable_events:
         syl_strings_y = lu.tick_to_strings_y(abs_tick, base_y)
-        syl_y         = syl_strings_y + 5 * lu.line_sp_px + lyrics_y_off_px
+        syl_y = syl_strings_y + STRING_GAPS * lu.line_sp_px + lyrics_y_off_px
         syl_x_left    = lu.tick_to_x(abs_tick)
         text_w        = draw_obj.textbbox((0, 0), syl_text, font=lu.lyrics_tab_font)[2]
         draw_obj.text(

@@ -85,7 +85,7 @@ def print_song(song: Song, output_dir: str) -> None:
 
     for instrument in song.instruments:
         safe_instrument_name = instrument.name.lower().replace(' ', '_')
-        images = [img for _, img in render_tab(instrument.segments, instrument.name)]
+        images = render_tab(instrument.segments, instrument.name)
 
         pdf_path = os.path.join(output_dir, f"{safe_song_title}_{safe_instrument_name}.pdf")
         c = canvas.Canvas(pdf_path, pagesize=A4)

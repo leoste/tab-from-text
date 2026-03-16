@@ -5,8 +5,6 @@ from dataclasses import dataclass
 class NoteContext:
     """Immutable positional data about one note — where it lives on the page."""
     note:           object   # the Note object
-    idx:            int      # index in segment_notes
-    segment_notes:  list
     tick:           int      # absolute tick of note start
     strings_y:      int      # y of 1st string in this note's system row
     x:              int      # left edge x of the note
@@ -40,5 +38,3 @@ class SegmentRenderState:
     last_style: object = None   # style of the last rendered note
     last_pm_x:  object = None   # x where the current P.M. line left off (int | None)
     last_pm_y:  object = None   # y of the current P.M. line (int | None)
-    final_x:    int    = 0      # x of the last rendered note's right edge
-    final_y:    int    = 0      # strings_y of the last rendered note's row

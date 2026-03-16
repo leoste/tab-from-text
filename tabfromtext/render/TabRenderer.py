@@ -1,13 +1,17 @@
 import math
 from PIL import Image, ImageDraw
+from reportlab.lib.pagesizes import A4
 from tabfromtext.song.Segment import Segment
 from tabfromtext.song.Song import Song
 from tabfromtext.render.RenderContexts import NoteContext, ChunkContext, SegmentRenderState
+from tabfromtext.render.LayoutUtils import STRING_GAPS
 from tabfromtext.render.RowPainter import (
     draw_row, draw_barline, draw_row_end_barline, draw_final_barline, draw_lyrics,
 )
 from tabfromtext.render.NotePainter import draw_note
 import tabfromtext.render.LayoutUtils as lu
+
+A4_WIDTH_PT, A4_HEIGHT_PT = A4
 
 
 # ---------------------------------------------------------------------------
@@ -27,8 +31,6 @@ def _build_note_context(note, idx, segment_notes, tick, base_y) -> NoteContext:
 
     return NoteContext(
         note=note,
-        idx=idx,
-        segment_notes=segment_notes,
         tick=tick,
         strings_y=lu.tick_to_strings_y(tick, base_y),
         x=x,
@@ -60,9 +62,9 @@ def _build_chunk_context(chunk_acc, chunk_dur, note_tick, base_y) -> ChunkContex
 
 def _render_note(draw, note_ctx: NoteContext, base_y,
                  render_state: SegmentRenderState,
-                 global_measure_counter) -> int:
+                 global_measure_counter) -> tuple[int, int, int]:
     """Handle row/barline housekeeping and draw all chunks of one note.
-    Returns updated global_measure_counter."""
+    Returns (global_measure_counter, final_x, final_y)."""
     if note_ctx.is_new_line:
         draw_row(draw, note_ctx.strings_y, global_measure_counter)
         render_state.last_pm_x = None
@@ -77,6 +79,8 @@ def _render_note(draw, note_ctx: NoteContext, base_y,
     chunk_acc         = note_ctx.tick
     prev_stem_x       = None
     prev_stem_y_start = None
+    final_x           = note_ctx.next_x
+    final_y           = note_ctx.strings_y
 
     while remaining_dur > 0:
         ticks_left = lu.UNITS_PER_MEASURE - lu.tick_to_unit_in_measure(chunk_acc)
@@ -105,7 +109,7 @@ def _render_note(draw, note_ctx: NoteContext, base_y,
         if lu.is_new_system(chunk_acc):
             draw_row_end_barline(draw, lu.tick_to_strings_y(chunk_acc - 1, base_y))
 
-    return global_measure_counter
+    return global_measure_counter, final_x, final_y
 
 
 # ---------------------------------------------------------------------------
@@ -134,30 +138,26 @@ def _create_segment_image(segment, instrument_name):
 # Public render entry points
 # ---------------------------------------------------------------------------
 
-def render_tab(segments: list[Segment], instrument_name: str,
-               output_base_path: str = "guitar_tab") -> list[tuple[str, object]]:
+def render_tab(segments: list[Segment], instrument_name: str) -> list[Image.Image]:
     results = []
     global_measure_counter = 1
 
-    for seg_idx, segment in enumerate(segments):
+    for segment in segments:
         img, draw, base_y = _create_segment_image(segment, instrument_name)
         draw.text((lu.margin_left_px, lu.px(lu.cfg.page.title_padding_pt)),
                   segment.title, fill="black", font=lu.title_font)
 
         segment_notes = segment.GetNotesFromSegment(instrument_name)
         acc_dur       = 0
-        render_state  = SegmentRenderState(
-            final_x=lu.margin_left_px,
-            final_y=base_y,
-        )
+        render_state  = SegmentRenderState()
+        final_x       = lu.margin_left_px
+        final_y       = base_y
 
         for idx, note in enumerate(segment_notes):
             note_ctx = _build_note_context(note, idx, segment_notes, acc_dur, base_y)
 
             if note.duration is not None:
-                render_state.final_y = note_ctx.strings_y
-                render_state.final_x = note_ctx.next_x
-                global_measure_counter = _render_note(
+                global_measure_counter, final_x, final_y = _render_note(
                     draw, note_ctx, base_y, render_state, global_measure_counter,
                 )
 
@@ -166,15 +166,12 @@ def render_tab(segments: list[Segment], instrument_name: str,
             acc_dur += note.duration if note.duration else 0
 
         if not lu.is_new_system(acc_dur):
-            draw_final_barline(draw, render_state.final_x, render_state.final_y)
+            draw_final_barline(draw, final_x, final_y)
 
         if segment.lyrics is not None:
             draw_lyrics(draw, segment, base_y)
 
-        safe_title = "".join(
-            c for c in segment.title if c.isalnum() or c in (' ', '_')
-        ).strip().replace(' ', '_')
-        results.append((f"{output_base_path}_{seg_idx + 1}_{safe_title}.png", img))
+        results.append(img)
 
     return results
 
@@ -184,9 +181,6 @@ def render_title_page(song: Song, num_columns: int = 2) -> Image.Image | None:
                 for seg in song.segments]
     if not sections:
         return None
-
-    from reportlab.lib.pagesizes import A4
-    A4_WIDTH_PT, A4_HEIGHT_PT = A4
 
     img_w_px  = lu.img_width_px
     page_h_pt = A4_HEIGHT_PT - lu.cfg.page.top_margin_pt - lu.cfg.page.bottom_margin_pt

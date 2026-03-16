@@ -1,24 +1,12 @@
 """Note-level drawing — everything that belongs to a single note event."""
 from tabfromtext.song.StrumStyle import StrumStyle
-from tabfromtext.render.RenderContexts import NoteContext, ChunkContext
-from tabfromtext.util.TimeUtils import TIME_RESOLUTION
+from tabfromtext.render.RenderContexts import NoteContext, ChunkContext, SegmentRenderState
+from tabfromtext.util.TimeUtils import (
+    TICKS_EIGHTH, TICKS_DOTTED_EIGHTH,
+    TICKS_HALF_NOTE, TICKS_FULL_NOTE,
+    is_dotted,
+)
 import tabfromtext.render.LayoutUtils as lu
-
-TICKS_SIXTEENTH     = TIME_RESOLUTION // 2
-TICKS_DOTTED_EIGHTH = TICKS_SIXTEENTH * 3
-TICKS_EIGHTH        = 1 * TIME_RESOLUTION
-TICKS_HALF_NOTE     = 4 * TIME_RESOLUTION
-TICKS_FULL_NOTE     = 8 * TIME_RESOLUTION
-
-
-def is_dotted(duration):
-    if duration <= 0:
-        return False
-    doubled = duration * 2
-    if doubled % 3 != 0:
-        return False
-    base = doubled // 3
-    return base > 0 and (base & (base - 1)) == 0
 
 
 # ---------------------------------------------------------------------------
@@ -26,15 +14,13 @@ def is_dotted(duration):
 # ---------------------------------------------------------------------------
 
 def draw_note(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
+              render_state: SegmentRenderState,
               prev_stem_x, prev_stem_y_start):
     """Draw all visual elements for one note-chunk.
-    Returns updated (last_pm_x, last_pm_y) for palm mute state threading.
+    Updates render_state in place for palm mute continuity.
     """
-    last_pm_x = note_ctx.last_pm_x
-    last_pm_y = note_ctx.last_pm_y
-
     if note_ctx.note.chord and note_ctx.note.style != StrumStyle.NO_HIT:
-        last_pm_x, last_pm_y = _draw_fret_numbers(draw_obj, note_ctx, chunk_ctx)
+        _draw_fret_numbers(draw_obj, note_ctx, chunk_ctx, render_state)
 
     is_rest = (note_ctx.note.chord is None or note_ctx.note.style == StrumStyle.NO_HIT)
     _draw_stem(draw_obj, chunk_ctx, is_rest=is_rest)
@@ -49,21 +35,17 @@ def draw_note(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
     if chunk_ctx.dur in (TICKS_EIGHTH, TICKS_DOTTED_EIGHTH):
         _draw_beam(draw_obj, note_ctx, chunk_ctx)
 
-    return last_pm_x, last_pm_y
-
 
 # ---------------------------------------------------------------------------
 # Fret numbers, slides, palm mute
 # ---------------------------------------------------------------------------
 
-def _draw_fret_numbers(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext):
-    """Draw fret labels (or 'X') for each string, slide lines, and palm mute.
-    Returns updated (last_pm_x, last_pm_y)."""
-    note      = note_ctx.note
-    strings   = [note.chord.string1, note.chord.string2, note.chord.string3,
-                 note.chord.string4, note.chord.string5, note.chord.string6]
-    last_pm_x = note_ctx.last_pm_x
-    last_pm_y = note_ctx.last_pm_y
+def _draw_fret_numbers(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
+                       render_state: SegmentRenderState):
+    """Draw fret labels (or 'X') for each string, slide lines, and palm mute."""
+    note    = note_ctx.note
+    strings = [note.chord.string1, note.chord.string2, note.chord.string3,
+               note.chord.string4, note.chord.string5, note.chord.string6]
 
     for i, fret in enumerate(strings):
         if fret is not None and fret != -1:
@@ -85,9 +67,7 @@ def _draw_fret_numbers(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext)
                 _draw_slide(draw_obj, chunk_ctx, i, text_w)
 
     if note.style == StrumStyle.PALM_MUTED:
-        last_pm_x, last_pm_y = _draw_palm_mute(draw_obj, note_ctx, chunk_ctx)
-
-    return last_pm_x, last_pm_y
+        _draw_palm_mute(draw_obj, note_ctx, chunk_ctx, render_state)
 
 
 def _draw_slide(draw_obj, chunk_ctx: ChunkContext, string_index, text_w):
@@ -105,14 +85,15 @@ def _draw_slide(draw_obj, chunk_ctx: ChunkContext, string_index, text_w):
              chunk_ctx.strings_y + string_index * lu.line_sp_px)
 
 
-def _draw_palm_mute(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext):
+def _draw_palm_mute(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
+                    render_state: SegmentRenderState):
     """Draw P.M. label, dashed continuation line, and closing tick.
-    Returns updated (last_pm_x, last_pm_y)."""
+    Updates render_state.last_pm_x and render_state.last_pm_y in place."""
     cfg  = lu.cfg
     pm_y = chunk_ctx.strings_y + lu.px(cfg.palm_mute.y_offset_pt)
 
-    is_first_pm_on_line = (note_ctx.last_style != StrumStyle.PALM_MUTED
-                           or note_ctx.last_pm_x is None)
+    is_first_pm_on_line = (render_state.last_style != StrumStyle.PALM_MUTED
+                           or render_state.last_pm_x is None)
     is_last_pm = (note_ctx.next_real_note is None
                   or note_ctx.next_real_note.style != StrumStyle.PALM_MUTED)
 
@@ -121,10 +102,10 @@ def _draw_palm_mute(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext):
             (chunk_ctx.x, pm_y - lu.px(cfg.palm_mute.label_y_pt)),
             "P.M.", fill="black", font=lu.annotation_font,
         )
-        last_pm_x = chunk_ctx.x + lu.px(cfg.palm_mute.label_w_pt)
+        render_state.last_pm_x = chunk_ctx.x + lu.px(cfg.palm_mute.label_w_pt)
     else:
-        _draw_dashed_segment(draw_obj, note_ctx.last_pm_x, chunk_ctx.x, pm_y)
-        last_pm_x = chunk_ctx.x
+        _draw_dashed_segment(draw_obj, render_state.last_pm_x, chunk_ctx.x, pm_y)
+        render_state.last_pm_x = chunk_ctx.x
 
     if is_last_pm and not is_first_pm_on_line:
         tick_h = lu.px(cfg.palm_mute.tick_h_pt)
@@ -134,7 +115,7 @@ def _draw_palm_mute(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext):
             fill="black", width=lu.lw(cfg.line_width.thin_pt),
         )
 
-    return last_pm_x, pm_y
+    render_state.last_pm_y = pm_y
 
 
 # ---------------------------------------------------------------------------

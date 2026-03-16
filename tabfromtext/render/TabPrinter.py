@@ -27,7 +27,7 @@ def _image_dimensions_pt(img: Image.Image) -> tuple[float, float]:
 
 def _print_instrument(
     c: canvas.Canvas,
-    images_with_names: list[tuple[str, Image.Image]],
+    images: list[Image.Image],
     title: str = "",
     instrument_name: str = "",
 ) -> None:
@@ -39,13 +39,10 @@ def _print_instrument(
     footer_font  = cfg.fonts.footer_pt
     printable_h  = A4_HEIGHT_PT - v_margin_top - v_margin_bot
 
-    entries: list[tuple[Image.Image, float, float]] = []
-    for _filename, img in images_with_names:
-        w_pt, h_pt = _image_dimensions_pt(img)
-        entries.append((img, w_pt, h_pt))
+    entries = [(img, *_image_dimensions_pt(img)) for img in images]
 
     page_num       = 1
-    page_entries: list[tuple[Image.Image, float, float]] = []
+    page_entries   = []
     page_used_h_pt = 0.0
 
     def flush_page() -> None:
@@ -88,9 +85,7 @@ def print_song(song: Song, output_dir: str) -> None:
 
     for instrument in song.instruments:
         safe_instrument_name = instrument.name.lower().replace(' ', '_')
-        output_base_path = f"demo/build/{safe_song_title}/{safe_instrument_name}/tab"
-        images_with_names = render_tab(instrument.segments, instrument.name,
-                                       output_base_path)
+        images = [img for _, img in render_tab(instrument.segments, instrument.name)]
 
         pdf_path = os.path.join(output_dir, f"{safe_song_title}_{safe_instrument_name}.pdf")
         c = canvas.Canvas(pdf_path, pagesize=A4)
@@ -104,7 +99,6 @@ def print_song(song: Song, output_dir: str) -> None:
                         width=w_pt, height=h_pt)
             c.showPage()
 
-        _print_instrument(c, images_with_names,
-                          title=song.title, instrument_name=instrument.name)
+        _print_instrument(c, images, title=song.title, instrument_name=instrument.name)
         c.save()
         print(f"PDF salvestatud: {pdf_path}")

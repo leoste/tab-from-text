@@ -2,13 +2,11 @@ import math
 from PIL import Image, ImageDraw
 from tabfromtext.song.Segment import Segment
 from tabfromtext.song.Song import Song
-from tabfromtext.render.LayoutConfig import LayoutConfig
-from tabfromtext.render.RenderContexts import NoteContext, ChunkContext
+from tabfromtext.render.RenderContexts import NoteContext, ChunkContext, SegmentRenderState
 from tabfromtext.render.RowPainter import (
-    draw_row, draw_barline, draw_row_end_barline, draw_final_barline,
+    draw_row, draw_barline, draw_row_end_barline, draw_final_barline, draw_lyrics,
 )
 from tabfromtext.render.NotePainter import draw_note
-from tabfromtext.util.TimeUtils import convertTimeToTicks
 import tabfromtext.render.LayoutUtils as lu
 
 
@@ -16,8 +14,7 @@ import tabfromtext.render.LayoutUtils as lu
 # Context builders
 # ---------------------------------------------------------------------------
 
-def _build_note_context(note, idx, segment_notes, tick, base_y,
-                        last_style, last_pm_x, last_pm_y) -> NoteContext:
+def _build_note_context(note, idx, segment_notes, tick, base_y) -> NoteContext:
     x   = lu.tick_to_x(tick)
     dur = note.duration or 0
 
@@ -39,9 +36,6 @@ def _build_note_context(note, idx, segment_notes, tick, base_y,
         is_new_line=lu.is_new_system(tick),
         prev_real_note=segment_notes[prev_real_idx] if prev_real_idx is not None else None,
         next_real_note=segment_notes[next_real_idx] if next_real_idx is not None else None,
-        last_style=last_style,
-        last_pm_x=last_pm_x,
-        last_pm_y=last_pm_y,
     )
 
 
@@ -64,13 +58,15 @@ def _build_chunk_context(chunk_acc, chunk_dur, note_tick, base_y) -> ChunkContex
 # Note rendering — chunk loop + row housekeeping
 # ---------------------------------------------------------------------------
 
-def _render_note(draw, note_ctx: NoteContext, base_y, global_measure_counter):
+def _render_note(draw, note_ctx: NoteContext, base_y,
+                 render_state: SegmentRenderState,
+                 global_measure_counter) -> int:
     """Handle row/barline housekeeping and draw all chunks of one note.
-    Returns updated (last_pm_x, last_pm_y)."""
+    Returns updated global_measure_counter."""
     if note_ctx.is_new_line:
         draw_row(draw, note_ctx.strings_y, global_measure_counter)
-        note_ctx.last_pm_x = None
-        note_ctx.last_pm_y = None
+        render_state.last_pm_x = None
+        render_state.last_pm_y = None
 
     if (lu.tick_to_unit_in_measure(note_ctx.tick) == 0
             and lu.tick_to_measure_in_system(note_ctx.tick) > 0):
@@ -89,39 +85,26 @@ def _render_note(draw, note_ctx: NoteContext, base_y, global_measure_counter):
 
         if chunk_ctx.is_new_line and not chunk_ctx.is_first:
             draw_row(draw, chunk_ctx.strings_y, global_measure_counter)
-            note_ctx.last_pm_x = None
-            note_ctx.last_pm_y = None
+            render_state.last_pm_x = None
+            render_state.last_pm_y = None
 
         if lu.is_new_measure(chunk_acc) and not chunk_ctx.is_first:
             draw_barline(draw, chunk_ctx.strings_y,
                          lu.barline_x(chunk_acc), global_measure_counter)
 
-        note_ctx.last_pm_x, note_ctx.last_pm_y = draw_note(
-            draw, note_ctx, chunk_ctx, prev_stem_x, prev_stem_y_start,
-        )
+        draw_note(draw, note_ctx, chunk_ctx, render_state, prev_stem_x, prev_stem_y_start)
 
         prev_stem_x       = chunk_ctx.stem_x
         prev_stem_y_start = chunk_ctx.stem_y
         chunk_acc         += chunk_dur
         remaining_dur     -= chunk_dur
 
+        if lu.is_new_measure(chunk_acc):
+            global_measure_counter += 1
+
         if lu.is_new_system(chunk_acc):
             draw_row_end_barline(draw, lu.tick_to_strings_y(chunk_acc - 1, base_y))
 
-    return note_ctx.last_pm_x, note_ctx.last_pm_y
-
-
-def _advance_measure_counter(note, acc_dur_segment, global_measure_counter):
-    """Increment the measure counter for each measure boundary crossed by this note."""
-    chunk_acc     = acc_dur_segment
-    remaining_dur = note.duration
-    while remaining_dur > 0:
-        ticks_left = lu.UNITS_PER_MEASURE - lu.tick_to_unit_in_measure(chunk_acc)
-        chunk_dur  = min(remaining_dur, ticks_left)
-        chunk_acc     += chunk_dur
-        remaining_dur -= chunk_dur
-        if lu.is_new_measure(chunk_acc):
-            global_measure_counter += 1
     return global_measure_counter
 
 
@@ -148,45 +131,11 @@ def _create_segment_image(segment, instrument_name):
 
 
 # ---------------------------------------------------------------------------
-# Lyrics
-# ---------------------------------------------------------------------------
-
-def _draw_lyrics(draw_obj, segment, base_y):
-    """Draw syllable-aligned inline lyrics below the string lines."""
-    from tabfromtext.util.SyllableUtils import split_syllables
-
-    lyrics_y_off_px = lu.px(lu.cfg.lyrics.y_offset_pt)
-    flat_syllables  = split_syllables(segment.lyrics.text)
-    tick_list       = segment.lyrics.flatten_durations()
-    offset_ticks    = convertTimeToTicks(segment.lyrics.offset)
-
-    syllable_events = []
-    syl_idx  = 0
-    abs_tick = offset_ticks
-    for entry in tick_list:
-        if entry is not None and syl_idx < len(flat_syllables):
-            syllable_events.append((abs_tick, flat_syllables[syl_idx]))
-            syl_idx += 1
-        abs_tick += 1
-
-    for abs_tick, syl_text in syllable_events:
-        syl_strings_y = lu.tick_to_strings_y(abs_tick, base_y)
-        syl_y         = syl_strings_y + 5 * lu.line_sp_px + lyrics_y_off_px
-        syl_x_left    = lu.tick_to_x(abs_tick)
-        text_w        = draw_obj.textbbox((0, 0), syl_text, font=lu.lyrics_tab_font)[2]
-        draw_obj.text(
-            (syl_x_left - text_w // 2, syl_y),
-            syl_text, fill="black", font=lu.lyrics_tab_font,
-        )
-
-
-# ---------------------------------------------------------------------------
 # Public render entry points
 # ---------------------------------------------------------------------------
 
 def render_tab(segments: list[Segment], instrument_name: str,
-               output_base_path: str = "guitar_tab",
-               cfg: LayoutConfig = None) -> list[tuple[str, object]]:
+               output_base_path: str = "guitar_tab") -> list[tuple[str, object]]:
     results = []
     global_measure_counter = 1
 
@@ -195,39 +144,32 @@ def render_tab(segments: list[Segment], instrument_name: str,
         draw.text((lu.margin_left_px, lu.px(lu.cfg.page.title_padding_pt)),
                   segment.title, fill="black", font=lu.title_font)
 
-        segment_notes   = segment.GetNotesFromSegment(instrument_name)
-        acc_dur_segment = 0
-        last_style      = None
-        last_pm_x       = None
-        last_pm_y       = None
-        final_x         = lu.margin_left_px
-        final_y         = base_y
+        segment_notes = segment.GetNotesFromSegment(instrument_name)
+        acc_dur       = 0
+        render_state  = SegmentRenderState(
+            final_x=lu.margin_left_px,
+            final_y=base_y,
+        )
 
         for idx, note in enumerate(segment_notes):
-            note_ctx = _build_note_context(
-                note, idx, segment_notes, acc_dur_segment, base_y,
-                last_style, last_pm_x, last_pm_y,
-            )
+            note_ctx = _build_note_context(note, idx, segment_notes, acc_dur, base_y)
 
             if note.duration is not None:
-                final_y = note_ctx.strings_y
-                final_x = note_ctx.next_x
-                last_pm_x, last_pm_y = _render_note(
-                    draw, note_ctx, base_y, global_measure_counter,
-                )
-                global_measure_counter = _advance_measure_counter(
-                    note, acc_dur_segment, global_measure_counter,
+                render_state.final_y = note_ctx.strings_y
+                render_state.final_x = note_ctx.next_x
+                global_measure_counter = _render_note(
+                    draw, note_ctx, base_y, render_state, global_measure_counter,
                 )
 
             if note.style is not None:
-                last_style = note.style
-            acc_dur_segment += note.duration if note.duration else 0
+                render_state.last_style = note.style
+            acc_dur += note.duration if note.duration else 0
 
-        if not lu.is_new_system(acc_dur_segment):
-            draw_final_barline(draw, final_x, final_y)
+        if not lu.is_new_system(acc_dur):
+            draw_final_barline(draw, render_state.final_x, render_state.final_y)
 
         if segment.lyrics is not None:
-            _draw_lyrics(draw, segment, base_y)
+            draw_lyrics(draw, segment, base_y)
 
         safe_title = "".join(
             c for c in segment.title if c.isalnum() or c in (' ', '_')
@@ -237,8 +179,7 @@ def render_tab(segments: list[Segment], instrument_name: str,
     return results
 
 
-def render_title_page(song: Song, cfg: LayoutConfig = None,
-                      num_columns: int = 2) -> Image.Image | None:
+def render_title_page(song: Song, num_columns: int = 2) -> Image.Image | None:
     sections = [(seg.title, seg.lyrics.text if seg.lyrics is not None else None)
                 for seg in song.segments]
     if not sections:

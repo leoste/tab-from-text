@@ -1,5 +1,5 @@
 from typing import List
-from render.object.Instrument import Instrument
+from tabfromtext.render.Instrument import Instrument
 
 
 class Song:

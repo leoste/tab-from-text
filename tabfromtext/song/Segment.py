@@ -1,9 +1,9 @@
 from typing import List, TYPE_CHECKING
-from song.object.NoteProvider import NoteProvider
-from song.object.Note import Note
+from tabfromtext.song.NoteProvider import NoteProvider
+from tabfromtext.song.Note import Note
 
 if TYPE_CHECKING:
-    from song.object.Lyrics import Lyrics
+    from tabfromtext.song.Lyrics import Lyrics
 
 
 class Segment:

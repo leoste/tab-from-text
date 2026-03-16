@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from song.object.Note import Note
+from tabfromtext.song.Note import Note
 
 
 class NoteProvider(ABC):

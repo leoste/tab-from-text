@@ -6,9 +6,9 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.pdfdoc import PDFDictionary, PDFName
 
-from song.object.Song import Song
-from render.TabRenderer import render_tab, render_title_page
-from render.LayoutConfig import LayoutConfig
+from tabfromtext.song.Song import Song
+from tabfromtext.render.TabRenderer import render_tab, render_title_page
+from tabfromtext.render.LayoutConfig import LayoutConfig
 
 A4_WIDTH_PT, A4_HEIGHT_PT = A4
 
@@ -100,7 +100,7 @@ def print_song(song: Song, output_dir: str) -> None:
 
     for instrument in song.instruments:
         safe_instrument_name = instrument.name.lower().replace(' ', '_')
-        output_base_path = f"tabs/{safe_song_title}/{safe_instrument_name}/tab"
+        output_base_path = f"demo/build/{safe_song_title}/{safe_instrument_name}/tab"
         images_with_names = render_tab(instrument.segments, instrument.name, output_base_path, cfg)
 
         pdf_path = os.path.join(output_dir, f"{safe_song_title}_{safe_instrument_name}.pdf")

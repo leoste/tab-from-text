@@ -1,5 +1,5 @@
 from enum import Enum
-from object.TimeUtils import convertTimeToTicks
+from tabfromtext.util.TimeUtils import convertTimeToTicks
 
 
 class StrumStyle(Enum):

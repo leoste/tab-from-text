@@ -1,6 +1,6 @@
-from song.object.Chord import Chord
-from song.object.StrumStyle import StrumStyle
-from object.TimeUtils import convertTimeToTicks
+from tabfromtext.song.Chord import Chord
+from tabfromtext.song.StrumStyle import StrumStyle
+from tabfromtext.util.TimeUtils import convertTimeToTicks
 
 # Important! While Segment durations are in 1/8th notes, Note durations are in ticks
 class Note:

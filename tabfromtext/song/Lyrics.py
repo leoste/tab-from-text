@@ -1,4 +1,4 @@
-from object.TimeUtils import convertTimeToTicks
+from tabfromtext.util.TimeUtils import convertTimeToTicks
 
 
 class Lyrics:

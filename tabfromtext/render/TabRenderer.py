@@ -1,10 +1,10 @@
 import math
 from PIL import Image, ImageDraw
-from song.object.StrumStyle import StrumStyle
-from song.object.Segment import Segment
-from object.TimeUtils import TIME_RESOLUTION, convertTimeToTicks
-from song.object.Song import Song
-from render.LayoutConfig import LayoutConfig
+from tabfromtext.song.StrumStyle import StrumStyle
+from tabfromtext.song.Segment import Segment
+from tabfromtext.util.TimeUtils import TIME_RESOLUTION, convertTimeToTicks
+from tabfromtext.song.Song import Song
+from tabfromtext.render.LayoutConfig import LayoutConfig
 
 MEASURES_PER_LINE = 4
 UNITS_PER_MEASURE = 8 * TIME_RESOLUTION
@@ -353,7 +353,7 @@ def render_tab(segments: list[Segment], instrument_name: str,
                       fill="black", width=cfg.lw(cfg.line_width_normal_pt))
 
         if segment.lyrics is not None:
-            from object.SyllableUtils import split_syllables
+            from tabfromtext.util.SyllableUtils import split_syllables
 
             lyrics_y_off_px = cfg.px(cfg.lyrics_y_offset_pt)
             flat_syllables  = split_syllables(segment.lyrics.text)

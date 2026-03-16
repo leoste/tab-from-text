@@ -1,12 +1,12 @@
-from song.object.Lyrics import Lyrics
-from song.object.RhythmicChordSpan import RhythmicChordSpan
-from song.object.ChordSpan import ChordSpan
-from song.object.Chord import Chord
-from song.object.Rhythm import Rhythm
-from song.object.Segment import Segment
-from song.object.GuitarString import GuitarString
-from song.object.StrumStyle import StrumStyle
-from song.object.Song import Song
+from tabfromtext.song.Lyrics import Lyrics
+from tabfromtext.song.RhythmicChordSpan import RhythmicChordSpan
+from tabfromtext.song.ChordSpan import ChordSpan
+from tabfromtext.song.Chord import Chord
+from tabfromtext.song.Rhythm import Rhythm
+from tabfromtext.song.Segment import Segment
+from tabfromtext.song.GuitarString import GuitarString
+from tabfromtext.song.StrumStyle import StrumStyle
+from tabfromtext.song.Song import Song
 
 RHYTHM = "Rhythm"
 

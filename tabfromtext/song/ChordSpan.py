@@ -1,5 +1,5 @@
-from song.object.Chord import Chord
-from song.object.Note import Note
+from tabfromtext.song.Chord import Chord
+from tabfromtext.song.Note import Note
 
 
 class ChordSpan:

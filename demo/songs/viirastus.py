@@ -58,8 +58,6 @@ eight_beat_rhythm = Rhythm(
     [StrumStyle.NORMAL] * 8
 )
 
-# --- Rhythm guitar intro parts ---
-
 rhythm_first_intro_parts = [
     intro_base_span,
     RhythmicChordSpan(
@@ -78,8 +76,6 @@ rhythm_second_intro_parts = [
 
 rhythm_third_intro_parts = [ intro_base_span ] * 2
 
-# --- Bass intro parts ---
-
 bass_intro_base = [
     StrummedChordSpan(1, NOTE_8_F, 9),
     StrummedChordSpan(1, NOTE_8_C, 7),
@@ -90,8 +86,6 @@ bass_intro_base = [
 bass_first_intro_parts = bass_intro_base + [ StrummedChordSpan(1, NOTE_5_A, 16) ]
 bass_second_intro_parts = bass_intro_base + [ StrummedChordSpan(1, NOTE_5_A, 8) ]
 bass_third_intro_parts = bass_intro_base * 2
-
-# --- Rhythm guitar salm parts ---
 
 rhythm_salm_parts = [
     RhythmicChordSpan(
@@ -142,10 +136,6 @@ rhythm_viimane_salm_parts = [
         ] * 4
     )
 ]
-
-# --- Bass salm parts ---
-# bass_salm_parts is reused for all three salm segments (including viimane salm);
-# the rhythm guitar differs on the third but the bass line is identical.
 
 bass_salm_firster = [
     StrummedChordSpan(1, NOTE_10_D, 9),
@@ -226,8 +216,6 @@ rhythm_viimane_chorus_parts = [
         ]
     )
 ]
-
-# --- Bass chorus parts ---
 
 bass_chorus_parts = [ 
     StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 10)),
@@ -376,7 +364,7 @@ SALM_2 = Segment("SALM", {
 
 VIIMANE_SALM = Segment("VIIMANE SALM", {
     RHYTHM: rhythm_viimane_salm_parts,
-    BASS:   bass_viimane_salm_parts,   # same notes as bass_salm_parts
+    BASS:   bass_viimane_salm_parts,
 }, lyrics=salm_3_lyrics)
 
 CHORUS_1 = Segment("REFRÄÄN", {

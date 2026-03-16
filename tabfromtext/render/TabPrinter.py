@@ -8,16 +8,9 @@ from reportlab.pdfbase.pdfdoc import PDFDictionary, PDFName
 
 from tabfromtext.song.Song import Song
 from tabfromtext.render.TabRenderer import render_tab, render_title_page
-from tabfromtext.render.LayoutConfig import LayoutConfig
-from tabfromtext.render.LayoutUtils import LayoutUtils
+import tabfromtext.render.LayoutUtils as lu
 
 A4_WIDTH_PT, A4_HEIGHT_PT = A4
-
-
-def _make_layout_utils() -> LayoutUtils:
-    cfg = LayoutConfig()
-    cfg.printable_width_pt = A4_WIDTH_PT
-    return LayoutUtils(cfg)
 
 
 def _image_to_reader(img: Image.Image) -> ImageReader:
@@ -27,19 +20,18 @@ def _image_to_reader(img: Image.Image) -> ImageReader:
     return ImageReader(buf)
 
 
-def _image_dimensions_pt(img: Image.Image, utils: LayoutUtils) -> tuple[float, float]:
-    ppp = 72.0 / (utils.cfg.dpi * utils.scale)
+def _image_dimensions_pt(img: Image.Image) -> tuple[float, float]:
+    ppp = 72.0 / (lu.cfg.dpi * lu.scale)
     return img.size[0] * ppp, img.size[1] * ppp
 
 
 def _print_instrument(
     c: canvas.Canvas,
     images_with_names: list[tuple[str, Image.Image]],
-    utils: LayoutUtils,
     title: str = "",
     instrument_name: str = "",
 ) -> None:
-    cfg          = utils.cfg
+    cfg          = lu.cfg
     v_margin_top = cfg.page.top_margin_pt
     v_margin_bot = cfg.page.bottom_margin_pt
     f_margin     = cfg.page.footer_margin_pt
@@ -49,7 +41,7 @@ def _print_instrument(
 
     entries: list[tuple[Image.Image, float, float]] = []
     for _filename, img in images_with_names:
-        w_pt, h_pt = _image_dimensions_pt(img, utils)
+        w_pt, h_pt = _image_dimensions_pt(img)
         entries.append((img, w_pt, h_pt))
 
     page_num       = 1
@@ -94,28 +86,25 @@ def print_song(song: Song, output_dir: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
     safe_song_title = song.title.lower().replace(' ', '_')
 
-    utils = _make_layout_utils()
-
     for instrument in song.instruments:
         safe_instrument_name = instrument.name.lower().replace(' ', '_')
         output_base_path = f"demo/build/{safe_song_title}/{safe_instrument_name}/tab"
         images_with_names = render_tab(instrument.segments, instrument.name,
-                                       output_base_path, utils.cfg)
+                                       output_base_path)
 
         pdf_path = os.path.join(output_dir, f"{safe_song_title}_{safe_instrument_name}.pdf")
         c = canvas.Canvas(pdf_path, pagesize=A4)
         c._doc.Catalog.ViewerPreferences = PDFDictionary({"PrintScaling": PDFName("None")})
 
-        # --- Title page (one per instrument PDF, shared song structure) ---
-        title_page_img = render_title_page(song, utils.cfg, num_columns=2)
+        title_page_img = render_title_page(song, num_columns=2)
         if title_page_img is not None:
-            w_pt, h_pt = _image_dimensions_pt(title_page_img, utils)
+            w_pt, h_pt = _image_dimensions_pt(title_page_img)
             c.drawImage(_image_to_reader(title_page_img), 0,
-                        A4_HEIGHT_PT - utils.cfg.page.top_margin_pt - h_pt,
+                        A4_HEIGHT_PT - lu.cfg.page.top_margin_pt - h_pt,
                         width=w_pt, height=h_pt)
             c.showPage()
 
-        _print_instrument(c, images_with_names, utils,
+        _print_instrument(c, images_with_names,
                           title=song.title, instrument_name=instrument.name)
         c.save()
         print(f"PDF salvestatud: {pdf_path}")

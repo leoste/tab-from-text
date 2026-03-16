@@ -1,4 +1,7 @@
 from dataclasses import dataclass, field
+from reportlab.lib.pagesizes import A4
+
+A4_WIDTH_PT = A4[0]
 
 
 @dataclass
@@ -47,7 +50,7 @@ class StemConfig:
 
 @dataclass
 class BeamConfig:
-    stub_pt:    float = 2    # flag stub on an unbeamed eighth note
+    stub_pt:       float = 2    # flag stub on an unbeamed eighth note
     dot_offset_pt: float = 2
     dot_r_pt:      float = 0.5
 
@@ -55,9 +58,9 @@ class BeamConfig:
 @dataclass
 class ArcConfig:
     """Ties and slides."""
-    top_offset_pt: float = 6   # how far above y_top the arc peaks
-    bot_offset_pt: float = 2   # how close to y_top the arc base sits
-    slide_nudge_pt: float = 2  # gap between fret number and slide line/arc
+    top_offset_pt:  float = 6   # how far above y_top the arc peaks
+    bot_offset_pt:  float = 2   # how close to y_top the arc base sits
+    slide_nudge_pt: float = 2   # gap between fret number and slide line/arc
 
 
 @dataclass
@@ -90,11 +93,12 @@ class LineWidthConfig:
 class PageConfig:
     top_margin_pt:    float = 34.0
     bottom_margin_pt: float = 64.0
-    footer_margin_pt: float = 64.0   # horizontal indent for footer text (keep in sync with margin_left_pt)
+    footer_margin_pt: float = 64.0   # horizontal indent for footer text
     margin_left_pt:   float = 64     # includes former 2cm page margin (56.7pt) + 18pt content indent
     margin_right_pt:  float = 64
     block_gap_pt:     float = 0.0    # vertical gap between stacked segment images
-    title_padding_pt: float = 8.0   # gap between title baseline and first system
+    title_padding_pt: float = 8.0    # gap between title baseline and first system
+    printable_width_pt: float = A4_WIDTH_PT
 
 
 @dataclass
@@ -112,6 +116,3 @@ class LayoutConfig:
     lyrics:     LyricsConfig    = field(default_factory=LyricsConfig)
     line_width: LineWidthConfig = field(default_factory=LineWidthConfig)
     page:       PageConfig      = field(default_factory=PageConfig)
-
-    # --- Page geometry (set by TabPrinter) ---
-    printable_width_pt: float = 0.0

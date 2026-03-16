@@ -40,11 +40,11 @@ def _print_instrument(
     instrument_name: str = "",
 ) -> None:
     cfg          = utils.cfg
-    v_margin_top = cfg.page_top_margin_pt
-    v_margin_bot = cfg.page_bottom_margin_pt
-    f_margin     = cfg.footer_margin_pt
-    block_gap    = cfg.block_gap_pt
-    footer_font  = cfg.footer_font_size_pt
+    v_margin_top = cfg.page.top_margin_pt
+    v_margin_bot = cfg.page.bottom_margin_pt
+    f_margin     = cfg.page.footer_margin_pt
+    block_gap    = cfg.page.block_gap_pt
+    footer_font  = cfg.fonts.footer_pt
     printable_h  = A4_HEIGHT_PT - v_margin_top - v_margin_bot
 
     entries: list[tuple[Image.Image, float, float]] = []
@@ -111,7 +111,7 @@ def print_song(song: Song, output_dir: str) -> None:
         if title_page_img is not None:
             w_pt, h_pt = _image_dimensions_pt(title_page_img, utils)
             c.drawImage(_image_to_reader(title_page_img), 0,
-                        A4_HEIGHT_PT - utils.cfg.page_top_margin_pt - h_pt,
+                        A4_HEIGHT_PT - utils.cfg.page.top_margin_pt - h_pt,
                         width=w_pt, height=h_pt)
             c.showPage()
 

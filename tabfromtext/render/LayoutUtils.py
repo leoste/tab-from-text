@@ -29,31 +29,31 @@ class LayoutUtils:
         self.cfg = cfg
 
         # --- Derived pt values (computed once) ---
-        self._measure_width_pt    = (UNITS_PER_MEASURE * cfg.eighth_note_width_pt) + cfg.bar_padding_pt
+        self._measure_width_pt      = (UNITS_PER_MEASURE * cfg.notes.eighth_note_width_pt) + cfg.notes.bar_padding_pt
         self._line_content_width_pt = MEASURES_PER_LINE * self._measure_width_pt
-        self._natural_width_pt    = (self._line_content_width_pt
-                                     + cfg.margin_left_pt + cfg.margin_right_pt)
+        self._natural_width_pt      = (self._line_content_width_pt
+                                       + cfg.page.margin_left_pt + cfg.page.margin_right_pt)
 
         # --- Scale: maps natural pt layout to actual printable width ---
         self.scale: float = (cfg.printable_width_pt / self._natural_width_pt
                              if cfg.printable_width_pt > 0 else 1.0)
 
         # --- Frequently used px values (computed once) ---
-        self.margin_left_px   = self.px(cfg.margin_left_pt)
-        self.margin_right_px  = self.px(cfg.margin_right_pt)
-        self.line_sp_px       = self.px(cfg.line_spacing_pt)
-        self.beat_w_px        = self.px(cfg.eighth_note_width_pt)
-        self.bar_pad_px       = self.px(cfg.bar_padding_pt)
+        self.margin_left_px   = self.px(cfg.page.margin_left_pt)
+        self.margin_right_px  = self.px(cfg.page.margin_right_pt)
+        self.line_sp_px       = self.px(cfg.row.line_spacing_pt)
+        self.beat_w_px        = self.px(cfg.notes.eighth_note_width_pt)
+        self.bar_pad_px       = self.px(cfg.notes.bar_padding_pt)
         self.measure_w_px     = self.px(self._measure_width_pt)
         self.content_w_px     = self.px(self._line_content_width_pt)
         self.img_width_px     = self.content_w_px + self.margin_left_px + self.margin_right_px
-        self.title_h_px       = self.px(cfg.title_font_size_pt + cfg.title_padding_pt)
-        self.system_h_px      = self.px(cfg.above_strings_pt
-                                        + 5 * cfg.line_spacing_pt
-                                        + cfg.below_strings_pt)
-        self.above_str_px     = self.px(cfg.above_strings_pt)
-        self.below_str_px     = self.px(cfg.below_strings_pt)
-        self.string_block_px  = self.px(5 * cfg.line_spacing_pt)
+        self.title_h_px       = self.px(cfg.fonts.title_pt + cfg.page.title_padding_pt)
+        self.system_h_px      = self.px(cfg.row.above_strings_pt
+                                        + 5 * cfg.row.line_spacing_pt
+                                        + cfg.row.below_strings_pt)
+        self.above_str_px     = self.px(cfg.row.above_strings_pt)
+        self.below_str_px     = self.px(cfg.row.below_strings_pt)
+        self.string_block_px  = self.px(5 * cfg.row.line_spacing_pt)
 
     # ------------------------------------------------------------------
     # Basic unit converters
@@ -129,13 +129,13 @@ class LayoutUtils:
         unavailable.
         """
         try:
-            title_font       = ImageFont.truetype("arialbd.ttf", self.px(self.cfg.title_font_size_pt))
-            fret_font        = ImageFont.truetype("arial.ttf",   self.px(self.cfg.fret_font_size_pt))
-            small_font       = ImageFont.truetype("arial.ttf",   self.px(self.cfg.measure_num_font_size_pt))
-            string_name_font = ImageFont.truetype("arial.ttf",   self.px(self.cfg.string_name_font_size_pt))
-            annotation_font  = ImageFont.truetype("arial.ttf",   self.px(self.cfg.annotation_font_size_pt))
-            lyrics_font      = ImageFont.truetype("arial.ttf",   self.px(self.cfg.lyrics_font_size_pt))
-            lyrics_tab_font  = ImageFont.truetype("arial.ttf",   self.px(self.cfg.lyrics_tab_font_size_pt))
+            title_font       = ImageFont.truetype("arialbd.ttf", self.px(self.cfg.fonts.title_pt))
+            fret_font        = ImageFont.truetype("arial.ttf",   self.px(self.cfg.fonts.fret_pt))
+            small_font       = ImageFont.truetype("arial.ttf",   self.px(self.cfg.fonts.measure_num_pt))
+            string_name_font = ImageFont.truetype("arial.ttf",   self.px(self.cfg.fonts.string_name_pt))
+            annotation_font  = ImageFont.truetype("arial.ttf",   self.px(self.cfg.fonts.annotation_pt))
+            lyrics_font      = ImageFont.truetype("arial.ttf",   self.px(self.cfg.fonts.lyrics_pt))
+            lyrics_tab_font  = ImageFont.truetype("arial.ttf",   self.px(self.cfg.fonts.lyrics_tab_pt))
         except Exception:
             default = ImageFont.load_default()
             title_font = fret_font = small_font = string_name_font = \

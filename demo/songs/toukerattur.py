@@ -1,6 +1,7 @@
 from tabfromtext.song.Chord import Chord
 from tabfromtext.song.ChordSpan import ChordSpan
 from tabfromtext.song.GuitarString import GuitarString
+from tabfromtext.song.Lyrics import Lyrics
 from tabfromtext.song.Rhythm import Rhythm
 from tabfromtext.song.RhythmicChordSpan import RhythmicChordSpan
 from tabfromtext.song.Segment import Segment
@@ -146,23 +147,85 @@ INTRO = Segment("INTRO", {
 
 CHORUS = Segment("REFRÄÄN", {
     RHYTHM: chorus_riff
-})
+}, Lyrics(
+"""\
+tõukerattur
+tõukerattur
+tõukerattur\
+""", [
+    2,2,2,2 + 3*8,
+    2,2,2,2 + 3*8,
+    2,2,2,2
+], 8))
 
 PIKK_CHORUS = Segment("REFRÄÄN PIKA LÕPUGA", {
     RHYTHM: long_chorus_riff
-})
+}, Lyrics(
+"""\
+tõukerattur
+tõukerattur
+tõukerattur
+tõukerattur\
+""", [
+    2,2,2,2 + 3*8,
+    2,2,2,2 + 3*8,
+    2,2,2,2 + 3*8,
+    2,2,2,2
+], 8))
 
 ESIMENE_SALM = Segment("SALM", {
     RHYTHM: salm
-})
+}, Lyrics(
+    """\
+jalutasin ma ükskord mööda linna
+vastu tuli tõuke-e-
+ratas millega andis minna
+mees kelle joogiseis oli
+mätas, kaldus siia sinna
+löök-august päike koitis
+mind ei näind sain löögi ninna
+kui mees mulle otsa sõitis\
+""", [
+    1,1,1,1, 2,1,1, 3,1,3,1,
+    2,2,1,3, 3,3,2,
+    2,2,1,1,2, 3,1,3,1,
+    2,2,2,1,1, 3,3,2,
+    2,2,2,2,3,1,3,1,
+    4,1,3,2,1,3,2,
+    2,2,2,2,1,3,3,1,
+    2,2,2,2,2,1,3,2
+]))
 
 TEINE_SALM = Segment("SALM", {
     RHYTHM: salm
-})
+}, Lyrics(
+    """\
+linnavalitsuse mehed
+vaatasin tulid meile vastu
+kuid pettumus on minul ehe
+asjal ongi minna lastud
+mees sai vabalt otsejoones
+oma koju sõita-a
+ent ülbe jalakäija toores
+pandi kohe paika-a\
+""", [
+    1,1,1,1,2,2, 1,7,
+    2,1,1,1,3, 2,1,3,2,
+    2,1.5,0.5,2,2, 1,2,1,4,
+    2,2,2,2, 2,1,3,2,
+    2,2,1,3,2,1,3,2,
+    1,3,1,3,3,3,2,
+    2,1.5,0.5,1,3,3,1,3,1,
+    2,2,1,3, 3,3,2
+]))
 
 BREAK_AND_END = Segment("SOOLO + LÕPP", {
     RHYTHM: break_and_solo
-})
+}, Lyrics(
+    """\
+hehe vaata mind ma sõidan tõukerattaga, hahaha
+ma olen nii lahe, ma libisen mööda maad, haha!\
+""", None, 64))
 
 SONG = Song("Tõukerattur", [
     INTRO,
@@ -171,4 +234,9 @@ SONG = Song("Tõukerattur", [
     TEINE_SALM,
     PIKK_CHORUS,
     BREAK_AND_END
-])
+], """\
+kuradi värdjad jätavad oma rattaid igale poole vedelema nahhui
+putsi raisk ja siis nad veel ülbitsevad nagu nad omaksid liiklust vä
+fucking värdjad ajuhälvikud ma räägin, mingid munnitürapead kõik koos
+haiged elukad need kuradi... tõukeratturid
+""")

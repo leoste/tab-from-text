@@ -3,8 +3,9 @@ from tabfromtext.song.Instrument import Instrument
 
 
 class Song:
-    def __init__(self, title: str, segments: list):
+    def __init__(self, title: str, segments: list, description: str | None = None):
         self.title = title
+        self.description = description
         self.segments = segments
 
     @property

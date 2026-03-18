@@ -122,8 +122,15 @@ def draw_final_barline(draw_obj, final_x, final_y):
 # ---------------------------------------------------------------------------
 
 def draw_lyrics(draw_obj, segment, base_y):
-    """Draw all syllables of the segment's lyrics, aligned to their tick positions,
-    below the tab strings."""
+    """Draw lyrics for a tab segment. Dispatches based on whether durations are provided."""
+    if segment.lyrics.durations is not None:
+        _draw_lyrics_positioned(draw_obj, segment, base_y)
+    else:
+        _draw_lyrics_unpositioned(draw_obj, segment, base_y)
+
+
+def _draw_lyrics_positioned(draw_obj, segment, base_y):
+    """Draw syllables tick-aligned below the tab strings."""
     lyrics_y_off_px = lu.px(lu.cfg.lyrics.y_offset_pt)
 
     for abs_tick, syl_text in _build_syllable_events(segment):
@@ -134,6 +141,25 @@ def draw_lyrics(draw_obj, segment, base_y):
         draw_obj.text(
             (syl_x - text_w // 2, syl_y),
             syl_text, fill="black", font=lu.lyrics_tab_font,
+        )
+
+
+def _draw_lyrics_unpositioned(draw_obj, segment, base_y):
+    """Draw lyrics lines without duration data. Uses offset to find the starting row,
+    then places each text line of the lyrics on successive system rows."""
+    from tabfromtext.util.TimeUtils import convertTimeToTicks
+
+    offset_ticks  = convertTimeToTicks(segment.lyrics.offset)
+    start_row     = lu.tick_to_system(offset_ticks)
+    lyrics_y_off_px = lu.px(lu.cfg.lyrics.y_offset_pt)
+
+    for line_idx, line_text in enumerate(segment.lyrics.text.splitlines()):
+        row           = start_row + line_idx
+        strings_y     = base_y + row * lu.system_h_px + lu.above_str_px
+        text_y        = strings_y + STRING_GAPS * lu.line_sp_px + lyrics_y_off_px
+        draw_obj.text(
+            (lu.margin_left_px, text_y),
+            line_text, fill="black", font=lu.lyrics_tab_font,
         )
 
 
@@ -169,8 +195,7 @@ def draw_lyrics_only(draw_obj, segment, base_y):
             _bar(lu.margin_left_px + lu.content_w_px, row)
 
     # Final closing barline at the actual end of the last measure
-    last_tick   = total_ticks  # one past the last note
-    last_row    = lu.tick_to_system(total_ticks - 1)
+    last_row             = lu.tick_to_system(total_ticks - 1)
     measures_in_last_row = num_measures % measures_per_line or measures_per_line
     final_x = lu.margin_left_px + measures_in_last_row * lu.measure_w_px
     _bar(final_x, last_row)

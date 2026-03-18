@@ -141,7 +141,7 @@ def _create_tab_image(segment, instrument_name):
     segment_notes = segment.GetNotesFromSegment(instrument_name)
     total_units   = sum((n.duration if n.duration else 0) for n in segment_notes)
     num_systems   = math.ceil(math.ceil(total_units / lu.UNITS_PER_MEASURE) / lu.MEASURES_PER_LINE)
-    height_px     = _base_y_px() + num_systems * lu.system_h_px + lu.below_str_px
+    height_px     = _base_y_px() + num_systems * lu.system_h_px
     return *_new_image(height_px), _base_y_px()
 
 
@@ -241,6 +241,13 @@ def render_title_page(song: Song, num_columns: int = 2) -> Image.Image | None:
     draw.text(((img_w_px - title_w) // 2, top_pad_px), song.title,
               fill="black", font=lu.title_font)
     columns_top_y = top_pad_px + title_line_h * 2
+
+    if song.description is not None:
+        for desc_line in song.description.splitlines():
+            draw.text((margin_px, columns_top_y), desc_line,
+                      fill="black", font=lu.lyrics_font)
+            columns_top_y += lyrics_line_h
+        columns_top_y += section_gap
 
     usable_w   = img_w_px - 2 * margin_px
     col_gap    = margin_px

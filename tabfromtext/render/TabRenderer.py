@@ -69,6 +69,8 @@ def _render_note(draw, note_ctx: NoteContext, base_y,
         draw_row(draw, note_ctx.strings_y, global_measure_counter)
         render_state.last_pm_x = None
         render_state.last_pm_y = None
+        render_state.last_vib_x = None
+        render_state.last_vib_y = None
 
     if (lu.tick_to_unit_in_measure(note_ctx.tick) == 0
             and lu.tick_to_measure_in_system(note_ctx.tick) > 0):
@@ -91,6 +93,8 @@ def _render_note(draw, note_ctx: NoteContext, base_y,
             draw_row(draw, chunk_ctx.strings_y, global_measure_counter)
             render_state.last_pm_x = None
             render_state.last_pm_y = None
+            render_state.last_vib_x = None
+            render_state.last_vib_y = None
 
         if lu.is_new_measure(chunk_acc) and not chunk_ctx.is_first:
             draw_barline(draw, chunk_ctx.strings_y,

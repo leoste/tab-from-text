@@ -14,6 +14,8 @@ class Segment:
         self.lyrics = lyrics
 
     def GetNotesFromSegment(self, instrument_name: str) -> List[Note]:
+        if self.parts[instrument_name] is None:
+            return []
         notes = []
         for part in self.parts[instrument_name]:
             notes += part.getNotes()

@@ -73,6 +73,14 @@ class PalmMuteConfig:
 
 
 @dataclass
+class VibratoConfig:
+    y_offset_pt:   float = -4.0  # offset from 1st string line upward (sits above P.M. line)
+    wave_w_pt:     float = 3.0   # width of one half-wave cycle
+    wave_h_pt:     float = 1.5   # amplitude (peak-to-trough half-height)
+    tick_h_pt:     float = 2     # half-height of the closing end tick
+
+
+@dataclass
 class MeasureConfig:
     num_y_offset_pt: float = -12.0  # offset from top of system upward
 
@@ -112,6 +120,7 @@ class LayoutConfig:
     beams:      BeamConfig      = field(default_factory=BeamConfig)
     arcs:       ArcConfig       = field(default_factory=ArcConfig)
     palm_mute:  PalmMuteConfig  = field(default_factory=PalmMuteConfig)
+    vibrato:    VibratoConfig   = field(default_factory=VibratoConfig)
     measures:   MeasureConfig   = field(default_factory=MeasureConfig)
     lyrics:     LyricsConfig    = field(default_factory=LyricsConfig)
     line_width: LineWidthConfig = field(default_factory=LineWidthConfig)

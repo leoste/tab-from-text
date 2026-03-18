@@ -13,13 +13,16 @@ RHYTHM = "Rhythm"
 
 INTRO = Segment("INTRO", {
     RHYTHM: [
-        StrummedChordSpan(4, Chord.power_chord(GuitarString.E6, 9)),
-        StrummedChordSpan(4, Chord.power_chord(GuitarString.E6, 7)),
-        StrummedChordSpan(4, Chord.power_chord(GuitarString.E6, 5)),
-        StrummedChordSpan(4, Chord.power_chord(GuitarString.E6, 4)),
-        StrummedChordSpan(4, Chord.power_chord(GuitarString.A5, 4)),
-        StrummedChordSpan(4, Chord.power_chord(GuitarString.A5, 2)),
+        StrummedChordSpan(8, Chord.power_chord(GuitarString.E6, 9)),
+        StrummedChordSpan(8, Chord.power_chord(GuitarString.E6, 7)),
+        StrummedChordSpan(8, Chord.power_chord(GuitarString.E6, 5)),
         StrummedChordSpan(8, Chord.power_chord(GuitarString.E6, 4)),
+        StrummedChordSpan(8, Chord.power_chord(GuitarString.A5, 4)),
+        StrummedChordSpan(8, Chord.power_chord(GuitarString.A5, 2)),
+        StrummedChordSpan(3, Chord.power_chord(GuitarString.E6, 5)),
+        StrummedChordSpan(5, Chord.power_chord(GuitarString.E6, 4)),
+        StrummedChordSpan(3, Chord.power_chord(GuitarString.E6, 5)),
+        StrummedChordSpan(5, Chord.power_chord(GuitarString.E6, 4)),
     ]
 })
 

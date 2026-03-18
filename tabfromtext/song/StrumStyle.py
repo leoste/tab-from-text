@@ -9,6 +9,7 @@ class StrumStyle(Enum):
     PALM_MUTED = 2
     BEND = 3
     SLIDE = 4
+    VIBRATO = 5
 
     @staticmethod
     def flattenStyle(style: 'StrumStyle') -> list['StrumStyle']:

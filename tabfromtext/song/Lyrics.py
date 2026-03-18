@@ -14,3 +14,7 @@ class Lyrics:
             result.append(ticks)
             result.extend([None] * (ticks - 1))
         return result
+
+    def total_ticks(self) -> int:
+        """Total duration in ticks across all syllables."""
+        return sum(convertTimeToTicks(d) for d in self.durations if d is not None)

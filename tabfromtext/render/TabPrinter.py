@@ -93,10 +93,19 @@ def print_song(song: Song, output_dir: str) -> None:
 
         title_page_img = render_title_page(song, num_columns=2)
         if title_page_img is not None:
+            cfg      = lu.cfg
+            f_margin = cfg.page.footer_margin_pt
+            v_margin_bot = cfg.page.bottom_margin_pt
+
             w_pt, h_pt = _image_dimensions_pt(title_page_img)
             c.drawImage(_image_to_reader(title_page_img), 0,
-                        A4_HEIGHT_PT - lu.cfg.page.top_margin_pt - h_pt,
+                        A4_HEIGHT_PT - cfg.page.top_margin_pt - h_pt,
                         width=w_pt, height=h_pt)
+
+            c.setFont("Helvetica", cfg.fonts.footer_pt)
+            c.drawString(f_margin, v_margin_bot / 2, song.title)
+            c.drawRightString(A4_WIDTH_PT - f_margin, v_margin_bot / 2, instrument.name)
+
             c.showPage()
 
         _print_instrument(c, images, title=song.title, instrument_name=instrument.name)

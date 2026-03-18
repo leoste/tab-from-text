@@ -35,8 +35,7 @@ class SegmentRenderState:
     Carries everything that depends on what has been drawn so far —
     not properties of any single note, but of the rendering in progress.
     """
-    last_style: object = None   # style of the last rendered note
-    last_pm_x:  object = None   # x where the current P.M. line left off (int | None)
-    last_pm_y:  object = None   # y of the current P.M. line (int | None)
-    last_vib_x: object = None   # x where the current vibrato wavy line left off (int | None)
-    last_vib_y: object = None   # y of the current vibrato wavy line (int | None)
+    last_style:           object = None  # style of the last rendered note
+    last_annotation_x:    object = None  # x where the current spanning annotation left off (int | None)
+    last_annotation_y:    object = None  # y of the current spanning annotation (int | None)
+    last_annotation_style: object = None # which style is currently being spanned (StrumStyle | None)

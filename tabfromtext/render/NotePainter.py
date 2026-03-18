@@ -9,6 +9,9 @@ from tabfromtext.util.TimeUtils import (
 )
 import tabfromtext.render.LayoutUtils as lu
 
+# Styles that draw a spanning annotation above the strings
+_SPANNING_STYLES = (StrumStyle.PALM_MUTED, StrumStyle.VIBRATO)
+
 
 # ---------------------------------------------------------------------------
 # Public entry point
@@ -18,10 +21,10 @@ def draw_note(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
               render_state: SegmentRenderState,
               prev_stem_x, prev_stem_y_start):
     """Draw all visual elements for one note-chunk.
-    Updates render_state in place for palm mute / vibrato continuity.
+    Updates render_state in place for spanning annotation continuity.
     """
     if note_ctx.note.chord and note_ctx.note.style != StrumStyle.NO_HIT:
-        _draw_fret_numbers(draw_obj, note_ctx, chunk_ctx, render_state)
+        _draw_note_content(draw_obj, note_ctx, chunk_ctx, render_state)
 
     is_rest = (note_ctx.note.chord is None or note_ctx.note.style == StrumStyle.NO_HIT)
     _draw_stem(draw_obj, chunk_ctx, is_rest=is_rest)
@@ -38,12 +41,12 @@ def draw_note(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
 
 
 # ---------------------------------------------------------------------------
-# Fret numbers, slides, palm mute, vibrato
+# Note content: fret numbers, slides, spanning annotations
 # ---------------------------------------------------------------------------
 
-def _draw_fret_numbers(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
+def _draw_note_content(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
                        render_state: SegmentRenderState):
-    """Draw fret labels (or 'X') for each string, slide lines, palm mute, and vibrato."""
+    """Draw fret labels (or 'X') for each string, slide lines, and spanning annotations."""
     note    = note_ctx.note
     strings = [note.chord.string1, note.chord.string2, note.chord.string3,
                note.chord.string4, note.chord.string5, note.chord.string6]
@@ -67,11 +70,8 @@ def _draw_fret_numbers(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
             if note.style == StrumStyle.SLIDE:
                 _draw_slide(draw_obj, chunk_ctx, i, text_w)
 
-    if note.style == StrumStyle.PALM_MUTED:
-        _draw_palm_mute(draw_obj, note_ctx, chunk_ctx, render_state)
-
-    if note.style == StrumStyle.VIBRATO:
-        _draw_vibrato(draw_obj, note_ctx, chunk_ctx, render_state)
+    if note.style in _SPANNING_STYLES:
+        _draw_spanning_annotation(draw_obj, note_ctx, chunk_ctx, render_state)
 
 
 def _draw_slide(draw_obj, chunk_ctx: ChunkContext, string_index, text_w):
@@ -89,29 +89,53 @@ def _draw_slide(draw_obj, chunk_ctx: ChunkContext, string_index, text_w):
              chunk_ctx.strings_y + string_index * lu.line_sp_px)
 
 
-def _draw_palm_mute(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
-                    render_state: SegmentRenderState):
-    """Draw P.M. label, dashed continuation line, and closing tick.
-    Updates render_state.last_pm_x and render_state.last_pm_y in place."""
+# ---------------------------------------------------------------------------
+# Spanning annotations (palm mute, vibrato)
+# ---------------------------------------------------------------------------
+
+def _draw_spanning_annotation(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
+                               render_state: SegmentRenderState):
+    """Unified handler for annotations that span across consecutive notes above the strings.
+    Dispatches to the style-specific drawing function, sharing continuity state."""
+    style = note_ctx.note.style
+
+    is_first = (render_state.last_annotation_style != style
+                or render_state.last_annotation_x is None)
+    is_last  = (note_ctx.next_real_note is None
+                or note_ctx.next_real_note.style != style)
+
+    if style == StrumStyle.PALM_MUTED:
+        _draw_palm_mute(draw_obj, chunk_ctx, render_state, is_first, is_last)
+    elif style == StrumStyle.VIBRATO:
+        _draw_vibrato(draw_obj, chunk_ctx, render_state, is_first, is_last)
+
+
+def _draw_palm_mute(draw_obj, chunk_ctx: ChunkContext,
+                    render_state: SegmentRenderState,
+                    is_first: bool, is_last: bool):
+    """Draw P.M. label, dashed continuation line, and closing tick."""
     cfg  = lu.cfg
     pm_y = chunk_ctx.strings_y + lu.px(cfg.palm_mute.y_offset_pt)
 
-    is_first_pm_on_line = (render_state.last_style != StrumStyle.PALM_MUTED
-                           or render_state.last_pm_x is None)
-    is_last_pm = (note_ctx.next_real_note is None
-                  or note_ctx.next_real_note.style != StrumStyle.PALM_MUTED)
-
-    if is_first_pm_on_line:
+    if is_first:
         draw_obj.text(
             (chunk_ctx.x, pm_y - lu.px(cfg.palm_mute.label_y_pt)),
             "P.M.", fill="black", font=lu.annotation_font,
         )
-        render_state.last_pm_x = chunk_ctx.x + lu.px(cfg.palm_mute.label_w_pt)
+        render_state.last_annotation_x = chunk_ctx.x + lu.px(cfg.palm_mute.label_w_pt)
     else:
-        _draw_dashed_segment(draw_obj, render_state.last_pm_x, chunk_ctx.x, pm_y)
-        render_state.last_pm_x = chunk_ctx.x
+        # Draw dashed segment inline
+        dash_gap = lu.px(cfg.palm_mute.dash_gap_pt)
+        curr = render_state.last_annotation_x
+        while curr < chunk_ctx.x:
+            draw_obj.line(
+                [(curr, pm_y), (min(curr + dash_gap, chunk_ctx.x), pm_y)],
+                fill="black", width=lu.lw(cfg.line_width.thin_pt),
+            )
+            curr += dash_gap * 2
+        render_state.last_annotation_x = chunk_ctx.x
 
-    if is_last_pm and not is_first_pm_on_line:
+    if is_last and not is_first:
         tick_h = lu.px(cfg.palm_mute.tick_h_pt)
         draw_obj.line(
             [(chunk_ctx.x, pm_y - tick_h // 2),
@@ -119,28 +143,23 @@ def _draw_palm_mute(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
             fill="black", width=lu.lw(cfg.line_width.thin_pt),
         )
 
-    render_state.last_pm_y = pm_y
+    render_state.last_annotation_y     = pm_y
+    render_state.last_annotation_style = StrumStyle.PALM_MUTED
 
 
-def _draw_vibrato(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
-                  render_state: SegmentRenderState):
-    """Draw a wavy vibrato line above the strings spanning the note's duration.
-    Continues seamlessly across consecutive vibrato notes.
-    Updates render_state.last_vib_x and render_state.last_vib_y in place."""
+def _draw_vibrato(draw_obj, chunk_ctx: ChunkContext,
+                  render_state: SegmentRenderState,
+                  is_first: bool, is_last: bool):
+    """Draw a wavy vibrato line spanning the note's duration."""
     cfg   = lu.cfg
     vib_y = chunk_ctx.strings_y + lu.px(cfg.vibrato.y_offset_pt)
 
-    is_first_vib = (render_state.last_style != StrumStyle.VIBRATO
-                    or render_state.last_vib_x is None)
-    is_last_vib  = (note_ctx.next_real_note is None
-                    or note_ctx.next_real_note.style != StrumStyle.VIBRATO)
-
-    x_start = render_state.last_vib_x if not is_first_vib else chunk_ctx.x
+    x_start = chunk_ctx.x if is_first else render_state.last_annotation_x
     x_end   = chunk_ctx.next_x
 
     _draw_wavy_segment(draw_obj, x_start, x_end, vib_y)
 
-    if is_last_vib:
+    if is_last:
         tick_h = lu.px(cfg.vibrato.tick_h_pt)
         draw_obj.line(
             [(x_end, vib_y - tick_h // 2),
@@ -148,8 +167,9 @@ def _draw_vibrato(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
             fill="black", width=lu.lw(cfg.line_width.thin_pt),
         )
 
-    render_state.last_vib_x = x_end
-    render_state.last_vib_y = vib_y
+    render_state.last_annotation_x     = x_end
+    render_state.last_annotation_y     = vib_y
+    render_state.last_annotation_style = StrumStyle.VIBRATO
 
 
 # ---------------------------------------------------------------------------
@@ -257,41 +277,26 @@ def draw_arc(draw_obj, x_start, x_end, y_top):
                  width=lu.lw(cfg.line_width.thin_pt))
 
 
-def _draw_dashed_segment(draw_obj, x_start, x_end, y):
-    dash_gap = lu.px(lu.cfg.palm_mute.dash_gap_pt)
-    curr = x_start
-    while curr < x_end:
-        draw_obj.line(
-            [(curr, y), (min(curr + dash_gap, x_end), y)],
-            fill="black", width=lu.lw(lu.cfg.line_width.thin_pt),
-        )
-        curr += dash_gap * 2
-
-
 def _draw_wavy_segment(draw_obj, x_start, x_end, y_mid):
     """Draw a sine-wave wavy line from x_start to x_end centred on y_mid."""
-    cfg      = lu.cfg
-    wave_w   = lu.px(cfg.vibrato.wave_w_pt)   # pixels per half-cycle
-    wave_h   = lu.px(cfg.vibrato.wave_h_pt)   # amplitude in pixels
-    lw       = lu.lw(cfg.line_width.thin_pt)
+    cfg    = lu.cfg
+    wave_w = lu.px(cfg.vibrato.wave_w_pt)
+    wave_h = lu.px(cfg.vibrato.wave_h_pt)
+    lw     = lu.lw(cfg.line_width.thin_pt)
 
     if wave_w < 1:
         wave_w = 1
-
     total_w = x_end - x_start
     if total_w <= 0:
         return
 
-    # Number of line segments used to approximate the sine curve
-    steps = max(total_w, 4)
+    steps  = max(total_w, 4)
     points = []
     for s in range(steps + 1):
         t = s / steps
         x = x_start + t * total_w
-        # One full sine period = 2 * wave_w pixels
         y = y_mid - wave_h * math.sin(math.pi * t * total_w / wave_w)
         points.append((x, y))
 
     for i in range(len(points) - 1):
-        draw_obj.line([points[i], points[i + 1]],
-                      fill="black", width=lw)
+        draw_obj.line([points[i], points[i + 1]], fill="black", width=lw)

@@ -1,8 +1,6 @@
 import math
 from PIL import Image, ImageDraw
-from reportlab.lib.pagesizes import A4
 from tabfromtext.song.Segment import Segment
-from tabfromtext.song.Song import Song
 from tabfromtext.render.RenderContexts import NoteContext, ChunkContext, SegmentRenderState
 from tabfromtext.render.LayoutUtils import STRING_GAPS
 from tabfromtext.render.RowPainter import (
@@ -11,8 +9,6 @@ from tabfromtext.render.RowPainter import (
 )
 from tabfromtext.render.NotePainter import draw_note
 import tabfromtext.render.LayoutUtils as lu
-
-A4_WIDTH_PT, A4_HEIGHT_PT = A4
 
 
 # ---------------------------------------------------------------------------
@@ -68,10 +64,9 @@ def _render_note(draw, note_ctx: NoteContext, base_y,
     Returns (global_measure_counter, final_x, final_y)."""
     if note_ctx.is_new_line:
         draw_row(draw, note_ctx.strings_y, global_measure_counter)
-        render_state.last_pm_x  = None
-        render_state.last_pm_y  = None
-        render_state.last_vib_x = None
-        render_state.last_vib_y = None
+        render_state.last_annotation_x     = None
+        render_state.last_annotation_y     = None
+        render_state.last_annotation_style = None
 
     if (lu.tick_to_unit_in_measure(note_ctx.tick) == 0
             and lu.tick_to_measure_in_system(note_ctx.tick) > 0):
@@ -92,10 +87,9 @@ def _render_note(draw, note_ctx: NoteContext, base_y,
 
         if chunk_ctx.is_new_line and not chunk_ctx.is_first:
             draw_row(draw, chunk_ctx.strings_y, global_measure_counter)
-            render_state.last_pm_x  = None
-            render_state.last_pm_y  = None
-            render_state.last_vib_x = None
-            render_state.last_vib_y = None
+            render_state.last_annotation_x     = None
+            render_state.last_annotation_y     = None
+            render_state.last_annotation_style = None
 
         if lu.is_new_measure(chunk_acc) and not chunk_ctx.is_first:
             draw_barline(draw, chunk_ctx.strings_y,
@@ -216,71 +210,3 @@ def render_tab(segments: list[Segment], instrument_name: str) -> list[Image.Imag
         results.append(img)
 
     return results
-
-
-def render_title_page(song: Song, num_columns: int = 2) -> Image.Image | None:
-    sections = [(seg.title, seg.lyrics.text if seg.lyrics is not None else None)
-                for seg in song.segments]
-    if not sections:
-        return None
-
-    img_w_px  = lu.img_width_px
-    page_h_pt = A4_HEIGHT_PT - lu.cfg.page.top_margin_pt - lu.cfg.page.bottom_margin_pt
-    img_h_px  = lu.px(page_h_pt)
-
-    img  = Image.new('RGB', (img_w_px, img_h_px), color='white')
-    draw = ImageDraw.Draw(img)
-
-    margin_px     = lu.margin_left_px
-    title_line_h  = int(lu.px(lu.cfg.fonts.title_pt)  * 1.4)
-    lyrics_line_h = int(lu.px(lu.cfg.fonts.lyrics_pt) * 1.4)
-    section_gap   = lyrics_line_h
-    top_pad_px    = lu.px(lu.cfg.page.top_margin_pt * 0.5)
-
-    title_w = draw.textbbox((0, 0), song.title, font=lu.title_font)[2]
-    draw.text(((img_w_px - title_w) // 2, top_pad_px), song.title,
-              fill="black", font=lu.title_font)
-    columns_top_y = top_pad_px + title_line_h * 2
-
-    if song.description is not None:
-        for desc_line in song.description.splitlines():
-            draw.text((margin_px, columns_top_y), desc_line,
-                      fill="black", font=lu.lyrics_font)
-            columns_top_y += lyrics_line_h
-        columns_top_y += section_gap
-
-    usable_w   = img_w_px - 2 * margin_px
-    col_gap    = margin_px
-    col_w      = (usable_w - col_gap * (num_columns - 1)) // num_columns
-    col_starts = [margin_px + i * (col_w + col_gap) for i in range(num_columns)]
-    col_height = img_h_px - columns_top_y
-
-    def section_height(title, lyrics) -> int:
-        h = title_line_h
-        if lyrics:
-            h += len(lyrics.splitlines()) * lyrics_line_h
-        return h + section_gap
-
-    columns: list[list] = [[] for _ in range(num_columns)]
-    col_used = [0] * num_columns
-    col_idx  = 0
-    for title, lyrics in sections:
-        sh = section_height(title, lyrics)
-        if col_used[col_idx] + sh > col_height and col_idx < num_columns - 1:
-            col_idx += 1
-        columns[col_idx].append((title, lyrics))
-        col_used[col_idx] += sh
-
-    for c_idx, col_sections in enumerate(columns):
-        x = col_starts[c_idx]
-        y = columns_top_y
-        for title, lyrics in col_sections:
-            draw.text((x, y), title, fill="black", font=lu.title_font)
-            y += title_line_h
-            if lyrics:
-                for line in lyrics.splitlines():
-                    draw.text((x, y), line, fill="black", font=lu.lyrics_font)
-                    y += lyrics_line_h
-            y += section_gap
-
-    return img

@@ -4,6 +4,7 @@ import math
 import tabfromtext.render.LayoutUtils as lu
 from tabfromtext.render.LayoutUtils import STRING_GAPS, STRING_COUNT
 from tabfromtext.util.TimeUtils import convertTimeToTicks
+from tabfromtext.util.SyllableUtils import split_syllables
 
 
 # ---------------------------------------------------------------------------
@@ -17,9 +18,7 @@ def lyrics_line_h_px() -> int:
 
 
 def _build_syllable_events(segment) -> list[tuple[int, str]]:
-    """Return [(abs_tick, syllable_text), ...] for a segment's lyrics."""
-    from tabfromtext.util.SyllableUtils import split_syllables
-
+    """Return [(abs_tick, syllable_text), ...] for a segment's lyrics."""    
     flat_syllables = split_syllables(segment.lyrics.text)
     tick_list      = segment.lyrics.flatten_durations()
     offset_ticks   = convertTimeToTicks(segment.lyrics.offset)
@@ -147,9 +146,7 @@ def _draw_lyrics_positioned(draw_obj, segment, base_y):
 def _draw_lyrics_unpositioned(draw_obj, segment, base_y):
     """Draw lyrics lines without duration data. Uses offset to find the starting row,
     then places each text line of the lyrics on successive system rows."""
-    from tabfromtext.util.TimeUtils import convertTimeToTicks
-
-    offset_ticks  = convertTimeToTicks(segment.lyrics.offset)
+    offset_ticks    = convertTimeToTicks(segment.lyrics.offset)
     start_row     = lu.tick_to_system(offset_ticks)
     lyrics_y_off_px = lu.px(lu.cfg.lyrics.y_offset_pt)
 

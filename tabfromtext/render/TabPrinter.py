@@ -7,7 +7,8 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase.pdfdoc import PDFDictionary, PDFName
 
 from tabfromtext.song.Song import Song
-from tabfromtext.render.TabRenderer import render_tab, render_title_page
+from tabfromtext.render.TabRenderer import render_tab
+from tabfromtext.render.TitlePageRenderer import render_title_page
 import tabfromtext.render.LayoutUtils as lu
 
 A4_WIDTH_PT, A4_HEIGHT_PT = A4
@@ -93,8 +94,8 @@ def print_song(song: Song, output_dir: str) -> None:
 
         title_page_img = render_title_page(song, num_columns=2)
         if title_page_img is not None:
-            cfg      = lu.cfg
-            f_margin = cfg.page.footer_margin_pt
+            cfg          = lu.cfg
+            f_margin     = cfg.page.footer_margin_pt
             v_margin_bot = cfg.page.bottom_margin_pt
 
             w_pt, h_pt = _image_dimensions_pt(title_page_img)
@@ -105,7 +106,6 @@ def print_song(song: Song, output_dir: str) -> None:
             c.setFont("Helvetica", cfg.fonts.footer_pt)
             c.drawString(f_margin, v_margin_bot / 2, song.title)
             c.drawRightString(A4_WIDTH_PT - f_margin, v_margin_bot / 2, instrument.name)
-
             c.showPage()
 
         _print_instrument(c, images, title=song.title, instrument_name=instrument.name)

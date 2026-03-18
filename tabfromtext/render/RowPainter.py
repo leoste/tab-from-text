@@ -71,6 +71,39 @@ def draw_final_barline(draw_obj, final_x, final_y):
     )
 
 
+def draw_lyrics_only(draw_obj, segment, base_y):
+    """Draw syllables for a lyrics-only row, where base_y is the top of the
+    lyrics area (no tab strings). Each syllable is placed at its tick-aligned
+    x position. Multiple rows are stacked vertically when the lyrics span
+    more than one system-width."""
+    from tabfromtext.util.SyllableUtils import split_syllables
+
+    flat_syllables = split_syllables(segment.lyrics.text)
+    tick_list      = segment.lyrics.flatten_durations()
+    offset_ticks   = convertTimeToTicks(segment.lyrics.offset)
+
+    syllable_events = []
+    syl_idx  = 0
+    abs_tick = offset_ticks
+    for entry in tick_list:
+        if entry is not None and syl_idx < len(flat_syllables):
+            syllable_events.append((abs_tick, flat_syllables[syl_idx]))
+            syl_idx += 1
+        abs_tick += 1
+
+    line_h_px = lu.px(lu.cfg.fonts.lyrics_tab_pt) * 2
+
+    for abs_tick, syl_text in syllable_events:
+        row    = lu.tick_to_system(abs_tick)
+        syl_y  = base_y + row * line_h_px
+        syl_x  = lu.tick_to_x(abs_tick)
+        text_w = draw_obj.textbbox((0, 0), syl_text, font=lu.lyrics_tab_font)[2]
+        draw_obj.text(
+            (syl_x - text_w // 2, syl_y),
+            syl_text, fill="black", font=lu.lyrics_tab_font,
+        )
+
+
 def draw_lyrics(draw_obj, segment, base_y):
     """Draw all syllables of the segment's lyrics, aligned to their tick positions."""
     from tabfromtext.util.SyllableUtils import split_syllables

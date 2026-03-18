@@ -7,6 +7,7 @@ from tabfromtext.render.RenderContexts import NoteContext, ChunkContext, Segment
 from tabfromtext.render.LayoutUtils import STRING_GAPS
 from tabfromtext.render.RowPainter import (
     draw_row, draw_barline, draw_row_end_barline, draw_final_barline, draw_lyrics,
+    draw_lyrics_only,
 )
 from tabfromtext.render.NotePainter import draw_note
 import tabfromtext.render.LayoutUtils as lu
@@ -69,8 +70,6 @@ def _render_note(draw, note_ctx: NoteContext, base_y,
         draw_row(draw, note_ctx.strings_y, global_measure_counter)
         render_state.last_pm_x = None
         render_state.last_pm_y = None
-        render_state.last_vib_x = None
-        render_state.last_vib_y = None
 
     if (lu.tick_to_unit_in_measure(note_ctx.tick) == 0
             and lu.tick_to_measure_in_system(note_ctx.tick) > 0):
@@ -93,8 +92,6 @@ def _render_note(draw, note_ctx: NoteContext, base_y,
             draw_row(draw, chunk_ctx.strings_y, global_measure_counter)
             render_state.last_pm_x = None
             render_state.last_pm_y = None
-            render_state.last_vib_x = None
-            render_state.last_vib_y = None
 
         if lu.is_new_measure(chunk_acc) and not chunk_ctx.is_first:
             draw_barline(draw, chunk_ctx.strings_y,
@@ -120,6 +117,15 @@ def _render_note(draw, note_ctx: NoteContext, base_y,
 # Segment image allocation
 # ---------------------------------------------------------------------------
 
+def _total_ticks_from_lyrics(segment) -> int:
+    """Derive total ticks from lyrics durations when parts is None."""
+    from tabfromtext.util.TimeUtils import convertTimeToTicks
+    return sum(
+        convertTimeToTicks(d) for d in segment.lyrics.durations
+        if d is not None
+    )
+
+
 def _create_segment_image(segment, instrument_name):
     """Allocate the PIL image for one segment and return (img, draw, base_y)."""
     segment_notes = segment.GetNotesFromSegment(instrument_name)
@@ -138,6 +144,24 @@ def _create_segment_image(segment, instrument_name):
     return img, draw, base_y
 
 
+def _create_lyrics_only_image(segment):
+    """Allocate a compact PIL image for a lyrics-only segment."""
+    total_units = _total_ticks_from_lyrics(segment)
+    num_systems = math.ceil(math.ceil(total_units / lu.UNITS_PER_MEASURE) / lu.MEASURES_PER_LINE)
+    line_h_px   = lu.px(lu.cfg.fonts.lyrics_tab_pt) * 2
+
+    img_height_px = (
+        lu.px(lu.cfg.page.title_padding_pt)
+        + lu.title_h_px
+        + num_systems * line_h_px
+        + line_h_px  # bottom padding
+    )
+    img    = Image.new('RGB', (int(lu.img_width_px), int(img_height_px)), color='white')
+    draw   = ImageDraw.Draw(img)
+    base_y = lu.px(lu.cfg.page.title_padding_pt) + lu.title_h_px
+    return img, draw, base_y
+
+
 # ---------------------------------------------------------------------------
 # Public render entry points
 # ---------------------------------------------------------------------------
@@ -147,6 +171,30 @@ def render_tab(segments: list[Segment], instrument_name: str) -> list[Image.Imag
     global_measure_counter = 1
 
     for segment in segments:
+        is_lyrics_only = (
+            segment.parts.get(instrument_name) is None
+            and segment.lyrics is not None
+        )
+        is_empty = (
+            segment.parts.get(instrument_name) is None
+            and segment.lyrics is None
+        )
+
+        if is_empty:
+            continue
+
+        if is_lyrics_only:
+            img, draw, base_y = _create_lyrics_only_image(segment)
+            draw.text((lu.margin_left_px, lu.px(lu.cfg.page.title_padding_pt)),
+                      segment.title, fill="black", font=lu.title_font)
+            draw_lyrics_only(draw, segment, base_y)
+            results.append(img)
+            # advance measure counter based on lyrics duration
+            total_ticks = _total_ticks_from_lyrics(segment)
+            num_measures = math.ceil(total_ticks / lu.UNITS_PER_MEASURE)
+            global_measure_counter += num_measures
+            continue
+
         img, draw, base_y = _create_segment_image(segment, instrument_name)
         draw.text((lu.margin_left_px, lu.px(lu.cfg.page.title_padding_pt)),
                   segment.title, fill="black", font=lu.title_font)

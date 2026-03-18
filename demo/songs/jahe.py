@@ -393,14 +393,16 @@ lead_end_second_block = lead_end_first + [
 lead_end_parts = (lead_end_first_block + lead_end_second_block) * 2
 
 lead_chorus = [
-    StrummedChordSpan(2, Chord.single_note(GuitarString.G3, 10), 2),
-    StrummedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 12),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.G3, 10), 3),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 10),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.G3, 10)),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 14),
     StrummedChordSpan(2, Chord.single_note(GuitarString.G3, 8), 7),
     StrummedChordSpan(1, Chord.single_note(GuitarString.G3, 8), 2),
     StrummedChordSpan(3, Chord.single_note(GuitarString.G3, 11), 2),
     StrummedChordSpan(2, Chord.single_note(GuitarString.G3, 11), 2),
     StrummedChordSpan(1, Chord.single_note(GuitarString.G3, 11)),
-    StrummedChordSpan(2, Chord.single_note(GuitarString.G3, 10), 7),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 5),
 ] * 2
 
 lead_salm = [
@@ -418,9 +420,9 @@ lead_chorus_mute = [
 
 FIRST_INTRO = Segment("INTRO 1", {RHYTHM: intro_parts, LEAD: lead_intro_parts})
 SECOND_INTRO = Segment("INTRO 2", {RHYTHM: intro_parts, LEAD: lead_vahe_parts})
-SALM_1 = Segment("SALM", {RHYTHM: salm_parts, LEAD: lead_salm}, lyrics=salm_1_lyrics)
-SALM_2 = Segment("SALM", {RHYTHM: salm_parts, LEAD: lead_salm}, lyrics=salm_2_lyrics)
-CHORUS = Segment("REFRÄÄN", {RHYTHM: chorus_parts, LEAD: lead_chorus_mute}, lyrics=chorus_lyrics)
+SALM_1 = Segment("SALM", {RHYTHM: salm_parts, LEAD: None}, lyrics=salm_1_lyrics)
+SALM_2 = Segment("SALM", {RHYTHM: salm_parts, LEAD: None}, lyrics=salm_2_lyrics)
+CHORUS = Segment("REFRÄÄN", {RHYTHM: chorus_parts, LEAD: None}, lyrics=chorus_lyrics)
 LAST_CHORUS = Segment("REFRÄÄN", {RHYTHM: chorus_parts, LEAD: lead_chorus}, lyrics=chorus_lyrics)
 INSTRUMENTAL_CHORUS = Segment("INSTRUMENTAALNE REFRÄÄN", {RHYTHM: chorus_parts, LEAD: lead_end_parts})
 BREAKDOWN = Segment("BREAKDOWN", {RHYTHM: breakdown_parts, LEAD: lead_solo_parts})

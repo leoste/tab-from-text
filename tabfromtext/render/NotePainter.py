@@ -74,6 +74,8 @@ def _draw_note_content(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
 
     if note.style in _SPANNING_STYLES:
         _draw_spanning_annotation(draw_obj, note_ctx, chunk_ctx, render_state)
+    else:
+        render_state.reset_annotation()
 
 
 def _draw_slide(draw_obj, chunk_ctx: ChunkContext, string_index, text_w):
@@ -137,11 +139,11 @@ def _draw_palm_mute(draw_obj, chunk_ctx: ChunkContext,
             curr += dash_gap * 2
         render_state.last_annotation_x = chunk_ctx.x
 
-    if is_last and not is_first:
+    if is_last:
         tick_h = lu.px(cfg.palm_mute.tick_h_pt)
         draw_obj.line(
-            [(chunk_ctx.x, pm_y - tick_h // 2),
-             (chunk_ctx.x, pm_y + tick_h // 2)],
+            [(chunk_ctx.next_x, pm_y - tick_h // 2),
+             (chunk_ctx.next_x, pm_y + tick_h // 2)],
             fill="black", width=lu.lw(cfg.line_width.thin_pt),
         )
 

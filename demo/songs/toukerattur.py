@@ -11,6 +11,7 @@ from tabfromtext.song.StrummedChordSpan import StrummedChordSpan
 
 
 RHYTHM = "Rhythm"
+BASS = "Bass"
 
 CHORD_E6 = Chord.power_chord(GuitarString.E6, 6)
 CHORD_A9 = Chord.power_chord(GuitarString.A5, 9)
@@ -141,12 +142,97 @@ break_and_solo = [
     StrummedChordSpan(6, Chord.no_strings_hit_chord())
 ]
 
+main_riff_bass_piece = [
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 1), 9),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 1), 1, StrumStyle.NO_HIT),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 1), 1),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 1), 1, StrumStyle.NO_HIT),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 1), 2),
+
+    StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 2), 8),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 1), 8),
+]
+
+main_riff_bass = main_riff_bass_piece * 3 + [
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 1), 24),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 4), 3),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 3), 5),
+]
+
+long_riff_bass = main_riff_bass_piece * 4 + [
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 1)),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 1), 6),
+] * 4 + [    
+    StrummedChordSpan(14, Chord.single_note(GuitarString.A5, 1)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 1)),
+
+    StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 4)),
+    StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 3)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 3)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 4)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 3)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 4)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 3)),
+]
+
+salm_bass = [
+    StrummedChordSpan(1, Chord.single_note(GuitarString.G3, 3), 24),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.D4, 4), 3),
+    StrummedChordSpan(3, Chord.single_note(GuitarString.D4, 3)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.D4, 3))
+] * 3 + [
+    StrummedChordSpan(1, Chord.single_note(GuitarString.G3, 3), 24),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.D4, 4), 3),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.D4, 3)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 1), 1, StrumStyle.NO_HIT),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.D4, 3)),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 1), 1, StrumStyle.NO_HIT)
+]
+
+end_bass = [
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 1), 16),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.D4, 3), 4),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.D4, 4), 4),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.D4, 3), 4),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.D4, 4), 4)
+] * 4 + [
+    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 1), 64),
+
+    StrummedChordSpan(6, Chord.single_note(GuitarString.A5, 1)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 3)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 4)),
+    StrummedChordSpan(4, Chord.single_note(GuitarString.A5, 3)),
+    StrummedChordSpan(1, Chord.single_note(GuitarString.D4, 3), 2),
+    
+    StrummedChordSpan(3, Chord.single_note(GuitarString.D4, 4)),
+    StrummedChordSpan(3, Chord.single_note(GuitarString.D4, 3)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.D4, 4)),
+    StrummedChordSpan(6, Chord.single_note(GuitarString.A5, 1)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 1)),
+
+    StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 2)),
+    StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 1)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 2)),
+    StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 1)),
+    StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 3)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 4)),
+    
+    StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 3)),
+    StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 4)),
+    StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 3)),
+    StrummedChordSpan(14, Chord.single_note(GuitarString.A5, 1)),
+    StrummedChordSpan(2, Chord.no_strings_hit_chord()),
+]
+
 INTRO = Segment("INTRO", {
-    RHYTHM: intro_riff
+    RHYTHM: intro_riff,
+    BASS: main_riff_bass
 })
 
 CHORUS = Segment("REFRÄÄN", {
-    RHYTHM: chorus_riff
+    RHYTHM: chorus_riff,
+    BASS: main_riff_bass
+
 }, Lyrics(
 """\
 tõukerattur
@@ -159,7 +245,8 @@ tõukerattur\
 ], 8))
 
 PIKK_CHORUS = Segment("REFRÄÄN PIKA LÕPUGA", {
-    RHYTHM: long_chorus_riff
+    RHYTHM: long_chorus_riff,
+    BASS: long_riff_bass
 }, Lyrics(
 """\
 tõukerattur
@@ -174,7 +261,8 @@ tõukerattur\
 ], 8))
 
 ESIMENE_SALM = Segment("SALM", {
-    RHYTHM: salm
+    RHYTHM: salm,
+    BASS: salm_bass
 }, Lyrics(
     """\
 jalutasin ma ükskord mööda linna
@@ -197,7 +285,8 @@ kui mees mulle otsa sõitis\
 ]))
 
 TEINE_SALM = Segment("SALM", {
-    RHYTHM: salm
+    RHYTHM: salm,
+    BASS: salm_bass
 }, Lyrics(
     """\
 linnavalitsuse mehed
@@ -220,7 +309,8 @@ pandi kohe paika-a\
 ]))
 
 BREAK_AND_END = Segment("SOOLO + LÕPP", {
-    RHYTHM: break_and_solo
+    RHYTHM: break_and_solo,
+    BASS: end_bass
 }, Lyrics(
     """\
 hehe vaata mind ma sõidan tõukerattaga, hahaha

@@ -1,7 +1,9 @@
 """Note-level drawing — everything that belongs to a single note event."""
 import math
 from tabfromtext.song.StrumStyle import StrumStyle
-from tabfromtext.render.RenderContexts import NoteContext, ChunkContext, SegmentRenderState
+from tabfromtext.render.NoteContext import NoteContext
+from tabfromtext.render.ChunkContext import ChunkContext
+from tabfromtext.render.SegmentRenderState import SegmentRenderState
 from tabfromtext.util.TimeUtils import (
     TICKS_EIGHTH, TICKS_DOTTED_EIGHTH,
     TICKS_HALF_NOTE, TICKS_FULL_NOTE,

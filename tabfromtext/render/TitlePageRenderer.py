@@ -1,24 +1,19 @@
 """Title page rendering — separate from tab rendering."""
-from PIL import Image, ImageDraw
-from reportlab.lib.pagesizes import A4
+from PIL import ImageDraw
 from tabfromtext.song.Song import Song
+from tabfromtext.render.ImageFactory import new_title_page_image
 import tabfromtext.render.LayoutUtils as lu
 
-A4_WIDTH_PT, A4_HEIGHT_PT = A4
 
-
-def render_title_page(song: Song, num_columns: int = 2) -> Image.Image | None:
+def render_title_page(song: Song, num_columns: int = 2):
     sections = [(seg.title, seg.lyrics.text if seg.lyrics is not None else None)
                 for seg in song.segments]
     if not sections:
         return None
 
-    img_w_px  = lu.img_width_px
-    page_h_pt = A4_HEIGHT_PT - lu.cfg.page.top_margin_pt - lu.cfg.page.bottom_margin_pt
-    img_h_px  = lu.px(page_h_pt)
-
-    img  = Image.new('RGB', (img_w_px, img_h_px), color='white')
-    draw = ImageDraw.Draw(img)
+    img, draw = new_title_page_image()
+    img_w_px  = img.width
+    img_h_px  = img.height
 
     margin_px     = lu.margin_left_px
     title_line_h  = int(lu.px(lu.cfg.fonts.title_pt)  * 1.4)

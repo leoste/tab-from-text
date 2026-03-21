@@ -425,14 +425,25 @@ esimene_salm_lead = [
     RhythmicChordSpanList(
         Rhythm(
             [1,2,2,1,2],
-            [StrumStyle.NORMAL] * 5 +
-            [StrumStyle.SLIDE] + [StrumStyle.NORMAL] * 2
+            [StrumStyle.PALM_MUTED] * 8
         ),
         [
             ChordSpan(1, Chord.single_note(B2, 1)),
             ChordSpan(5, Chord.single_note(B2, 3)),
             ChordSpan(2, Chord.single_note(B2, 6)),
         ]
+    ),
+    RhythmicChordSpanList(
+        Rhythm(
+            [7, 0.5,0.5, 1,2,2,1,2],
+            [StrumStyle.NO_HIT] * 7 + [StrumStyle.PALM_MUTED] * 9
+        ),
+        [
+            ChordSpan(9, Chord.single_note(B2, 3)),
+            ChordSpan(7, Chord.single_note(G3, 3)),
+            ChordSpan(9, Chord.single_note(B2, 1)),
+            ChordSpan(7, Chord.single_note(B2, 3)),
+        ] * 2
     )
 ]
 
@@ -484,13 +495,13 @@ THIRD_INTRO = Segment("DOUBLE INTRO", {
     LEAD: third_lead_melody
 })
 
-SALM_1 = Segment("SALM", {
+SALM_1 = Segment("ESIMENE SALM", {
     RHYTHM: rhythm_salm_parts,
     BASS:   bass_salm_parts,
     LEAD: esimene_salm_lead
 }, lyrics=salm_1_lyrics)
 
-SALM_2 = Segment("SALM", {
+SALM_2 = Segment("TEINE SALM", {
     RHYTHM: rhythm_salm_parts,
     BASS:   bass_salm_parts,
     LEAD: teine_salm_lead

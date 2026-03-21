@@ -27,6 +27,8 @@ def draw_note(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
     """
     if note_ctx.note.chord and note_ctx.note.style != StrumStyle.NO_HIT:
         _draw_note_content(draw_obj, note_ctx, chunk_ctx, render_state)
+    else:
+        render_state.reset_annotation()
 
     is_rest = (note_ctx.note.chord is None or note_ctx.note.style == StrumStyle.NO_HIT)
     _draw_stem(draw_obj, chunk_ctx, is_rest=is_rest)

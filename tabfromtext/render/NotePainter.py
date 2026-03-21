@@ -5,7 +5,7 @@ from tabfromtext.render.NoteContext import NoteContext
 from tabfromtext.render.ChunkContext import ChunkContext
 from tabfromtext.render.SegmentRenderState import SegmentRenderState
 from tabfromtext.util.TimeUtils import (
-    TICKS_EIGHTH, TICKS_DOTTED_EIGHTH,
+    TICKS_EIGHTH, TICKS_DOTTED_EIGHTH, TICKS_SIXTEENTH,
     TICKS_HALF_NOTE, TICKS_FULL_NOTE,
     is_dotted,
 )
@@ -38,7 +38,7 @@ def draw_note(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext,
         draw_arc(draw_obj, prev_stem_x, chunk_ctx.stem_x,
                  min(prev_stem_y_start, chunk_ctx.stem_y))
 
-    if chunk_ctx.dur in (TICKS_EIGHTH, TICKS_DOTTED_EIGHTH):
+    if chunk_ctx.dur in (TICKS_SIXTEENTH, TICKS_EIGHTH, TICKS_DOTTED_EIGHTH):
         _draw_beam(draw_obj, note_ctx, chunk_ctx)
 
 
@@ -233,35 +233,82 @@ def _draw_dot(draw_obj, chunk_ctx: ChunkContext):
 
 
 def _draw_beam(draw_obj, note_ctx: NoteContext, chunk_ctx: ChunkContext):
-    """Draw a beam connecting to the next note, or a stub flag if unbeamed."""
+    """Draw beams below the note stem.
+
+    Bottom beam (shared by eighths and sixteenths):
+      - Connects forward to the next note if it is an eighth or sixteenth.
+      - Falls back to a stub if not beamed in either direction.
+
+    Top beam (sixteenths only):
+      - Drawn above the bottom beam, separated by beam_gap_pt.
+      - Connects forward only to an adjacent sixteenth.
+      - Falls back to a stub if the next note is not a sixteenth.
+    """
     cfg            = lu.cfg
     chunk_bottom_y = chunk_ctx.stem_y + lu.px(cfg.stems.h_pt)
+    beam_gap_y     = lu.px(cfg.beams.beam_gap_pt)
     note           = note_ctx.note
+    dur            = chunk_ctx.dur
 
-    is_at_measure_end = lu.is_new_measure(chunk_ctx.acc + chunk_ctx.dur)
-    can_beam_fwd = (not is_at_measure_end
-                    and note_ctx.next_real_note is not None
-                    and note_ctx.next_real_note.duration == note.duration
-                    and note.chord is not None
-                    and note_ctx.next_real_note.chord is not None)
+    def _is_beamable(n):
+        """True if note n can participate in the bottom beam (eighth or sixteenth)."""
+        return (n is not None
+                and n.duration in (TICKS_EIGHTH, TICKS_SIXTEENTH)
+                and n.chord is not None)
 
+    def _is_sixteenth(n):
+        """True if note n is a sixteenth and has a chord."""
+        return (n is not None
+                and n.duration == TICKS_SIXTEENTH
+                and n.chord is not None)
+
+    is_at_measure_end   = lu.is_new_measure(chunk_ctx.acc + chunk_ctx.dur)
     is_at_measure_start = lu.is_new_measure(chunk_ctx.acc)
-    is_beamed_back = (not is_at_measure_start
-                      and note_ctx.prev_real_note is not None
-                      and note_ctx.prev_real_note.duration == note.duration
-                      and note.chord is not None
-                      and note_ctx.prev_real_note.chord is not None)
 
-    if can_beam_fwd:
+    # --- bottom beam ---
+    can_beam_fwd_bot = (not is_at_measure_end
+                        and _is_beamable(note_ctx.next_real_note)
+                        and note.chord is not None)
+    is_beamed_back_bot = (not is_at_measure_start
+                          and _is_beamable(note_ctx.prev_real_note)
+                          and note.chord is not None)
+
+    if can_beam_fwd_bot:
         draw_obj.line(
             [(chunk_ctx.stem_x, chunk_bottom_y),
-             (chunk_ctx.stem_x + lu.beat_w_px * chunk_ctx.dur, chunk_bottom_y)],
+             (chunk_ctx.stem_x + lu.beat_w_px * dur, chunk_bottom_y)],
             fill="black", width=lu.lw(cfg.line_width.thick_pt),
         )
-    elif not is_beamed_back:
+    elif not is_beamed_back_bot:
         draw_obj.line(
             [(chunk_ctx.stem_x, chunk_bottom_y),
              (chunk_ctx.stem_x + lu.px(cfg.beams.stub_pt), chunk_bottom_y)],
+            fill="black", width=lu.lw(cfg.line_width.normal_pt),
+        )
+
+    # --- top beam (sixteenth only) ---
+    if dur != TICKS_SIXTEENTH:
+        return
+
+    top_beam_y = chunk_bottom_y - beam_gap_y
+
+    can_beam_fwd_top = (not is_at_measure_end
+                        and _is_sixteenth(note_ctx.next_real_note)
+                        and note.chord is not None)
+    is_beamed_back_top = (not is_at_measure_start
+                          and _is_sixteenth(note_ctx.prev_real_note)
+                          and note.chord is not None)
+
+    if can_beam_fwd_top:
+        draw_obj.line(
+            [(chunk_ctx.stem_x, top_beam_y),
+             (chunk_ctx.stem_x + lu.beat_w_px * dur, top_beam_y)],
+            fill="black", width=lu.lw(cfg.line_width.thick_pt),
+        )
+    elif not is_beamed_back_top:
+        draw_obj.line(
+            [(chunk_ctx.stem_x, top_beam_y),
+             (chunk_ctx.stem_x + lu.px(cfg.beams.stub_pt), top_beam_y)],
             fill="black", width=lu.lw(cfg.line_width.normal_pt),
         )
 

@@ -407,7 +407,33 @@ third_lead_melody = [
 ]
 
 esimene_salm_lead = [
-
+    RhythmicChordSpanList(
+        Rhythm(
+            [7, 0.5,0.5, 1,0.5,0.5, 1,0.5,0.5, 4],
+            [StrumStyle.NO_HIT] * 7 + [StrumStyle.PALM_MUTED] * 9
+        ),
+        [
+            ChordSpan(8, Chord.single_note(B2, 3)),
+            ChordSpan(8, Chord.single_note(G3, 3)),
+            ChordSpan(8, Chord.single_note(B2, 1)),
+            ChordSpan(8, Chord.single_note(B2, 3)),
+            ChordSpan(9, Chord.single_note(B2, 3)),
+            ChordSpan(7, Chord.single_note(G3, 3)),
+            ChordSpan(8, Chord.single_note(B2, 1)),
+        ]
+    ),
+    RhythmicChordSpanList(
+        Rhythm(
+            [1,2,2,1,2],
+            [StrumStyle.NORMAL] * 5 +
+            [StrumStyle.SLIDE] + [StrumStyle.NORMAL] * 2
+        ),
+        [
+            ChordSpan(1, Chord.single_note(B2, 1)),
+            ChordSpan(5, Chord.single_note(B2, 3)),
+            ChordSpan(2, Chord.single_note(B2, 6)),
+        ]
+    )
 ]
 
 teine_salm_lead = [

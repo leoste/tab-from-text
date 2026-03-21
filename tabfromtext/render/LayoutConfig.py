@@ -53,6 +53,7 @@ class BeamConfig:
     stub_pt:       float = 2    # flag stub on an unbeamed eighth note
     dot_offset_pt: float = 2
     dot_r_pt:      float = 0.5
+    beam_gap_pt:   float = 2  # vertical gap between bottom and top beam (sixteenth)
 
 
 @dataclass

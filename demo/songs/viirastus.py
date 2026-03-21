@@ -6,11 +6,12 @@ from tabfromtext.song.Rhythm import Rhythm
 from tabfromtext.song.Segment import Segment
 from tabfromtext.song.GuitarString import GuitarString
 from tabfromtext.song.StrumStyle import StrumStyle
-from tabfromtext.song.StrummedChordSpan import StrummedChordSpan
+from tabfromtext.song.RepeatedChordSpan import RepeatedChordSpan
 from tabfromtext.song.Song import Song
 
 RHYTHM = "Rhythm"
 BASS = "Bass"
+LEAD = "Lead"
 
 CHORD_8_F = Chord.power_chord(GuitarString.A5, 8)
 CHORD_8_F_DOUBLE = Chord(None, None, 10, 10, 8, 8)
@@ -77,14 +78,14 @@ rhythm_second_intro_parts = [
 rhythm_third_intro_parts = [ intro_base_span ] * 2
 
 bass_intro_base = [
-    StrummedChordSpan(1, NOTE_8_F, 9),
-    StrummedChordSpan(1, NOTE_8_C, 7),
-    StrummedChordSpan(1, NOTE_6_A_SHARP, 8),
-    StrummedChordSpan(1, NOTE_5_A, 8)
+    RepeatedChordSpan(1, NOTE_8_F, 9),
+    RepeatedChordSpan(1, NOTE_8_C, 7),
+    RepeatedChordSpan(1, NOTE_6_A_SHARP, 8),
+    RepeatedChordSpan(1, NOTE_5_A, 8)
 ] * 2
 
-bass_first_intro_parts = bass_intro_base + [ StrummedChordSpan(1, NOTE_5_A, 16) ]
-bass_second_intro_parts = bass_intro_base + [ StrummedChordSpan(1, NOTE_5_A, 8) ]
+bass_first_intro_parts = bass_intro_base + [ RepeatedChordSpan(1, NOTE_5_A, 16) ]
+bass_second_intro_parts = bass_intro_base + [ RepeatedChordSpan(1, NOTE_5_A, 8) ]
 bass_third_intro_parts = bass_intro_base * 2
 
 rhythm_salm_parts = [
@@ -138,26 +139,26 @@ rhythm_viimane_salm_parts = [
 ]
 
 bass_salm_firster = [
-    StrummedChordSpan(1, NOTE_10_D, 9),
-    StrummedChordSpan(1, NOTE_6_A_SHARP, 7),
-    StrummedChordSpan(1, NOTE_8_C, 8),
-    StrummedChordSpan(1, NOTE_10_D, 6),
-    StrummedChordSpan(1, Chord.single_note(GuitarString.A5, 12)),
-    StrummedChordSpan(1, NOTE_10_D),
-    StrummedChordSpan(1, NOTE_10_D, 9),
-    StrummedChordSpan(1, NOTE_6_A_SHARP, 7),
-    StrummedChordSpan(1, NOTE_8_C, 8),
-    StrummedChordSpan(1, NOTE_10_D, 5),
+    RepeatedChordSpan(1, NOTE_10_D, 9),
+    RepeatedChordSpan(1, NOTE_6_A_SHARP, 7),
+    RepeatedChordSpan(1, NOTE_8_C, 8),
+    RepeatedChordSpan(1, NOTE_10_D, 6),
+    RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 12)),
+    RepeatedChordSpan(1, NOTE_10_D),
+    RepeatedChordSpan(1, NOTE_10_D, 9),
+    RepeatedChordSpan(1, NOTE_6_A_SHARP, 7),
+    RepeatedChordSpan(1, NOTE_8_C, 8),
+    RepeatedChordSpan(1, NOTE_10_D, 5),
 ]
 
 bass_salm_parts = (
     bass_salm_firster +
     [
-        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 12)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 13))
+        RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 12)),
+        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 13))
     ] +
     bass_salm_firster +
-    [ StrummedChordSpan(1, NOTE_10_D, 3) ]
+    [ RepeatedChordSpan(1, NOTE_10_D, 3) ]
 )
 
 # bass_viimane_salm_parts shares the same notes as bass_salm_parts
@@ -218,42 +219,42 @@ rhythm_viimane_chorus_parts = [
 ]
 
 bass_chorus_parts = [ 
-    StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 10)),
-    StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 6)),
-    StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 8)),
-    StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 8)),
-    StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 8)),
-    StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 9)),
-    StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 10)),
-    StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 10), 14)
+    RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 10)),
+    RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 6)),
+    RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 8)),
+    RepeatedChordSpan(3, Chord.single_note(GuitarString.A5, 8)),
+    RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 8)),
+    RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 9)),
+    RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 10)),
+    RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 10), 14)
 ] * 2
 
 bass_viimane_chorus_parts = (
     [ 
-        StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 8)),
-        StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 8)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 9)),
-        StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 10)),
-        StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 8)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 5)),
-        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 5), 14),
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.A5, 8)),
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 8)),
+        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 9)),
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 10)),
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 8)),
+        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 5)),
+        RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 5), 14),
 
-        StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 8)),
-        StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 8)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 9)),
-        StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 10)),
-        StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 6)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 5)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 5)),
-        StrummedChordSpan(1, Chord.single_note(GuitarString.E6, 5), 14)
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.A5, 8)),
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 8)),
+        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 9)),
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 10)),
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 6)),
+        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 5)),
+        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 5)),
+        RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 5), 14)
     ] * 2 +
     [
-        StrummedChordSpan(3, Chord.single_note(GuitarString.E6, 5)),
-        StrummedChordSpan(3, Chord.single_note(GuitarString.A5, 8)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.E6, 5)),
-        StrummedChordSpan(2, Chord.single_note(GuitarString.A5, 5)),        
-        StrummedChordSpan(6, None)
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.E6, 5)),
+        RepeatedChordSpan(3, Chord.single_note(GuitarString.A5, 8)),
+        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 5)),
+        RepeatedChordSpan(2, Chord.single_note(GuitarString.A5, 5)),        
+        RepeatedChordSpan(6, None)
     ]
 )
 
@@ -337,49 +338,86 @@ ongi nüüd läbi mu tee
 4,2,2,4,2,2,16
 ])
 
-FIRST_INTRO = Segment("INTRO WITH 2x END", {
+first_lead_melody = [
+
+]
+
+second_lead_melody = [
+
+]
+
+third_lead_melody = [
+
+]
+
+esimene_salm_lead = [
+
+]
+
+teine_salm_lead = [
+
+]
+
+kolmas_salm_lead = [
+
+]
+
+viimane_salm_lead = [
+
+]
+
+FIRST_INTRO = Segment("INTRO PIKA LÕPUGA", {
     RHYTHM: rhythm_first_intro_parts,
     BASS:   bass_first_intro_parts,
+    LEAD: first_lead_melody
 })
 
-SECOND_INTRO = Segment("INTRO WITH 1x END", {
+SECOND_INTRO = Segment("INTRO LÜHEMA LÕPUGA", {
     RHYTHM: rhythm_second_intro_parts,
     BASS:   bass_second_intro_parts,
+    LEAD: second_lead_melody
 })
 
 THIRD_INTRO = Segment("DOUBLE INTRO", {
     RHYTHM: rhythm_third_intro_parts,
     BASS:   bass_third_intro_parts,
+    LEAD: third_lead_melody
 })
 
 SALM_1 = Segment("SALM", {
     RHYTHM: rhythm_salm_parts,
     BASS:   bass_salm_parts,
+    LEAD: esimene_salm_lead
 }, lyrics=salm_1_lyrics)
 
 SALM_2 = Segment("SALM", {
     RHYTHM: rhythm_salm_parts,
     BASS:   bass_salm_parts,
+    LEAD: teine_salm_lead
 }, lyrics=salm_2_lyrics)
 
 VIIMANE_SALM = Segment("VIIMANE SALM", {
     RHYTHM: rhythm_viimane_salm_parts,
     BASS:   bass_viimane_salm_parts,
+    LEAD: kolmas_salm_lead
 }, lyrics=salm_3_lyrics)
 
 CHORUS_1 = Segment("REFRÄÄN", {
     RHYTHM: rhythm_chorus_parts,
     BASS:   bass_chorus_parts,
+    LEAD: None
 }, lyrics=ref_lyrics)
 
 CHORUS_2 = Segment("REFRÄÄN", {
     RHYTHM: rhythm_chorus_parts,
     BASS:   bass_chorus_parts,
+    LEAD: None
 }, lyrics=ref_lyrics)
 
 VIIMANE_CHORUS = Segment("VIIMANE REFRÄÄN", {
     RHYTHM: rhythm_viimane_chorus_parts,
     BASS:   bass_viimane_chorus_parts,
+    LEAD: viimane_salm_lead
 }, lyrics=final_ref_lyrics)
 
 SONG = Song("Viirastus", [

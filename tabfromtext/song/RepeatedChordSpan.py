@@ -5,7 +5,7 @@ from tabfromtext.song.Note import Note
 from tabfromtext.song.Chord import Chord
 
 
-class StrummedChordSpan(NoteProvider):
+class RepeatedChordSpan(NoteProvider):
     def __init__(self, duration: int, chord: Chord, times: int = 1, style: StrumStyle = StrumStyle.NORMAL) -> None:
         self.chordSpan = ChordSpan(duration, chord)
         self.times = times

@@ -7,5 +7,5 @@ class ChordSpan:
         self.duration: int = duration
         self.chord: Chord = chord
 
-    def flattenChordSpan(self) -> list[Chord]:
+    def flatten(self) -> list[Chord]:
         return [self.chord] * Note.convertTimeToTicks(self.duration)

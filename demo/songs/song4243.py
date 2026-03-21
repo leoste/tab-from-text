@@ -1,12 +1,12 @@
 from tabfromtext.song.Lyrics import Lyrics
-from tabfromtext.song.RhythmicChordSpan import RhythmicChordSpan
+from tabfromtext.song.RhythmicChordSpanList import RhythmicChordSpanList
 from tabfromtext.song.ChordSpan import ChordSpan
 from tabfromtext.song.Chord import Chord
 from tabfromtext.song.Rhythm import Rhythm
 from tabfromtext.song.Segment import Segment
 from tabfromtext.song.GuitarString import GuitarString
 from tabfromtext.song.StrumStyle import StrumStyle
-from tabfromtext.song.RepeatedChordSpan import RepeatedChordSpan
+from tabfromtext.song.RepeatingChordSpan import RepeatingChordSpan
 from tabfromtext.song.Song import Song
 
 RHYTHM = "Rhythm"
@@ -28,7 +28,7 @@ intro_first_three_rhythm = Rhythm(
     [1,1,1,3,2]
 )
 
-intro_first_three = RhythmicChordSpan(
+intro_first_three = RhythmicChordSpanList(
     intro_first_three_rhythm,
     [
         ChordSpan(3, NOTE_6_A_SHARP),
@@ -37,7 +37,7 @@ intro_first_three = RhythmicChordSpan(
     ] * 3
 )
 
-intro_first_three_power = RhythmicChordSpan(
+intro_first_three_power = RhythmicChordSpanList(
     intro_first_three_rhythm,
     [
         ChordSpan(3, NOTE_6_A_SHARP),
@@ -46,7 +46,7 @@ intro_first_three_power = RhythmicChordSpan(
     ] * 3
 )
 
-intro_last = RhythmicChordSpan(
+intro_last = RhythmicChordSpanList(
     Rhythm(
         [2,2,2,2]
     ),
@@ -58,7 +58,7 @@ intro_last = RhythmicChordSpan(
     ]
 )
 
-intro_pause = RhythmicChordSpan(
+intro_pause = RhythmicChordSpanList(
     Rhythm(
         [6,2],
         [StrumStyle.NO_HIT] * 6 + [StrumStyle.NORMAL] * 2
@@ -86,7 +86,7 @@ DURATIONS_WEIRD = [ 1.5, 1.5, 2, 1,1,1 ]
 DURATIONS_WEIRD_AND_END = [ 1.5, 1.5, 2, 1,2 ]
 DURATIONS_2121 = [ 2,1,1,2,1,1 ]
 
-riff_end_chordspan = RhythmicChordSpan(
+riff_end_chordspan = RhythmicChordSpanList(
     Rhythm(
         DURATIONS_122 + DURATIONS_8 +
         DURATIONS_8 + DURATIONS_WEIRD
@@ -102,7 +102,7 @@ riff_end_chordspan = RhythmicChordSpan(
 )
 
 riff_chordspans = [
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             Rhythm(
                 DURATIONS_8 + DURATIONS_323
             ),
@@ -115,23 +115,23 @@ riff_chordspans = [
     ]
 
 bass_riff_cool_part = [
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 7)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 15),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 7), 8),
-    RepeatedChordSpan(1.5, Chord.single_note(GuitarString.E6, 9)),
-    RepeatedChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 7)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 6), 15),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 7), 8),
+    RepeatingChordSpan(1.5, Chord.single_note(GuitarString.E6, 9)),
+    RepeatingChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3),
 ]
 
 bass_riff_main = ([
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 6), 8),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 8), 3),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 9), 5),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 9), 16)    
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 6), 8),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 8), 3),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 9), 5),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 9), 16)    
 ] + bass_riff_cool_part)
 
-wait_chord_span = RhythmicChordSpan(
+wait_chord_span = RhythmicChordSpanList(
     Rhythm(
         [ 16 ]
     ),
@@ -154,7 +154,7 @@ chorus_second_chords = [
 rhythm_riff_salmiga_parts = (
     riff_chordspans * 2 +
     [
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             Rhythm(DURATIONS_8),
             [
                 ChordSpan(7, CHORD_6_A_SHARP),
@@ -167,8 +167,8 @@ rhythm_riff_salmiga_parts = (
 bass_riff_salmiga_parts = (
     bass_riff_main * 2 +
     [ 
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 7),
-        RepeatedChordSpan(1, Chord.no_strings_hit_chord())
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 6), 7),
+        RepeatingChordSpan(1, Chord.no_strings_hit_chord())
     ]
 )
 
@@ -176,7 +176,7 @@ rhythm_riff_endiga_parts = (
     riff_chordspans * 2 +
     [
         riff_end_chordspan,
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             Rhythm(
                 DURATIONS_WEIRD + DURATIONS_8 +
                 DURATIONS_8 + DURATIONS_WEIRD_AND_END
@@ -191,7 +191,7 @@ rhythm_riff_endiga_parts = (
             ]
         ),
         wait_chord_span,
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             Rhythm([2,6]),
             [
                 ChordSpan(2, CHORD_6_A_SHARP),
@@ -205,36 +205,36 @@ bass_riff_endiga_parts = (
     bass_riff_main * 2 +
     bass_riff_cool_part +
     [
-        RepeatedChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
-        RepeatedChordSpan(1.5, Chord.single_note(GuitarString.E6, 6)),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
-        RepeatedChordSpan(20, Chord.single_note(GuitarString.E6, 6))
+        RepeatingChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
+        RepeatingChordSpan(1.5, Chord.single_note(GuitarString.E6, 6)),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+        RepeatingChordSpan(20, Chord.single_note(GuitarString.E6, 6))
     ]
 )
 
 bass_chorus_cool_part = [
-    RepeatedChordSpan(1.5, Chord.single_note(GuitarString.E6, 9)),
-    RepeatedChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3)
+    RepeatingChordSpan(1.5, Chord.single_note(GuitarString.E6, 9)),
+    RepeatingChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 6), 3)
 ]
 
 bass_chorus_near_end = ([    
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 8)
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 6), 8)
 ] +
 bass_chorus_cool_part)
 
 rhythm_chorus_parts = [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         chorus_first_rhytm,
         [
             ChordSpan(8, CHORD_6_D_SHARP),
             ChordSpan(8, CHORD_6_A_SHARP)
         ]
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             [4, 4] + DURATIONS_WEIRD
         ),
@@ -247,23 +247,23 @@ rhythm_chorus_parts = [
             ChordSpan(1, NOTE_6_A_SHARP)
         ]
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         chorus_first_rhytm,
         [ ChordSpan(16, CHORD_6_D_SHARP) ]
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             DURATIONS_2121 + DURATIONS_WEIRD
         ),
         chorus_second_chords
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             DURATIONS_8 + DURATIONS_WEIRD
         ),
         chorus_second_chords
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             DURATIONS_8 + DURATIONS_WEIRD_AND_END
         ),
@@ -279,40 +279,40 @@ rhythm_chorus_parts = [
 
 bass_chorus_parts = (
     [
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 6), 3),
-        RepeatedChordSpan(1, None),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 6)),
-        RepeatedChordSpan(1, None),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 6)),
-        RepeatedChordSpan(1, None),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 2),
-        RepeatedChordSpan(1, None),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 6)),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
-        RepeatedChordSpan(4, Chord.single_note(GuitarString.E6, 7)),
-        RepeatedChordSpan(4, Chord.single_note(GuitarString.E6, 6))
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 6), 3),
+        RepeatingChordSpan(1, None),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 6)),
+        RepeatingChordSpan(1, None),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 6)),
+        RepeatingChordSpan(1, None),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 6), 2),
+        RepeatingChordSpan(1, None),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 6)),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.E6, 6)),
+        RepeatingChordSpan(4, Chord.single_note(GuitarString.E6, 7)),
+        RepeatingChordSpan(4, Chord.single_note(GuitarString.E6, 6))
     ] +
     bass_chorus_cool_part +
     [
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.A5, 6)),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 6), 2),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.A5, 6)),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 6), 2),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 6), 3),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.A5, 6), 1),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.A5, 6), 3)
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.A5, 6)),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 6), 2),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.A5, 6)),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 6), 2),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 6), 3),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.A5, 6), 1),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.A5, 6), 3)
     ] +
     bass_chorus_near_end * 2 +
     [
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 6), 8),
-        RepeatedChordSpan(1.5, Chord.single_note(GuitarString.E6, 9)),
-        RepeatedChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 7)),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.E6, 7)),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.E6, 7)),
-        RepeatedChordSpan(12, Chord.single_note(GuitarString.E6, 6)),
-        RepeatedChordSpan(4, None)
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 6), 8),
+        RepeatingChordSpan(1.5, Chord.single_note(GuitarString.E6, 9)),
+        RepeatingChordSpan(1.5, Chord.single_note(GuitarString.E6, 7)),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.E6, 7)),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.E6, 7)),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.E6, 7)),
+        RepeatingChordSpan(12, Chord.single_note(GuitarString.E6, 6)),
+        RepeatingChordSpan(4, None)
     ]
 )
 

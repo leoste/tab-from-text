@@ -5,14 +5,14 @@ from tabfromtext.song.Note import Note
 from tabfromtext.song.Chord import Chord
 
 
-class RepeatedChordSpan(NoteProvider):
+class RepeatingChordSpan(NoteProvider):
     def __init__(self, duration: int, chord: Chord, times: int = 1, style: StrumStyle = StrumStyle.NORMAL) -> None:
         self.chordSpan = ChordSpan(duration, chord)
         self.times = times
         self.style = style
 
     def getNotes(self) -> list[Note]:
-        chords = self.chordSpan.flattenChordSpan()
+        chords = self.chordSpan.flatten()
         durations = Note.flattenDuration(self.chordSpan.duration)
         styles = StrumStyle.flattenStyle(self.style)
 

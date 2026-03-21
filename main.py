@@ -5,8 +5,8 @@ from demo.songs.ilmutus import SONG as ILMUTUS
 from demo.songs.toukerattur import SONG as TOUKERATTUR
 from tabfromtext.render.TabPrinter import print_song
 
-print_song(SONG_4243, "demo/tabs")
-print_song(JAHE, "demo/tabs")
+#print_song(SONG_4243, "demo/tabs")
+#print_song(JAHE, "demo/tabs")
 print_song(VIIRASTUS, "demo/tabs")
-print_song(ILMUTUS, "demo/tabs")
-print_song(TOUKERATTUR, "demo/tabs")
+#print_song(ILMUTUS, "demo/tabs")
+#print_song(TOUKERATTUR, "demo/tabs")

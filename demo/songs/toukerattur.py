@@ -3,11 +3,11 @@ from tabfromtext.song.ChordSpan import ChordSpan
 from tabfromtext.song.GuitarString import E6, A5, D4, G3, B2, E1
 from tabfromtext.song.Lyrics import Lyrics
 from tabfromtext.song.Rhythm import Rhythm
-from tabfromtext.song.RhythmicChordSpan import RhythmicChordSpan
+from tabfromtext.song.RhythmicChordSpanList import RhythmicChordSpanList
 from tabfromtext.song.Segment import Segment
 from tabfromtext.song.Song import Song
 from tabfromtext.song.StrumStyle import StrumStyle
-from tabfromtext.song.RepeatedChordSpan import RepeatedChordSpan
+from tabfromtext.song.RepeatingChordSpan import RepeatingChordSpan
 
 
 RHYTHM = "Rhythm"
@@ -45,7 +45,7 @@ hard_rhythm = Rhythm(
 )
 
 riff_end = [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             [
                 1,1,1,2,1,1,1,
@@ -69,31 +69,31 @@ riff_chords = [
 ]
 
 intro_riff = [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         hard_rhythm,
         riff_chords
     )
 ] + [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         leebe_rhythm,
         riff_chords
     )
 ] * 2 + riff_end
 
 chorus_riff = [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         leebe_rhythm,
         riff_chords
     )
 ] * 3 + riff_end
 
 long_chorus_riff = [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         leebe_rhythm,
         riff_chords
     )
 ] * 3 + [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             [
                 1,1,1,1,1,1,1,1,
@@ -109,7 +109,7 @@ long_chorus_riff = [
         ),
         riff_chords
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             [1,1,1,1,1,1,1,1],
             [StrumStyle.NORMAL, StrumStyle.NO_HIT] +
@@ -117,157 +117,157 @@ long_chorus_riff = [
         ),
         [ ChordSpan(32, CHORD_E6)]
     ),
-    RepeatedChordSpan(2, CHORD_E6),
-    RepeatedChordSpan(6, Chord.no_strings_hit_chord()),
-    RepeatedChordSpan(8, Chord.no_strings_hit_chord(), 3),
+    RepeatingChordSpan(2, CHORD_E6),
+    RepeatingChordSpan(6, Chord.no_strings_hit_chord()),
+    RepeatingChordSpan(8, Chord.no_strings_hit_chord(), 3),
 ]
 
 salm = [
-    RepeatedChordSpan(1, CHORD_E6, 24),
-    RepeatedChordSpan(1, CHORD_A9, 2),
-    RepeatedChordSpan(1, CHORD_A9, 1, StrumStyle.MUTED),
-    RepeatedChordSpan(3, CHORD_A8),
-    RepeatedChordSpan(2, CHORD_A8)
+    RepeatingChordSpan(1, CHORD_E6, 24),
+    RepeatingChordSpan(1, CHORD_A9, 2),
+    RepeatingChordSpan(1, CHORD_A9, 1, StrumStyle.MUTED),
+    RepeatingChordSpan(3, CHORD_A8),
+    RepeatingChordSpan(2, CHORD_A8)
 ] * 4
 
 break_and_solo = [
-    RepeatedChordSpan(1, CHORD_E6, 16),
-    RepeatedChordSpan(1, CHORD_A8, 4),
-    RepeatedChordSpan(1, CHORD_A9, 4),
-    RepeatedChordSpan(1, CHORD_A8, 4),
-    RepeatedChordSpan(1, CHORD_A9, 4)
+    RepeatingChordSpan(1, CHORD_E6, 16),
+    RepeatingChordSpan(1, CHORD_A8, 4),
+    RepeatingChordSpan(1, CHORD_A9, 4),
+    RepeatingChordSpan(1, CHORD_A8, 4),
+    RepeatingChordSpan(1, CHORD_A9, 4)
 ] * 4 + [
-    RepeatedChordSpan(1, CHORD_E6, 64),
-    RepeatedChordSpan(64, CHORD_E6, 1, StrumStyle.VIBRATO),
-    RepeatedChordSpan(2, CHORD_E6, 1, StrumStyle.MUTED),
-    RepeatedChordSpan(6, Chord.no_strings_hit_chord())
+    RepeatingChordSpan(1, CHORD_E6, 64),
+    RepeatingChordSpan(64, CHORD_E6, 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(2, CHORD_E6, 1, StrumStyle.MUTED),
+    RepeatingChordSpan(6, Chord.no_strings_hit_chord())
 ]
 
 main_riff_bass_piece = [
-    RepeatedChordSpan(1, Chord.single_note(A5, 1), 9),
-    RepeatedChordSpan(1, Chord.single_note(A5, 1), 1, StrumStyle.NO_HIT),
-    RepeatedChordSpan(1, Chord.single_note(A5, 1), 1),
-    RepeatedChordSpan(1, Chord.single_note(A5, 1), 1, StrumStyle.NO_HIT),
-    RepeatedChordSpan(2, Chord.single_note(A5, 1), 2),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 9),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 1, StrumStyle.NO_HIT),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 1),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 1, StrumStyle.NO_HIT),
+    RepeatingChordSpan(2, Chord.single_note(A5, 1), 2),
 
-    RepeatedChordSpan(1, Chord.single_note(E6, 2), 8),
-    RepeatedChordSpan(1, Chord.single_note(E6, 1), 8),
+    RepeatingChordSpan(1, Chord.single_note(E6, 2), 8),
+    RepeatingChordSpan(1, Chord.single_note(E6, 1), 8),
 ]
 
 main_riff_bass = main_riff_bass_piece * 3 + [
-    RepeatedChordSpan(1, Chord.single_note(A5, 1), 24),
-    RepeatedChordSpan(1, Chord.single_note(A5, 4), 3),
-    RepeatedChordSpan(1, Chord.single_note(A5, 3), 5),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 24),
+    RepeatingChordSpan(1, Chord.single_note(A5, 4), 3),
+    RepeatingChordSpan(1, Chord.single_note(A5, 3), 5),
 ]
 
 long_riff_bass = main_riff_bass_piece * 4 + [
-    RepeatedChordSpan(2, Chord.single_note(A5, 1)),
-    RepeatedChordSpan(1, Chord.single_note(A5, 1), 6),
+    RepeatingChordSpan(2, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 6),
 ] * 4 + [    
-    RepeatedChordSpan(14, Chord.single_note(A5, 1)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(14, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 1)),
 
-    RepeatedChordSpan(3, Chord.single_note(A5, 4)),
-    RepeatedChordSpan(3, Chord.single_note(A5, 3)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 3)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 4)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 3)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 4)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 3)),
+    RepeatingChordSpan(3, Chord.single_note(A5, 4)),
+    RepeatingChordSpan(3, Chord.single_note(A5, 3)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 3)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 4)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 3)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 4)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 3)),
 ]
 
 salm_bass = [
-    RepeatedChordSpan(1, Chord.single_note(G3, 3), 24),
-    RepeatedChordSpan(1, Chord.single_note(D4, 4), 3),
-    RepeatedChordSpan(3, Chord.single_note(D4, 3)),
-    RepeatedChordSpan(2, Chord.single_note(D4, 3))
+    RepeatingChordSpan(1, Chord.single_note(G3, 3), 24),
+    RepeatingChordSpan(1, Chord.single_note(D4, 4), 3),
+    RepeatingChordSpan(3, Chord.single_note(D4, 3)),
+    RepeatingChordSpan(2, Chord.single_note(D4, 3))
 ] * 3 + [
-    RepeatedChordSpan(1, Chord.single_note(G3, 3), 24),
-    RepeatedChordSpan(1, Chord.single_note(D4, 4), 3),
-    RepeatedChordSpan(1, Chord.single_note(D4, 3)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 1), 1, StrumStyle.NO_HIT),
-    RepeatedChordSpan(1, Chord.single_note(D4, 3)),
-    RepeatedChordSpan(1, Chord.single_note(A5, 1), 1, StrumStyle.NO_HIT)
+    RepeatingChordSpan(1, Chord.single_note(G3, 3), 24),
+    RepeatingChordSpan(1, Chord.single_note(D4, 4), 3),
+    RepeatingChordSpan(1, Chord.single_note(D4, 3)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 1), 1, StrumStyle.NO_HIT),
+    RepeatingChordSpan(1, Chord.single_note(D4, 3)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 1, StrumStyle.NO_HIT)
 ]
 
 end_bass = [
-    RepeatedChordSpan(1, Chord.single_note(A5, 1), 16),
-    RepeatedChordSpan(1, Chord.single_note(D4, 3), 4),
-    RepeatedChordSpan(1, Chord.single_note(D4, 4), 4),
-    RepeatedChordSpan(1, Chord.single_note(D4, 3), 4),
-    RepeatedChordSpan(1, Chord.single_note(D4, 4), 4)
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 16),
+    RepeatingChordSpan(1, Chord.single_note(D4, 3), 4),
+    RepeatingChordSpan(1, Chord.single_note(D4, 4), 4),
+    RepeatingChordSpan(1, Chord.single_note(D4, 3), 4),
+    RepeatingChordSpan(1, Chord.single_note(D4, 4), 4)
 ] * 4 + [
-    RepeatedChordSpan(1, Chord.single_note(A5, 1), 64),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 64),
 
-    RepeatedChordSpan(6, Chord.single_note(A5, 1)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 3)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 4)),
-    RepeatedChordSpan(4, Chord.single_note(A5, 3)),
-    RepeatedChordSpan(1, Chord.single_note(D4, 3), 2),
+    RepeatingChordSpan(6, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 3)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 4)),
+    RepeatingChordSpan(4, Chord.single_note(A5, 3)),
+    RepeatingChordSpan(1, Chord.single_note(D4, 3), 2),
     
-    RepeatedChordSpan(3, Chord.single_note(D4, 4)),
-    RepeatedChordSpan(3, Chord.single_note(D4, 3)),
-    RepeatedChordSpan(2, Chord.single_note(D4, 4)),
-    RepeatedChordSpan(6, Chord.single_note(A5, 1)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(3, Chord.single_note(D4, 4)),
+    RepeatingChordSpan(3, Chord.single_note(D4, 3)),
+    RepeatingChordSpan(2, Chord.single_note(D4, 4)),
+    RepeatingChordSpan(6, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 1)),
 
-    RepeatedChordSpan(3, Chord.single_note(E6, 2)),
-    RepeatedChordSpan(3, Chord.single_note(E6, 1)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 2)),
-    RepeatedChordSpan(3, Chord.single_note(A5, 1)),
-    RepeatedChordSpan(3, Chord.single_note(A5, 3)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 4)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 2)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 1)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 2)),
+    RepeatingChordSpan(3, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(3, Chord.single_note(A5, 3)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 4)),
     
-    RepeatedChordSpan(3, Chord.single_note(A5, 3)),
-    RepeatedChordSpan(3, Chord.single_note(A5, 4)),
-    RepeatedChordSpan(2, Chord.single_note(A5, 3)),
-    RepeatedChordSpan(14, Chord.single_note(A5, 1)),
-    RepeatedChordSpan(2, Chord.no_strings_hit_chord()),
+    RepeatingChordSpan(3, Chord.single_note(A5, 3)),
+    RepeatingChordSpan(3, Chord.single_note(A5, 4)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 3)),
+    RepeatingChordSpan(14, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(2, Chord.no_strings_hit_chord()),
 ]
 
 intro_lead_main_thing = [
-    RepeatedChordSpan(1, Chord.single_note(D4, 8), 3),
-    RepeatedChordSpan(1, Chord.single_note(B2, 6), 5),
+    RepeatingChordSpan(1, Chord.single_note(D4, 8), 3),
+    RepeatingChordSpan(1, Chord.single_note(B2, 6), 5),
 ] * 2 + [
-    RepeatedChordSpan(1, Chord.single_note(G3, 6), 4),
-    RepeatedChordSpan(1, Chord.single_note(G3, 5), 4),
-    RepeatedChordSpan(1, Chord.single_note(G3, 6), 3),
+    RepeatingChordSpan(1, Chord.single_note(G3, 6), 4),
+    RepeatingChordSpan(1, Chord.single_note(G3, 5), 4),
+    RepeatingChordSpan(1, Chord.single_note(G3, 6), 3),
 ]
 
 intro_lead = intro_lead_main_thing + [
-    RepeatedChordSpan(2, Chord.single_note(G3, 8)),
-    RepeatedChordSpan(1, Chord.single_note(G3, 6)),
-    RepeatedChordSpan(1, Chord.single_note(G3, 5)),
-    RepeatedChordSpan(1, Chord.single_note(D4, 8)),
+    RepeatingChordSpan(2, Chord.single_note(G3, 8)),
+    RepeatingChordSpan(1, Chord.single_note(G3, 6)),
+    RepeatingChordSpan(1, Chord.single_note(G3, 5)),
+    RepeatingChordSpan(1, Chord.single_note(D4, 8)),
 ] + intro_lead_main_thing + [
-    RepeatedChordSpan(3, Chord.single_note(G3, 8)),
-    RepeatedChordSpan(2, Chord.single_note(G3, 8)),
+    RepeatingChordSpan(3, Chord.single_note(G3, 8)),
+    RepeatingChordSpan(2, Chord.single_note(G3, 8)),
 ] + intro_lead_main_thing + [
-    RepeatedChordSpan(3, Chord.single_note(G3, 8)),
-    RepeatedChordSpan(2, Chord.single_note(B2, 6)),
+    RepeatingChordSpan(3, Chord.single_note(G3, 8)),
+    RepeatingChordSpan(2, Chord.single_note(B2, 6)),
 
-    RepeatedChordSpan(1, Chord.single_note(G3, 6)),
-    RepeatedChordSpan(1, Chord.single_note(D4, 8), 3),
-    RepeatedChordSpan(1, Chord.single_note(G3, 6), 4),
-    RepeatedChordSpan(1, Chord.single_note(G3, 5), 2),
-    RepeatedChordSpan(1, Chord.single_note(G3, 6)),
-    RepeatedChordSpan(3, Chord.single_note(D4, 8)),
-    RepeatedChordSpan(2, Chord.single_note(D4, 8)),
+    RepeatingChordSpan(1, Chord.single_note(G3, 6)),
+    RepeatingChordSpan(1, Chord.single_note(D4, 8), 3),
+    RepeatingChordSpan(1, Chord.single_note(G3, 6), 4),
+    RepeatingChordSpan(1, Chord.single_note(G3, 5), 2),
+    RepeatingChordSpan(1, Chord.single_note(G3, 6)),
+    RepeatingChordSpan(3, Chord.single_note(D4, 8)),
+    RepeatingChordSpan(2, Chord.single_note(D4, 8)),
     
-    RepeatedChordSpan(2, Chord.single_note(D4, 8)),
-    RepeatedChordSpan(1, Chord.single_note(D4, 8), 5),
-    RepeatedChordSpan(1, Chord.single_note(G3, 5)),
-    RepeatedChordSpan(1, Chord.single_note(G3, 6), 2),
-    RepeatedChordSpan(1, Chord.single_note(G3, 5)),
-    RepeatedChordSpan(3, Chord.single_note(G3, 5), 1, StrumStyle.VIBRATO),
-    RepeatedChordSpan(2, Chord.single_note(D4, 8))
+    RepeatingChordSpan(2, Chord.single_note(D4, 8)),
+    RepeatingChordSpan(1, Chord.single_note(D4, 8), 5),
+    RepeatingChordSpan(1, Chord.single_note(G3, 5)),
+    RepeatingChordSpan(1, Chord.single_note(G3, 6), 2),
+    RepeatingChordSpan(1, Chord.single_note(G3, 5)),
+    RepeatingChordSpan(3, Chord.single_note(G3, 5), 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(2, Chord.single_note(D4, 8))
 ]
 
 chorus_lead_main_part_first = [
-    RepeatedChordSpan(1, Chord.single_note(E6, 6), 3),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 3),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 3),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 3),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8)),
 ] * 2
 #+ [
 #    RepeatedChordSpan(1, Chord.single_note(E6, 6)),
@@ -275,116 +275,116 @@ chorus_lead_main_part_first = [
 #] * 4
 
 chorus_lead_main_part = chorus_lead_main_part_first + [
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 8),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8), 8),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 8),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8), 8),
 ]
 
 chorus_lead = chorus_lead_main_part * 2 + chorus_lead_main_part_first + [
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 8),
-    RepeatedChordSpan(8, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 8),
+    RepeatingChordSpan(8, Chord.single_note(E6, 8)),
 ] + [
-    RepeatedChordSpan(3, Chord.single_note(E6, 6), 2),
-    RepeatedChordSpan(2, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(3, Chord.single_note(E6, 9)),
-    RepeatedChordSpan(3, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 6), 2),
+    RepeatingChordSpan(2, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
 
-    RepeatedChordSpan(2, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(4, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(3, Chord.single_note(E6, 9)),
-    RepeatedChordSpan(3, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(4, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
 ]
 
 long_chorus_lead = chorus_lead_main_part * 3 + chorus_lead_main_part_first + [
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 8),
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 2),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 8),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 2),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 8)),
     
-    RepeatedChordSpan(2, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 6), 6),
-    RepeatedChordSpan(2, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 2),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8), 2),
+    RepeatingChordSpan(2, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 6),
+    RepeatingChordSpan(2, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 2),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8), 2),
     
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 2),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8), 5),
-    RepeatedChordSpan(1, Chord.single_note(E6, 6), 7),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 2),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8), 5),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 7),
 
-    RepeatedChordSpan(6, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 3),
-    RepeatedChordSpan(3, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(6, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 3),
+    RepeatingChordSpan(3, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
     
-    RepeatedChordSpan(2, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 8)),
     
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 2),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8), 2, StrumStyle.VIBRATO),
-    RepeatedChordSpan(2, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 2),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8), 2, StrumStyle.VIBRATO),
+    RepeatingChordSpan(2, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
 ]
 
 end_lead = (chorus_lead_main_part_first + [
-    RepeatedChordSpan(1, Chord.single_note(E6, 8), 4),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 4),
 ] * 2) * 4 + [
-    RepeatedChordSpan(1, Chord.single_note(E6, 6), 8),
-    RepeatedChordSpan(1, Chord.power_chord(E6, 6), 3),
-    RepeatedChordSpan(2, Chord.power_chord(E6, 6)),
-    RepeatedChordSpan(1, Chord.power_chord(E6, 6), 3),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 8),
+    RepeatingChordSpan(1, Chord.power_chord(E6, 6), 3),
+    RepeatingChordSpan(2, Chord.power_chord(E6, 6)),
+    RepeatingChordSpan(1, Chord.power_chord(E6, 6), 3),
 ] * 4 + [
-    RepeatedChordSpan(1, Chord.single_note(E6, 6), 1, StrumStyle.SLIDE),
-    RepeatedChordSpan(1, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 8)),    
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 2),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 1, StrumStyle.SLIDE),
+    RepeatingChordSpan(1, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 8)),    
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 2),
 
-    RepeatedChordSpan(6, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 2),
-    RepeatedChordSpan(4, Chord.single_note(E6, 6)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 6), 2),
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(6, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 2),
+    RepeatingChordSpan(4, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 2),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
     
-    RepeatedChordSpan(3, Chord.single_note(E6, 9)),
-    RepeatedChordSpan(3, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
 
-    RepeatedChordSpan(2, Chord.single_note(E6, 9)),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 2),
+    RepeatingChordSpan(2, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 2),
     
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 3),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 3),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 3),
-    RepeatedChordSpan(1, Chord.single_note(E6, 9), 3),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 3),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 3),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 3),
+    RepeatingChordSpan(1, Chord.single_note(E6, 9), 3),
 
-    RepeatedChordSpan(3, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(3, Chord.single_note(E6, 9)),
-    RepeatedChordSpan(2, Chord.single_note(E6, 8)),
-    RepeatedChordSpan(8, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(3, Chord.single_note(E6, 9)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 8)),
+    RepeatingChordSpan(8, Chord.single_note(E6, 6)),
 
-    RepeatedChordSpan(2, Chord.single_note(E6, 6), 1, StrumStyle.MUTED),
-    RepeatedChordSpan(6, Chord.no_strings_hit_chord()),
+    RepeatingChordSpan(2, Chord.single_note(E6, 6), 1, StrumStyle.MUTED),
+    RepeatingChordSpan(6, Chord.no_strings_hit_chord()),
 ]
 
 first_salm_lead = [
-    RepeatedChordSpan(8, Chord.no_strings_hit_chord(), 3),
-    RepeatedChordSpan(3, Chord.single_note(E1, 9)),
-    RepeatedChordSpan(3, Chord.single_note(E1, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E1, 9)),
+    RepeatingChordSpan(8, Chord.no_strings_hit_chord(), 3),
+    RepeatingChordSpan(3, Chord.single_note(E1, 9)),
+    RepeatingChordSpan(3, Chord.single_note(E1, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E1, 9)),
 ] * 2 + [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm([2,2,2,2,2,1,3,2]),
         [
             ChordSpan(24, Chord.single_note(E1, 6)),
@@ -396,18 +396,18 @@ first_salm_lead = [
 ]
 
 teine_salm_lead = [
-    RepeatedChordSpan(8, Chord.no_strings_hit_chord()),
-    RepeatedChordSpan(3, Chord.single_note(E1, 8)),
-    RepeatedChordSpan(3, Chord.single_note(E1, 9)),
-    RepeatedChordSpan(2, Chord.single_note(E1, 8)),
+    RepeatingChordSpan(8, Chord.no_strings_hit_chord()),
+    RepeatingChordSpan(3, Chord.single_note(E1, 8)),
+    RepeatingChordSpan(3, Chord.single_note(E1, 9)),
+    RepeatingChordSpan(2, Chord.single_note(E1, 8)),
 
-    RepeatedChordSpan(8, Chord.single_note(E1, 6)),
-    RepeatedChordSpan(2, Chord.single_note(E1, 8)),
-    RepeatedChordSpan(1, Chord.single_note(E1, 9), 1, StrumStyle.SLIDE),
-    RepeatedChordSpan(3, Chord.single_note(E1, 8)),
-    RepeatedChordSpan(2, Chord.single_note(E1, 9)),
+    RepeatingChordSpan(8, Chord.single_note(E1, 6)),
+    RepeatingChordSpan(2, Chord.single_note(E1, 8)),
+    RepeatingChordSpan(1, Chord.single_note(E1, 9), 1, StrumStyle.SLIDE),
+    RepeatingChordSpan(3, Chord.single_note(E1, 8)),
+    RepeatingChordSpan(2, Chord.single_note(E1, 9)),
 ] * 2 + [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm([2,2,1,1,1,1,2,1,3,2]),
         [
             ChordSpan(24, Chord.single_note(E1, 6)),

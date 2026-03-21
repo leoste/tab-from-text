@@ -7,7 +7,7 @@ from tabfromtext.song.StrumStyle import StrumStyle
 from tabfromtext.song.NoteProvider import NoteProvider
 
 
-class RhythmicChordSpan(NoteProvider):
+class RhythmicChordSpanList(NoteProvider):
     def __init__(self, rhythm: Rhythm, chordSpans: List[ChordSpan]) -> None:
         self.rhythm: Rhythm = rhythm
         self.chordSpans: List[ChordSpan] = chordSpans
@@ -15,8 +15,8 @@ class RhythmicChordSpan(NoteProvider):
     def getNotes(self) -> List[Note]:
         notes = []
         chords = self.flattenChordSpans()
-        durations = self.flattenRhythmDurations()
-        styles = self.flattenStyles()
+        durations = self.rhythm.flattenDurations()
+        styles = self.rhythm.flattenStyles()
         
         for index, chord in enumerate(chords):
             duration = durations[index % len(durations)]
@@ -34,17 +34,6 @@ class RhythmicChordSpan(NoteProvider):
     def flattenChordSpans(self) -> List[Chord]:
         chords = []
         for chordSpan in self.chordSpans:
-            chords += chordSpan.flattenChordSpan()
+            chords += chordSpan.flatten()
         return chords
     
-    def flattenRhythmDurations(self) -> List:
-        durations = []
-        for duration in self.rhythm.durations:
-            durations += Note.flattenDuration(duration)
-        return durations
-
-    def flattenStyles(self) -> List[StrumStyle]:
-        styles = []
-        for style in self.rhythm.styles:
-            styles += StrumStyle.flattenStyle(style)
-        return styles

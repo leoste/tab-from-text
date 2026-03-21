@@ -3,26 +3,26 @@ from tabfromtext.song.ChordSpan import ChordSpan
 from tabfromtext.song.GuitarString import GuitarString
 from tabfromtext.song.Lyrics import Lyrics
 from tabfromtext.song.Rhythm import Rhythm
-from tabfromtext.song.RhythmicChordSpan import RhythmicChordSpan
+from tabfromtext.song.RhythmicChordSpanList import RhythmicChordSpanList
 from tabfromtext.song.Segment import Segment
 from tabfromtext.song.Song import Song
 from tabfromtext.song.StrumStyle import StrumStyle
-from tabfromtext.song.RepeatedChordSpan import RepeatedChordSpan
+from tabfromtext.song.RepeatingChordSpan import RepeatingChordSpan
 
 RHYTHM = "Rhythm"
 
 INTRO = Segment("INTRO", {
     RHYTHM: [
-        RepeatedChordSpan(8, Chord.power_chord(GuitarString.E6, 9)),
-        RepeatedChordSpan(8, Chord.power_chord(GuitarString.E6, 7)),
-        RepeatedChordSpan(8, Chord.power_chord(GuitarString.E6, 5)),
-        RepeatedChordSpan(8, Chord.power_chord(GuitarString.E6, 4)),
-        RepeatedChordSpan(8, Chord.power_chord(GuitarString.A5, 4)),
-        RepeatedChordSpan(8, Chord.power_chord(GuitarString.A5, 2)),
-        RepeatedChordSpan(3, Chord.power_chord(GuitarString.E6, 5)),
-        RepeatedChordSpan(5, Chord.power_chord(GuitarString.E6, 4)),
-        RepeatedChordSpan(3, Chord.power_chord(GuitarString.E6, 5)),
-        RepeatedChordSpan(5, Chord.power_chord(GuitarString.E6, 4)),
+        RepeatingChordSpan(8, Chord.power_chord(GuitarString.E6, 9)),
+        RepeatingChordSpan(8, Chord.power_chord(GuitarString.E6, 7)),
+        RepeatingChordSpan(8, Chord.power_chord(GuitarString.E6, 5)),
+        RepeatingChordSpan(8, Chord.power_chord(GuitarString.E6, 4)),
+        RepeatingChordSpan(8, Chord.power_chord(GuitarString.A5, 4)),
+        RepeatingChordSpan(8, Chord.power_chord(GuitarString.A5, 2)),
+        RepeatingChordSpan(3, Chord.power_chord(GuitarString.E6, 5)),
+        RepeatingChordSpan(5, Chord.power_chord(GuitarString.E6, 4)),
+        RepeatingChordSpan(3, Chord.power_chord(GuitarString.E6, 5)),
+        RepeatingChordSpan(5, Chord.power_chord(GuitarString.E6, 4)),
     ]
 })
 
@@ -35,7 +35,7 @@ riff_chord_spans = [
 ]
 
 RIFF = Segment("RIFF", {
-    RHYTHM: [RhythmicChordSpan(
+    RHYTHM: [RhythmicChordSpanList(
         Rhythm(
             [1,1,1,1] * 3 + [2,2],
             [StrumStyle.NORMAL] * 16
@@ -49,7 +49,7 @@ salm_rhythm = Rhythm(
     ([StrumStyle.NORMAL] * 3 + [StrumStyle.NO_HIT]) * 3 + [StrumStyle.NORMAL, StrumStyle.NO_HIT] * 2
 )
 
-salm_measure = RhythmicChordSpan(
+salm_measure = RhythmicChordSpanList(
     salm_rhythm,
     riff_chord_spans
 )
@@ -59,7 +59,7 @@ salm_alt_durations = [1,1,2,1,1,2,2,1,1,2,2]
 
 SALM_1 = Segment("1. SALM", {
     RHYTHM: [salm_measure] * 3 + [
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             Rhythm(
                 [1,1,1,1] * 3 + [2,1,1],
                 ([StrumStyle.NORMAL] * 3 + [StrumStyle.NO_HIT]) * 3 + [StrumStyle.NORMAL] * 4
@@ -77,7 +77,7 @@ kajaga lajatab lämmatav luumurd\
 SALM_2 = Segment("2. SALM", {
     RHYTHM: [
         salm_measure,
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             Rhythm(
                 [1,1,1,1] * 2 + [2,1,1,2,2],
                 ([StrumStyle.NORMAL] * 3 + [StrumStyle.NO_HIT]) * 2 + 
@@ -87,7 +87,7 @@ SALM_2 = Segment("2. SALM", {
             riff_chord_spans
         ),
         salm_measure,
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             Rhythm(
                 [1,1,1,1] * 3 + [1,1,1,1],
                 ([StrumStyle.NORMAL] * 3 + [StrumStyle.NO_HIT]) * 2 +
@@ -105,24 +105,24 @@ sügaval pinnapeal kõikjal on juured\
 """, (salm_main_durations + salm_alt_durations) * 2))
 
 rhythm_first_measures = [
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),8),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 7),2),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 6),1),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 7),2),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 6),1),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 7),1),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 6),1),]
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 4),8),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 7),2),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 6),1),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 7),2),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 6),1),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 7),1),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 6),1),]
 
 rhythm_chorus = rhythm_first_measures + [
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),8),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),2),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),1,StrumStyle.MUTED),
-    RepeatedChordSpan(2, Chord.power_chord(GuitarString.A5, 2),1),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 2),3)        
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 5),8),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 4),2),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 4),1,StrumStyle.MUTED),
+    RepeatingChordSpan(2, Chord.power_chord(GuitarString.A5, 2),1),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 2),3)        
 ] + rhythm_first_measures + [
-    RepeatedChordSpan(2, Chord.power_chord(GuitarString.E6, 5),2),
-    RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),3),
-    RepeatedChordSpan(9, Chord.power_chord(GuitarString.E6, 4))
+    RepeatingChordSpan(2, Chord.power_chord(GuitarString.E6, 5),2),
+    RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 5),3),
+    RepeatingChordSpan(9, Chord.power_chord(GuitarString.E6, 4))
 ]
 
 CHORUS = Segment("REFRÄÄN", {
@@ -141,16 +141,16 @@ see on ilmutus
 
 TOPELT_CHORUS = Segment("TOPELT REFRÄÄN", {
     RHYTHM: rhythm_first_measures + [
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),8),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),2),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 4),1,StrumStyle.MUTED),
-        RepeatedChordSpan(2, Chord.power_chord(GuitarString.A5, 2),1),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.A5, 2),3)        
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 5),8),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 4),2),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 4),1,StrumStyle.MUTED),
+        RepeatingChordSpan(2, Chord.power_chord(GuitarString.A5, 2),1),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.A5, 2),3)        
     ] + rhythm_first_measures + [
-        RepeatedChordSpan(2, Chord.power_chord(GuitarString.E6, 5),2),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),3),
-        RepeatedChordSpan(5, Chord.power_chord(GuitarString.E6, 4)),
-        RepeatedChordSpan(4, Chord.power_chord(GuitarString.E6, 4)),
+        RepeatingChordSpan(2, Chord.power_chord(GuitarString.E6, 5),2),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 5),3),
+        RepeatingChordSpan(5, Chord.power_chord(GuitarString.E6, 4)),
+        RepeatingChordSpan(4, Chord.power_chord(GuitarString.E6, 4)),
     ] + rhythm_chorus
 }, Lyrics("""\
 otse minu ees
@@ -175,27 +175,27 @@ see on ilmutus
 
 END = Segment("END", {
     RHYTHM: [
-        RepeatedChordSpan(4, Chord.power_chord(GuitarString.E6, 9)),
-        RepeatedChordSpan(4, Chord.power_chord(GuitarString.E6, 7)),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 5)),
-        RepeatedChordSpan(2, Chord.power_chord(GuitarString.E6, 5)),
-        RepeatedChordSpan(3, Chord.power_chord(GuitarString.E6, 4)),
-        RepeatedChordSpan(2, Chord.power_chord(GuitarString.E6, 4)),
+        RepeatingChordSpan(4, Chord.power_chord(GuitarString.E6, 9)),
+        RepeatingChordSpan(4, Chord.power_chord(GuitarString.E6, 7)),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 5)),
+        RepeatingChordSpan(2, Chord.power_chord(GuitarString.E6, 5)),
+        RepeatingChordSpan(3, Chord.power_chord(GuitarString.E6, 4)),
+        RepeatingChordSpan(2, Chord.power_chord(GuitarString.E6, 4)),
     ] + [
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2, StrumStyle.MUTED),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2, StrumStyle.MUTED),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),2),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 5),1, StrumStyle.MUTED),
-        RepeatedChordSpan(2, Chord.power_chord(GuitarString.E6, 4)),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 4),3),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2, StrumStyle.MUTED),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2, StrumStyle.MUTED),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 5),2),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 5),1, StrumStyle.MUTED),
+        RepeatingChordSpan(2, Chord.power_chord(GuitarString.E6, 4)),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 4),3),
     ] * 3 + [
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2, StrumStyle.MUTED),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2),
-        RepeatedChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2, StrumStyle.MUTED),
-        RepeatedChordSpan(8, Chord.power_chord(GuitarString.E6, 4))
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 9),2, StrumStyle.MUTED),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2),
+        RepeatingChordSpan(1, Chord.power_chord(GuitarString.E6, 7),2, StrumStyle.MUTED),
+        RepeatingChordSpan(8, Chord.power_chord(GuitarString.E6, 4))
     ]
 })
 

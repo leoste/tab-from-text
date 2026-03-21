@@ -1,5 +1,5 @@
 from tabfromtext.song.Lyrics import Lyrics
-from tabfromtext.song.RhythmicChordSpan import RhythmicChordSpan
+from tabfromtext.song.RhythmicChordSpanList import RhythmicChordSpanList
 from tabfromtext.song.ChordSpan import ChordSpan
 from tabfromtext.song.Chord import Chord
 from tabfromtext.song.Rhythm import Rhythm
@@ -7,7 +7,7 @@ from tabfromtext.song.Segment import Segment
 from tabfromtext.song.GuitarString import GuitarString
 from tabfromtext.song.StrumStyle import StrumStyle
 from tabfromtext.song.Song import Song
-from tabfromtext.song.RepeatedChordSpan import RepeatedChordSpan
+from tabfromtext.song.RepeatingChordSpan import RepeatingChordSpan
 
 RHYTHM = "Rhythm"
 LEAD = "Lead"
@@ -29,7 +29,7 @@ INTRO_RHYTHM = Rhythm(
 )
 
 intro_parts = [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         INTRO_RHYTHM,
         [
             ChordSpan(16, CHORD_6_A_SHARP),
@@ -60,7 +60,7 @@ SALM_END_RHYTHM = Rhythm(
 )
 
 salm_parts = [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         SALM_RHYTHM,
         [
             ChordSpan(16, CHORD_6_A_SHARP),
@@ -68,11 +68,11 @@ salm_parts = [
             ChordSpan(16, CHORD_2_F_SHARP),
         ]
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         SALM_HALF_END_RHYTHM,
         [ ChordSpan(16, CHORD_1_F) ]
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         SALM_RHYTHM,
         [
             ChordSpan(16, CHORD_6_A_SHARP),
@@ -80,7 +80,7 @@ salm_parts = [
             ChordSpan(16, CHORD_2_F_SHARP),
         ]
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         SALM_END_RHYTHM,
         [ ChordSpan(16, CHORD_1_F) ]
     )
@@ -102,18 +102,18 @@ CHORUS_SEVENTH_MEASURE_RHYTHM = Rhythm(
 )
 
 chorus_parts = [
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             CHORUS_FIRST_MEASURE_RHYTHM,
             [ ChordSpan(16, CHORD_9_C_SHARP) ]
         ),
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             CHORUS_THIRD_MEASURE_RHYTHM,
             [
                 ChordSpan(16, CHORD_6_A_SHARP),
                 ChordSpan(16, CHORD_4_G_SHARP)
             ],
         ),
-        RhythmicChordSpan(
+        RhythmicChordSpanList(
             CHORUS_SEVENTH_MEASURE_RHYTHM,
             [
                 ChordSpan(9, CHORD_9_C_SHARP),
@@ -128,7 +128,7 @@ BREAK_LAST_MEASURE_RHYTHM = Rhythm(
 )
 
 breakdown_parts = [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             [1] * 16,
             [StrumStyle.NORMAL] * 16
@@ -147,11 +147,11 @@ breakdown_parts = [
             ChordSpan(16, CHORD_6_A_SHARP)
         ]
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         BREAK_LAST_MEASURE_RHYTHM,
         [ ChordSpan(16, CHORD_8_C) ]
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             [ 
                 2,
@@ -176,7 +176,7 @@ breakdown_parts = [
 ]
 
 end_parts = [
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             [1] * 8 + DURATIONS_232,
             [StrumStyle.NORMAL] * 16
@@ -194,7 +194,7 @@ end_parts = [
             ChordSpan(1, CHORD_13_C)
         ] * 3
     ),
-    RhythmicChordSpan(
+    RhythmicChordSpanList(
         Rhythm(
             [1] * 8 + [2,6],
             [ StrumStyle.NORMAL ] * 10 +
@@ -248,174 +248,174 @@ suhtlus tundub pikimööda täitsa meil jahe\
 ])
 
 lead_intro_section = [
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 14)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.B2, 14), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 14), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 14)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.B2, 14), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 14), 2),
     
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.B2, 13), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 13), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.B2, 13), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 13), 2),
 ]
 
 lead_intro_first = (lead_intro_section + [
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 15)),
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 13)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 13)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 15)),
-    RepeatedChordSpan(8, Chord.single_note(GuitarString.G3, 13)),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 15)),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 13)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 13)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 15)),
+    RepeatingChordSpan(8, Chord.single_note(GuitarString.G3, 13)),
 ])
 
 lead_intro_second = (lead_intro_section + [
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 11)),
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 10)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 11)),
-    RepeatedChordSpan(8, Chord.single_note(GuitarString.G3, 10)),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 11)),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 10)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 11)),
+    RepeatingChordSpan(8, Chord.single_note(GuitarString.G3, 10)),
 ])
 
 lead_intro_third = (lead_intro_section + [
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 15)),
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 13)),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 15)),
-    RepeatedChordSpan(6, Chord.single_note(GuitarString.G3, 13)),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 13)),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 15)),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 13)),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 15)),
+    RepeatingChordSpan(6, Chord.single_note(GuitarString.G3, 13)),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 13)),
 ])
 
 lead_intro_last = [
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 11)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.B2, 11), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 11)),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 11)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.B2, 11), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 11)),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
     
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.E1, 11)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.E1, 11), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.E1, 11), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.E1, 11)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.E1, 11), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.E1, 11), 2),
     
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.E1, 13), 4),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 10), 4),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.E1, 13), 4),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 10), 4),
     
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 7),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 11)),    
-    RepeatedChordSpan(6, Chord.single_note(GuitarString.G3, 10), 1, StrumStyle.VIBRATO),
-    RepeatedChordSpan(2, Chord.no_strings_hit_chord())
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10), 7),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 11)),    
+    RepeatingChordSpan(6, Chord.single_note(GuitarString.G3, 10), 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(2, Chord.no_strings_hit_chord())
 ]
 
 lead_intro_parts = lead_intro_first + lead_intro_second + lead_intro_third + lead_intro_last
 
 lead_vahe_first_repeat = [
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.B2, 14)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 15))
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.B2, 14)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 15))
 ] * 8
 
 lead_vahe_second_repeat = [
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.B2, 13)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 13))
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.B2, 13)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 13))
 ] * 8
 
 lead_vahe_first_inter = [
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 11), 3),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 11)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 11), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 11)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 11), 3),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 11), 2),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 11), 3),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 11)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 11), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 11)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 11), 3),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 11), 2),
 ]
 
 lead_vahe_second_inter = [
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 3),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 10)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 10)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 3),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 10), 2),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10), 3),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 10)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 10)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10), 3),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 10), 2),
 ]
 
 lead_vahe_parts = (lead_vahe_first_repeat + lead_vahe_first_inter + lead_vahe_second_repeat + lead_vahe_second_inter +
     lead_vahe_first_repeat + lead_vahe_first_inter + [
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.B2, 11), 4),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 11)),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.E1, 11)),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.E1, 11), 2),
-        RepeatedChordSpan(2, Chord.single_note(GuitarString.E1, 11), 2),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.B2, 11), 4),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 11)),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.E1, 11)),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.E1, 11), 2),
+        RepeatingChordSpan(2, Chord.single_note(GuitarString.E1, 11), 2),
         
-        RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 11)),
-        RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 10)),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10)),
-        RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 11)),
-        RepeatedChordSpan(6, Chord.single_note(GuitarString.G3, 11), 1, StrumStyle.VIBRATO),
-        RepeatedChordSpan(2, Chord.no_strings_hit_chord())
+        RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 11)),
+        RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 10)),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10)),
+        RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 11)),
+        RepeatingChordSpan(6, Chord.single_note(GuitarString.G3, 11), 1, StrumStyle.VIBRATO),
+        RepeatingChordSpan(2, Chord.no_strings_hit_chord())
     ])
 
 lead_solo_first_part = [
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.E1, 13), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.E1, 13)),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.E1, 13), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 13))
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.E1, 13), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.E1, 13)),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.E1, 13), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 13))
 ]
 
 lead_solo_parts = lead_solo_first_part + [    
-    RepeatedChordSpan(16, Chord.single_note(GuitarString.G3, 10), 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(16, Chord.single_note(GuitarString.G3, 10), 1, StrumStyle.VIBRATO),
 ] + lead_solo_first_part + [
-    RepeatedChordSpan(16, Chord.single_note(GuitarString.G3, 12), 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(16, Chord.single_note(GuitarString.G3, 12), 1, StrumStyle.VIBRATO),
 ] + lead_solo_first_part + [    
-    RepeatedChordSpan(16, Chord.single_note(GuitarString.G3, 10), 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(16, Chord.single_note(GuitarString.G3, 10), 1, StrumStyle.VIBRATO),
 ] + lead_solo_first_part + [
-    RepeatedChordSpan(6, Chord.single_note(GuitarString.B2, 13)),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 12)),
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.B2, 13)),
-    RepeatedChordSpan(5, Chord.single_note(GuitarString.G3, 12), 1, StrumStyle.VIBRATO),
-    RepeatedChordSpan(8, Chord.no_strings_hit_chord(), 2)
+    RepeatingChordSpan(6, Chord.single_note(GuitarString.B2, 13)),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 12)),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.B2, 13)),
+    RepeatingChordSpan(5, Chord.single_note(GuitarString.G3, 12), 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(8, Chord.no_strings_hit_chord(), 2)
 ]
 
 lead_end_first = [
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 14)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.B2, 14), 6),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.B2, 13), 6),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 14)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.B2, 14), 6),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 13)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.B2, 13), 6),
 ]
 
 lead_end_first_block = lead_end_first + [
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.E1, 13), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.B2, 11), 2),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.B2, 11), 6),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.E1, 13), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.B2, 11), 2),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.B2, 11), 6),
 ]
 
 lead_end_second_block = lead_end_first + [    
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 11), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 11)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 11)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 7),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 11), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 11)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 11)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10), 7),
 ]
 
 lead_end_parts = (lead_end_first_block + lead_end_second_block) * 2
 
 lead_chorus = [
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 10), 3),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 10),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 10)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 14),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 8), 7),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 8), 2),
-    RepeatedChordSpan(3, Chord.single_note(GuitarString.G3, 11), 2),
-    RepeatedChordSpan(2, Chord.single_note(GuitarString.G3, 11), 2),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 11)),
-    RepeatedChordSpan(1, Chord.single_note(GuitarString.G3, 10), 5),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 10), 3),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10), 10),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 10)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10), 14),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 8), 7),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 8), 2),
+    RepeatingChordSpan(3, Chord.single_note(GuitarString.G3, 11), 2),
+    RepeatingChordSpan(2, Chord.single_note(GuitarString.G3, 11), 2),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 11)),
+    RepeatingChordSpan(1, Chord.single_note(GuitarString.G3, 10), 5),
 ] * 2
 
 lead_salm = [
-    RepeatedChordSpan(8, Chord.no_strings_hit_chord(), 16)
+    RepeatingChordSpan(8, Chord.no_strings_hit_chord(), 16)
 ]
 
 lead_real_end_parts = [
-    RepeatedChordSpan(16, Chord.single_note(GuitarString.G3, 10), 1, StrumStyle.VIBRATO),
-    RepeatedChordSpan(8, Chord.no_strings_hit_chord(), 2)
+    RepeatingChordSpan(16, Chord.single_note(GuitarString.G3, 10), 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(8, Chord.no_strings_hit_chord(), 2)
 ]
 
 lead_chorus_mute = [
-    RepeatedChordSpan(8, Chord.no_strings_hit_chord(), 16)
+    RepeatingChordSpan(8, Chord.no_strings_hit_chord(), 16)
 ]
 
 FIRST_INTRO = Segment("INTRO 1", {RHYTHM: intro_parts, LEAD: lead_intro_parts})

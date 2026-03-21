@@ -41,7 +41,7 @@ def _build_syllable_events(segment) -> list[tuple[int, str]]:
 def draw_segment_title(draw_obj, title: str):
     """Draw the segment title at the standard top-left position."""
     draw_obj.text(
-        (lu.margin_left_px, lu.px(lu.cfg.page.title_padding_pt)),
+        (lu.margin_left_px, lu.px(lu.cfg.page.title_padding_top_pt)),
         title, fill="black", font=lu.title_font,
     )
 

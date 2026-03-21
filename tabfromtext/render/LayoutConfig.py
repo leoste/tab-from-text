@@ -30,8 +30,8 @@ class RowConfig:
     row_height = above_strings_pt + 5×line_spacing_pt + below_strings_pt
     """
     line_spacing_pt:    float = 6
-    above_strings_pt:   float = 12   # space above 1st string (annotations live here)
-    below_strings_pt:   float = 22   # space below 6th string (stems live here); use 36 for text
+    above_strings_pt:   float = 6    # space above 1st string (annotations live here)
+    below_strings_pt:   float = 28   # space below 6th string (stems and lyrics live here)
     string_name_x_pt:   float = 4    # gap between string name letter and the left barline
 
 
@@ -105,7 +105,8 @@ class PageConfig:
     margin_left_pt:   float = 64     # includes former 2cm page margin (56.7pt) + 18pt content indent
     margin_right_pt:  float = 64
     block_gap_pt:     float = 0.0    # vertical gap between stacked segment images
-    title_padding_pt: float = 8.0    # gap between title baseline and first system
+    title_padding_top_pt: float = 8.0   # gap above the title text
+    title_padding_bot_pt: float = 12.0  # gap between title baseline and first system
     printable_width_pt: float = A4_WIDTH_PT
 
 

@@ -18,7 +18,7 @@ def new_image(height_px: int) -> tuple[Image.Image, ImageDraw.ImageDraw]:
 
 
 def _title_top_px() -> int:
-    return lu.px(lu.cfg.page.title_padding_pt)
+    return lu.px(lu.cfg.page.title_padding_top_pt)
 
 
 def _base_y_px() -> int:

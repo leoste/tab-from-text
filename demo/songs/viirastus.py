@@ -166,27 +166,16 @@ bass_viimane_salm_parts = bass_salm_parts
 
 # --- Rhythm guitar chorus parts ---
 
-rhythm_chorus_parts = [
-    RhythmicChordSpanList(
-        Rhythm(
-            [1,1,1,1,1,1,2],
-            [StrumStyle.NORMAL] * 2 +
-            [StrumStyle.PALM_MUTED, StrumStyle.NORMAL] * 2 +
-            [StrumStyle.NORMAL] * 2
-        ),
-        [ 
-            ChordSpan(8, CHORD_5_A),
-            ChordSpan(8, CHORD_8_F),            
-            ChordSpan(16, CHORD_10_D),
-            ChordSpan(8, CHORD_5_A),
-            ChordSpan(8, CHORD_8_F),            
-            ChordSpan(8, CHORD_10_D),
-        ]
-    ),
-    RhythmicChordSpanList(
-        Rhythm([2]), [ChordSpan(8, CHORD_10_D)]
-    )
-]
+rhythm_chorus_parts = [ 
+    RepeatingChordSpan(3, Chord.power_chord(E6, 10)),
+    RepeatingChordSpan(3, Chord.power_chord(E6, 6)),
+    RepeatingChordSpan(2, Chord.power_chord(E6, 8)),
+    RepeatingChordSpan(3, Chord.power_chord(A5, 8)),
+    RepeatingChordSpan(3, Chord.power_chord(E6, 8)),
+    RepeatingChordSpan(2, Chord.power_chord(E6, 9)),
+    RepeatingChordSpan(2, Chord.power_chord(E6, 10)),
+    RepeatingChordSpan(1, Chord.power_chord(E6, 10), 14, StrumStyle.PALM_MUTED)
+] * 2
 
 rhythm_viimane_chorus_parts = [
     RhythmicChordSpanList(
@@ -447,12 +436,60 @@ esimene_salm_lead = [
     )
 ]
 
-teine_salm_lead = [
+CHORD_GB_23 = Chord(None, 3, 2, None, None, None)
+CHORD_GB_33 = Chord(None, 3, 3, None, None, None)
+CHORD_GB_01 = Chord(None, 1, 0, None, None, None)
 
+teine_salm_lead_chordspans = [
+    ChordSpan(9, CHORD_GB_23),
+    ChordSpan(7, CHORD_GB_33),
+    ChordSpan(9, CHORD_GB_01),
+    ChordSpan(7, CHORD_GB_23)
+] * 2
+
+teine_salm_lead = [
+    RhythmicChordSpanList(
+        Rhythm(
+            [8, 1, 2, 2, 1, 2] * 3 +
+            [8, 1, 2, 1, 1, 1, 2],
+            [StrumStyle.NO_HIT] * 8 + [StrumStyle.PALM_MUTED] * 8
+        ),
+        teine_salm_lead_chordspans
+    ),
+    RhythmicChordSpanList(
+        Rhythm(
+            [
+                7, 0.5,0.5, 1, 1, 1, 1, 1, 1, 2,
+                7, 0.5,0.5, 1, 2, 2, 1, 2,
+                7, 0.5,0.5, 1, 2, 2, 1, 2,
+                7, 0.5,0.5, 1, 1, 1, 1, 1, 1, 2
+            ],
+            [StrumStyle.NO_HIT] * 7 + [StrumStyle.PALM_MUTED] * 9
+        ),
+        teine_salm_lead_chordspans
+    )
 ]
 
-kolmas_salm_lead = [
+CHORD_GBE_231 = Chord(1, 3, 2, None, None, None)
+CHORD_GBE_331 = Chord(1, 3, 3, None, None, None)
+CHORD_GBE_010 = Chord(0, 1, 0, None, None, None)
 
+kolmas_salm_lead_chordspans = [
+    ChordSpan(9, CHORD_GBE_231),
+    ChordSpan(7, CHORD_GBE_331),
+    ChordSpan(9, CHORD_GBE_010),
+    ChordSpan(7, CHORD_GBE_231)
+] * 2
+
+kolmas_salm_lead = [
+    RhythmicChordSpanList(
+         Rhythm(
+            [7, 1, 1, 2, 2, 1, 2] * 3 +
+            [7, 1, 1, 2, 1, 1, 1, 2],
+            [StrumStyle.NO_HIT] * 7 + [StrumStyle.PALM_MUTED] * 9
+        ),
+        kolmas_salm_lead_chordspans * 2
+    )
 ]
 
 last_chorus_lead = [

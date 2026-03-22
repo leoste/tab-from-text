@@ -488,7 +488,15 @@ kolmas_salm_lead = [
             [7, 1, 1, 2, 1, 1, 1, 2],
             [StrumStyle.NO_HIT] * 7 + [StrumStyle.PALM_MUTED] * 9
         ),
-        kolmas_salm_lead_chordspans * 2
+        kolmas_salm_lead_chordspans
+    ),
+    RhythmicChordSpanList(
+         Rhythm(
+            [7, 1, 1, 1, 1, 2, 1, 2] * 3 +
+            [7, 1, 1, 2, 2, 1, 2],
+            [StrumStyle.NO_HIT] * 7 + [StrumStyle.PALM_MUTED] * 9
+        ),
+        kolmas_salm_lead_chordspans
     )
 ]
 

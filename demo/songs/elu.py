@@ -162,27 +162,93 @@ VAHE = Segment("INTRO", {
 SALM_1 = Segment("1. SALM", {
     RHYTHM: rhythm_salm_parts,
     BASS: bass_salm_parts
-})
+}, Lyrics("""\
+käest ta võttis sinult kõik
+tema nimele on võit
+juba ette määratud
+tema jõud on vääratu
+alla anda võid sa nüüd
+mis sa ikka ennast müüd
+roti moodi ringeldad
+ruttu välja vingerda\
+""", [
+    1,1,1,1,0.5,1.5,2,
+    1,1,1,1,0.5,1.5,2,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2
+]))
 
 SALM_2 = Segment("2. SALM", {
     RHYTHM: rhythm_salm_parts,
     BASS: bass_salm_parts
-})
+}, Lyrics("""\
+vaba hingena nüüd elad
+sinu päralt maailmapärand
+seda võid sa uskuda
+tagant kõik sind kiidavad
+aga tegusid ei tee
+mitte ükski vaba mees
+oma kodus vinguvad
+telost porri vaatavad\
+""", [
+    1,1,1,1,1,1,0.5,1.5,
+    1,1,1,1,1,1,0.5,1.5,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2,
+    1,1,1,1,1,1,2
+]))
 
 REF = Segment("REFRÄÄN", {
     RHYTHM: rhythm_ref_parts,
     BASS: bass_ref_parts
-})
+}, Lyrics("""\
+see on elu meie moodi
+kui ei meeldi mine poodi
+kaasa riiulilt sa haara
+pudel džinni, too meil taara\
+""", [
+    2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2
+]))
 
 REF_2X = Segment("TOPELT REFRÄÄN", {
     RHYTHM: rhythm_ref_parts * 2,
     BASS: bass_ref_parts * 2
-})
+}, Lyrics("""\
+see on elu meie moodi
+kui ei meeldi mine poodi
+kaasa riiulilt sa haara
+pudel džinni, too meil taara
+see on elu meie moodi
+kui ei meeldi mine poodi
+kaasa riiulilt sa haara
+pudel džinni, too meil taara\
+""", [
+    2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2
+]*2))
 
 OUTRO = Segment("OUTRO", {
     RHYTHM: rhythm_outro_parts,
     BASS: bass_outro_parts
-})
+}, Lyrics("""\
+DŽINNITAARA
+DŽINNITAARA
+""", [
+    1,1,1,29,
+    1,1,1,1
+], 20))
 
 END = Segment("LÕPP", {
     RHYTHM: [

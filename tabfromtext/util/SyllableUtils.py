@@ -11,7 +11,7 @@ ESTONIAN_VOWELS = set("aeiouõäöü")
 # Vowel pairs that always split into separate syllables.
 # Add new pairs here as edge cases are discovered.
 # For irregular words, manually hyphenate in the lyrics string instead.
-ESTONIAN_VOWEL_SPLITS = {"ua", "ia"}
+ESTONIAN_VOWEL_SPLITS = {"ua", "ia", "iu", "ie"}
 
 
 def _split_estonian(word: str) -> list[str]:

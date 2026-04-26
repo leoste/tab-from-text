@@ -115,6 +115,51 @@ rhythm_ref_parts = [
     )
 ]
 
+lead_ref_parts = [
+    RhythmicChordSpanList(
+        Rhythm([8, 4, 4, 4, 4, 4, 4]),
+        [
+            ChordSpan(8, Chord.power_chord(E6, 2)),
+            ChordSpan(4, Chord.power_chord(E6, 7)),
+            ChordSpan(8, Chord.power_chord(E6, 6)),
+            ChordSpan(8, Chord.power_chord(A5, 6)),
+            ChordSpan(4, Chord.power_chord(E6, 6))
+        ] * 2
+    )
+]
+
+lead_double_ref_parts = [
+    RhythmicChordSpanList(
+        Rhythm([8, 4, 4, 4, 4, 4, 4]),
+        [
+            ChordSpan(8, Chord.power_chord(E6, 2)),
+            ChordSpan(4, Chord.power_chord(E6, 7)),
+            ChordSpan(8, Chord.power_chord(E6, 6)),
+            ChordSpan(8, Chord.power_chord(A5, 6)),
+            ChordSpan(4, Chord.power_chord(E6, 6)),
+            ChordSpan(8, Chord.power_chord(E6, 2)),
+            ChordSpan(4, Chord.power_chord(E6, 7)),
+            ChordSpan(8, Chord.power_chord(E6, 6)),
+            ChordSpan(8, Chord.power_chord(A5, 6))
+        ]
+    ),
+    RepeatingChordSpan(2, Chord.power_chord(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 9), 2),
+    RepeatingChordSpan(14, Chord.single_note(A5, 9)),
+    RepeatingChordSpan(1, Chord.single_note(D4, 8), 2),
+    RepeatingChordSpan(14, Chord.single_note(D4, 8)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 9), 2),
+    RepeatingChordSpan(16, Chord.single_note(A5, 9)),
+    RhythmicChordSpanList(
+        Rhythm([4]),
+        [
+            ChordSpan(4, Chord.power_chord(E6, 6)),
+            ChordSpan(8, Chord.power_chord(A5, 6)),
+            ChordSpan(4, Chord.power_chord(E6, 6))
+        ]
+    )
+]
+
 bass_ref_parts = [
     RepeatingChordSpan(1, Chord.single_note(D4, 4), 8),
     RepeatingChordSpan(1, Chord.single_note(E6, 7), 4),
@@ -122,6 +167,19 @@ bass_ref_parts = [
     RepeatingChordSpan(1, Chord.single_note(A5, 6), 8),
     RepeatingChordSpan(1, Chord.single_note(E6, 6), 4)
 ] * 2
+
+bass_ref_double = [
+    RepeatingChordSpan(1, Chord.single_note(D4, 4), 8),
+    RepeatingChordSpan(1, Chord.single_note(E6, 7), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 8),
+    RepeatingChordSpan(1, Chord.single_note(A5, 6), 8),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 4),
+    RepeatingChordSpan(1, Chord.single_note(D4, 4), 8),
+    RepeatingChordSpan(1, Chord.single_note(E6, 7), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 8),
+    RepeatingChordSpan(1, Chord.single_note(A5, 6), 4),
+    RepeatingChordSpan(8, None)
+]
 
 rhythm_outro_parts = [
     RhythmicChordSpanList(
@@ -154,14 +212,65 @@ bass_outro_parts = [
     RepeatingChordSpan(1, Chord.single_note(A5, 6))
 ] * 4
 
+lead_vahe_parts = [
+    RepeatingChordSpan(1, Chord.single_note(A5, 6), 6),
+    RepeatingChordSpan(1, Chord.single_note(E6, 1), 2),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 1)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 2)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 2)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 7), 3),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 2), 3),
+    RepeatingChordSpan(1, Chord.single_note(A5, 6)),
+] * 2
+
+lead_outro_parts = [
+    RepeatingChordSpan(1, Chord.single_note(A5, 6), 6),
+    RepeatingChordSpan(1, Chord.single_note(E6, 4), 2),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 1)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 2)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 2)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6), 4),
+    RepeatingChordSpan(1, Chord.single_note(E6, 7), 3),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(A5, 2), 3),
+    RepeatingChordSpan(1, Chord.single_note(A5, 1)),
+] * 4
+
+lead_salm_parts = [
+    RepeatingChordSpan(8, Chord.single_note(E6, 6), 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(8, None, 2),
+    RepeatingChordSpan(3, None),
+    RepeatingChordSpan(1, Chord.single_note(E6, 7), 5),
+    RepeatingChordSpan(8, Chord.single_note(E6, 6), 1, StrumStyle.VIBRATO),
+    RepeatingChordSpan(8, None),
+    RepeatingChordSpan(6, None),
+    RepeatingChordSpan(1, None),
+    RepeatingChordSpan(1, Chord.single_note(A5, 6)),
+    RepeatingChordSpan(2, Chord.single_note(A5, 9)),
+    RepeatingChordSpan(2, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(E6, 6)),
+    RepeatingChordSpan(1, Chord.single_note(D4, 3)),
+    RepeatingChordSpan(1, Chord.single_note(D4, 4), 2),
+]
+
 VAHE = Segment("INTRO", {
     RHYTHM: rhythm_vahe_parts,
-    BASS: bass_vahe_parts
+    BASS: bass_vahe_parts,
+    LEAD: lead_vahe_parts
 })
 
 SALM_1 = Segment("1. SALM", {
     RHYTHM: rhythm_salm_parts,
-    BASS: bass_salm_parts
+    BASS: bass_salm_parts,
+    LEAD: lead_salm_parts
 }, Lyrics("""\
 käest ta võttis sinult kõik
 tema nimele on võit
@@ -184,7 +293,8 @@ ruttu välja vingerda\
 
 SALM_2 = Segment("2. SALM", {
     RHYTHM: rhythm_salm_parts,
-    BASS: bass_salm_parts
+    BASS: bass_salm_parts,
+    LEAD: lead_salm_parts
 }, Lyrics("""\
 vaba hingena nüüd elad
 sinu päralt maailmapärand
@@ -207,7 +317,8 @@ telost porri vaatavad\
 
 REF = Segment("REFRÄÄN", {
     RHYTHM: rhythm_ref_parts,
-    BASS: bass_ref_parts
+    BASS: bass_ref_parts,
+    LEAD: lead_ref_parts,
 }, Lyrics("""\
 see on elu meie moodi
 kui ei meeldi mine poodi
@@ -222,7 +333,8 @@ pudel džinni, too meil taara\
 
 REF_2X = Segment("TOPELT REFRÄÄN", {
     RHYTHM: rhythm_ref_parts * 2,
-    BASS: bass_ref_parts * 2
+    BASS: bass_ref_parts + bass_ref_double,
+    LEAD: lead_double_ref_parts
 }, Lyrics("""\
 see on elu meie moodi
 kui ei meeldi mine poodi
@@ -241,7 +353,8 @@ pudel džinni, too meil taara\
 
 OUTRO = Segment("OUTRO", {
     RHYTHM: rhythm_outro_parts,
-    BASS: bass_outro_parts
+    BASS: bass_outro_parts,
+    LEAD: lead_outro_parts
 }, Lyrics("""\
 DŽINNITAARA
 DŽINNITAARA
